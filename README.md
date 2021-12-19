@@ -86,6 +86,6 @@ public class UserController : BasicPagedDataController
          return result;
     }
 
-    private readonly MoneyMoveManager _manager;
+    private readonly UserManager _manager;
 }
 ```
