@@ -59,7 +59,7 @@ namespace Wissance.WebApiToolkit.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during collection of object of type: {typeof(TObj)} retrieve and convert to objects of type: {typeof(TRes)}");
+                _logger.LogError($"An error: {e.Message} occurred during collection of object of type: {typeof(TObj)} retrieve and convert to objects of type: {typeof(TRes)}");
                 return new OperationResultDto<IList<TRes>>(true, (int)HttpStatusCode.InternalServerError, "Error occurred, contact system maintainer", null);
             }
         }
@@ -76,7 +76,7 @@ namespace Wissance.WebApiToolkit.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during object of type: {typeof(TObj)} with id: {id} retrieve and convert to object of type: {typeof(TRes)}");
+                _logger.LogError($"An error: {e.Message} occurred during object of type: {typeof(TObj)} with id: {id} retrieve and convert to object of type: {typeof(TRes)}");
                 return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound,
                                                     GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
             }
