@@ -8,13 +8,9 @@ using Wissance.WebApiToolkit.Managers;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-    public class BasicReadController<TRes, TData, TId> : BasicPagedDataController
+    public abstract class BasicReadController<TRes, TData, TId> : BasicPagedDataController
         where TRes: class
     {
-        public BasicReadController()
-        {
-        }
-
         [HttpGet]
         [Route("api/[controller]")]
         public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size)
