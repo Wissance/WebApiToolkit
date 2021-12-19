@@ -16,7 +16,8 @@ A set of useful C# reusable classes and components that could be used with any N
 * Managers classes - classes that implements business logic of application
     - `IModelManager` - interface that describes basic operations
     - `ModelManager` is abstract class that contains impl of Get operations
- 
+NUGET PACKAGE: https://www.nuget.org/packages/Wissance.WebApiToolkit/1.0.0
+    
 ## Examples
 ### Create Controllers for readonly (GET operation REST resource):
     
