@@ -75,7 +75,7 @@ public class UserController : BasicPagedDataController
     [Route("api/[controller]/search")]
     public async Task<IList<UserSuggestionDto>> SearchInLdapAsync([FromQuery]string query, [FromQuery]int page)
     {
-         IList<UserSuggestionDto> result = await _manager.SearchInTaxServiceAsync(query, page);
+         IList<UserSuggestionDto> result = await _manager.SearchInLdapAsync(query, page);
          if (result == null)
          {
              HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
