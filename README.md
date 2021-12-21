@@ -17,6 +17,11 @@ A set of useful C# reusable classes and components that could be used with any N
     - `IModelManager` - interface that describes basic operations
     - `ModelManager` is abstract class that contains impl of Get operations
 
+## Requirements
+There is only ONE requirement: all Entity classes that are using with controllers & managers derived from this labrary base classes MUST work
+with Entities that IMPLEMENTS interface `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`
+    
+## Nuget
 NUGET PACKAGE: https://www.nuget.org/packages/Wissance.WebApiToolkit/1.0.0
     
 ## Examples
