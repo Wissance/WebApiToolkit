@@ -18,7 +18,7 @@ A set of useful C# reusable classes and components that could be used with any N
     - `ModelManager` is abstract class that contains impl of Get operations
 
 ## Requirements
-There is only ONE requirement: all Entity classes that are using with controllers & managers derived from this labrary base classes MUST work
+There is only ONE requirement: all Entity classes that are using with controllers & managers derived from this library base classes MUST work
 with Entities that IMPLEMENTS interface `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`
     
 ## Nuget
@@ -33,7 +33,7 @@ This Toolkit ***significantly reduces amount*** of code that should be written t
 [ApiController]
 public class GroupController : BasicReadController<GroupDto, GroupEntity, int>
 {
-    public TaxSchemeController(GroupManager manager)
+    public GroupController(GroupManager manager)
     {
         _manager = manager;   // this one if we need to perform specific operation that were not defined in IModelManager
         Manager = _manager;
