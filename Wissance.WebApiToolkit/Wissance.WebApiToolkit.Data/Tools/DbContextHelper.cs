@@ -57,9 +57,28 @@ namespace Wissance.WebApiToolkit.Data.Tools
             }
         }
 
-        public T Create<T>(string connStr) where T: DbContext
+        /// <summary>
+        ///    This function helps us to create instance of DbContext. It is more complicated that probably should because
+        ///    DbContext depends on option but options depends on Extensions like .UseMySql(), .UseSqlServer(), pseudo code,
+        ///    Consider that we are having ModelContext class derived from DbContext:
+        ///    {
+        ///         DbContextHelper helper = new DbContextHelper();
+        ///         // string connStr = "server=127.0.0.1;database=my_app_db;uid=my_app_user;password=myPWD;SslMode=preferred;"
+        ///         string connStr = helper.GetConnStrFromJsonConfig("MyApp.Data", "migration.setting.json", "AppSettings.Db.ConnStr")
+        ///         DbContextOptionsBuilder<ModelContext> optionsBuilder = new DbContextOptionsBuilder<ModelContext>().UseMySql(connStr, ServerVersion.AutoDetect(connStr));
+        ///         DbContextOptions<ModelContext> options = optionsBuilder.Options;
+        ///         Func<DbContextOptions<ModelContext>, ModelContext> constructor = opts => new ModelContext(opts);
+        ///         ModelContext context = helper.Create<ModelContext>("some-conn-str", options, constructor);
+        ///         // do other things ....
+        ///    }
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
+        /// <param name="constructor"></param>
+        /// <returns></returns>
+        public T Create<T>(DbContextOptions<T> options, Func<DbContextOptions<T>, T> constructor) where T: DbContext, new()
         {
-            return null;
+            return constructor(options);
         }
     }
 }
