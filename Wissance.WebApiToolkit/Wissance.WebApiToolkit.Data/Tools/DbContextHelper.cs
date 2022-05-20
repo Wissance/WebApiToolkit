@@ -68,15 +68,15 @@ namespace Wissance.WebApiToolkit.Data.Tools
         ///         DbContextOptionsBuilder<ModelContext> optionsBuilder = new DbContextOptionsBuilder<ModelContext>().UseMySql(connStr, ServerVersion.AutoDetect(connStr));
         ///         DbContextOptions<ModelContext> options = optionsBuilder.Options;
         ///         Func<DbContextOptions<ModelContext>, ModelContext> constructor = opts => new ModelContext(opts);
-        ///         ModelContext context = helper.Create<ModelContext>("some-conn-str", options, constructor);
+        ///         ModelContext context = helper.Create<ModelContext>(constructor, options);
         ///         // do other things ....
         ///    }
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="options"></param>
         /// <param name="constructor"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
-        public T Create<T>(DbContextOptions<T> options, Func<DbContextOptions<T>, T> constructor) where T: DbContext, new()
+        public T Create<T>(Func<DbContextOptions<T>, T> constructor, DbContextOptions<T> options) where T: DbContext, new()
         {
             return constructor(options);
         }
