@@ -25,72 +25,103 @@ with Entities that IMPLEMENTS interface `IModelIdentifiable<T>` from `Wissance.W
 NUGET PACKAGE: https://www.nuget.org/packages/Wissance.WebApiToolkit/1.0.0
     
 ## Examples
-### Create Controllers for readonly (GET operation REST resource):
-    
-This Toolkit ***significantly reduces amount*** of code that should be written to implement method 4 Get REST resource with paging and size
+### Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found here: https://github.com/Wissance/WeatherControl
 
 ```c#
 [ApiController]
-public class GroupController : BasicReadController<GroupDto, GroupEntity, int>
+public class StationController : BasicCrudController<StationDto, StationEntity, int>
 {
-    public GroupController(GroupManager manager)
+    public StationController(StationManager manager)
     {
-        _manager = manager;   // this one if we need to perform specific operation that were not defined in IModelManager
-        Manager = _manager;
+        Manager = manager;  // this is for basic operations
+        _manager = manager; // this for extended operations
     }
-
-    private readonly GroupManager _manager;
+    
+    private StationManager _manager;
 }
 ```
+    
 ```c#
-public class GroupManager : ModelManager<GroupEntity, GroupDto, int>
-{
-    public GroupManager(ModelContext context, ILoggerFactory loggerFactory)
-        :base(loggerFactory)
-    {
-        _context = context;
-    }
+ public class StationManager : ModelManager<StationEntity, StationDto, int>
+ {
+     public StationManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(loggerFactory)
+     {
+        _modelContext = modelContext;
+     }
 
-    public override async Task<OperationResultDto<IList<GroupDto>>> GetAsync(int page, int size)
-    {
-        return await GetAsync<int>(_context.Groupd, page, size, null, null, GroupFactory.Create);
-    }
+     public override async Task<OperationResultDto<IList<StationDto>>> GetAsync(int page, int size)
+     {
+         return await GetAsync<int>(_modelContext.Stations, page, size, null, null, StationFactory.Create);
+     }
 
-    public override async Task<OperationResultDto<GroupDto>> GetByIdAsync(int id)
-    {
-        return await GetAsync(_context.Groups, id, GroupFactory.Create);
-    }
+     public override async Task<OperationResultDto<StationDto>> GetByIdAsync(int id)
+     {
+         return await GetAsync(_modelContext.Stations, id, StationFactory.Create);
+     }
 
-     private readonly IModelContext _context;
+     public override async Task<OperationResultDto<StationDto>> CreateAsync(StationDto data)
+     {
+         try
+         {
+             StationEntity entity = StationFactory.Create(data);
+             await _modelContext.Stations.AddAsync(entity);
+             int result = await _modelContext.SaveChangesAsync();
+             if (result >= 0)
+             {
+                 return new OperationResultDto<StationDto>(true, (int)HttpStatusCode.Created, null, StationFactory.Create(entity));
+             }
+             return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, "An unknown error occurred during station creation", null);
+         }
+         catch (Exception e)
+         {
+             return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, $"An error occurred during station creation: {e.Message}", null);
+         }
+     }
+
+     public override async Task<OperationResultDto<StationDto>> UpdateAsync(int id, StationDto data)
+     {
+         try
+         {
+             StationEntity entity = StationFactory.Create(data);
+             StationEntity existingEntity = await _modelContext.Stations.FirstOrDefaultAsync(s => s.Id == id);
+             if (existingEntity == null)
+             {
+                 return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.NotFound, $"Station with id: {id} does not exists", null);
+             }
+
+             // Copy only name, description and positions, create measurements if necessary from MeasurementsManager
+             existingEntity.Name = entity.Name;
+             existingEntity.Description = existingEntity.Description;
+             existingEntity.Latitude = existingEntity.Latitude;
+             existingEntity.Longitude = existingEntity.Longitude;
+             int result = await _modelContext.SaveChangesAsync();
+             if (result >= 0)
+             {
+                 return new OperationResultDto<StationDto>(true, (int)HttpStatusCode.OK, null, StationFactory.Create(entity));
+             }
+             return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, "An unknown error occurred during station update", null);
+
+         }
+         catch (Exception e)
+         {
+             return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, $"An error occurred during station update: {e.Message}", null);
+         }
+            
+     }
+
+     public override async Task<OperationResultDto<bool>> DeleteAsync(int id)
+     {
+         return await DeleteAsync(_modelContext, _modelContext.Stations, id);
+     }
+
+     private readonly ModelContext _modelContext;
 }
 ```
 JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit
 
 ### Create Controllers for full CRUD operations
 Full CRUD with additional method, see example below
-    
-```c#
-[Route("api/[controller]")]
-public class UserController : BasicPagedDataController
-{
-    public UserController(UserManager manager)
-    {
-         _manager = manager;
-    }
 
-    [HttpGet]
-    [Route("api/[controller]/search")]
-    public async Task<IList<UserSuggestionDto>> SearchInLdapAsync([FromQuery]string query, [FromQuery]int page)
-    {
-         IList<UserSuggestionDto> result = await _manager.SearchInLdapAsync(query, page);
-         if (result == null)
-         {
-             HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-         }
-
-         return result;
-    }
-
-    private readonly UserManager _manager;
-}
-```
+Using WebApiToolkit we could also:
+* extend `controller` and `manager` classes
+* use authorization by passing `IHttpContextAccessor` to Manager and check somthing like this: `ClaimsPrincipal principal = _httpContext.HttpContext.User;`
