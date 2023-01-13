@@ -23,7 +23,7 @@ namespace Wissance.WebApiToolkit.Controllers
 
         [HttpGet]
         [Route("api/[controller]/{id}")]
-        public async Task<TRes> ReadByIdAsync([FromRoute] int id)
+        public async Task<TRes> ReadByIdAsync([FromRoute] TId id)
         {
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
             HttpContext.Response.StatusCode = result.Status;

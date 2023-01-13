@@ -121,7 +121,7 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        public virtual Task<OperationResultDto<TRes>> GetByIdAsync(int id)
+        public virtual Task<OperationResultDto<TRes>> GetByIdAsync(TId id)
         {
             throw new NotImplementedException();
         }

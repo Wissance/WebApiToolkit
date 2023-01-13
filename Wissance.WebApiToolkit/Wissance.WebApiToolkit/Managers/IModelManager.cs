@@ -10,6 +10,6 @@ namespace Wissance.WebApiToolkit.Managers
         Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data);
         Task<OperationResultDto<bool>> DeleteAsync(TId id);
         Task<OperationResultDto<IList<TRes>>> GetAsync(int page, int size);
-        Task<OperationResultDto<TRes>> GetByIdAsync(int id);
+        Task<OperationResultDto<TRes>> GetByIdAsync(TId id);
     }
 }
