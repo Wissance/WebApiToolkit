@@ -180,10 +180,10 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// DeleteAsync method for remove object from Database using Ef
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">item identifier</param>
+        /// <returns>true if removal was successful, otherwise false</returns>
         public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
             try
@@ -205,21 +205,21 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// Method for getting Create Failure reason message using entity and reason
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="exceptionMessage"></param>
-        /// <returns></returns>
+        /// <param name="entity">Entity type/table</param>
+        /// <param name="exceptionMessage">Exception message</param>
+        /// <returns>Formatted text with object creation error</returns>
         public string GetCreateFailureMessage(string entity, string exceptionMessage)
         {
             return string.Format(CreateFailureMessageTemplate, entity, exceptionMessage);
         }
         
         /// <summary>
-        /// 
+        ///  Method for getting Resource Not Found Message (Get Method)
         /// </summary>
-        /// <param name="resource"></param>
-        /// <param name="id"></param>
+        /// <param name="resource">Resource = entity/table</param>
+        /// <param name="id">item identifier</param>
         /// <returns></returns>
         public string GetResourceNotFoundMessage(string resource, TId id)
         {
@@ -227,11 +227,11 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// Method for getting Update Failure reason message using entity and reason
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="id"></param>
-        /// <param name="exceptionMessage"></param>
+        /// <param name="entity">Entity type/table</param>
+        /// <param name="id">Item identifier</param>
+        /// <param name="exceptionMessage">Exception method</param>
         /// <returns></returns>
         public string GetUpdateFailureMessage(string entity, int id, string exceptionMessage)
         {
@@ -239,10 +239,10 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// Method for getting Resource Not Found Message (Update Method)
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="id"></param>
+        /// <param name="entity">Entity type/table</param>
+        /// <param name="id">Item identifier</param>
         /// <returns></returns>
         public string GetUpdateNotFoundMessage(string entity, int id)
         {
@@ -250,9 +250,9 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// Method for getting User Has No Access to Resource Message
         /// </summary>
-        /// <param name="resource"></param>
+        /// <param name="resource">Resource = entity/table</param>
         /// <returns></returns>
         public string GetCurrentUserResourceAccessErrorMessage(string resource)
         {
@@ -260,10 +260,10 @@ namespace Wissance.WebApiToolkit.Managers
         }
         
         /// <summary>
-        /// 
+        /// Method for getting Unknown Error Message
         /// </summary>
-        /// <param name="operation"></param>
-        /// <param name="resource"></param>
+        /// <param name="operation">Operation type = Create, Update, Read or Delete</param>
+        /// <param name="resource">Resource = entity/table</param>
         /// <returns></returns>
         public string GetUnknownErrorMessage(string operation, string resource)
         {
