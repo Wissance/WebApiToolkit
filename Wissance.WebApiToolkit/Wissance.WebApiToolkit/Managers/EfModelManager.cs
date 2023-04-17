@@ -28,7 +28,7 @@ namespace Wissance.WebApiToolkit.Managers
              
     {
         /// <summary>
-        ///    Constructor of this abstract class
+        ///    Constructor of default model manager
         /// </summary>
         /// <param name="dbContext">Context derived from EfDbContext </param>
         /// <param name="createFunc">Delegate for creating DTO from Model</param>
@@ -64,14 +64,20 @@ namespace Wissance.WebApiToolkit.Managers
                         entities = await dbSet.ToListAsync();
                     }
 
-                    entities = entities.Where(o => filter(o)).Skip(size * (page - 1)).Take(size).ToList();
+                    IEnumerable<TObj> items = entities.Where(o => filter(o));
+                    totalItems = items.Count();
+                    entities = items.Skip(size * (page - 1)).Take(size).ToList();
                 }
                 else
                 {
                     if (entities == null)
+                    {
+                        totalItems = await dbSet.LongCountAsync();
                         entities = await dbSet.Skip(size * (page - 1)).Take(size).ToListAsync();
+                    }
                     else
                     {
+                        totalItems = await dbSet.LongCountAsync();
                         entities = entities.Skip(size * (page - 1)).Take(size).ToList();
                     }
                 }
