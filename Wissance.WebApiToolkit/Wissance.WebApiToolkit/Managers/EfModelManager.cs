@@ -22,8 +22,9 @@ namespace Wissance.WebApiToolkit.Managers
                                                 where TId: IComparable
              
     {
-        public EfModelManager(ILoggerFactory loggerFactory)
+        public EfModelManager(DbContext dbContext, ILoggerFactory loggerFactory)
         {
+            _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
         }
 
@@ -88,7 +89,7 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
-        public async Task<OperationResultDto<bool>> DeleteAsync(DbContext context, DbSet<TObj> dbSet, TId id)
+        public async Task<OperationResultDto<bool>> DeleteAsync(DbSet<TObj> dbSet, TId id)
         {
             try
             {
@@ -97,7 +98,7 @@ namespace Wissance.WebApiToolkit.Managers
                 if (item == null)
                     return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Item does not exists", false);
                 dbSet.Remove(item);
-                await context.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
                 return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
             }
             catch (Exception e)
@@ -179,5 +180,6 @@ namespace Wissance.WebApiToolkit.Managers
         public const string UserNotAuthenticatedMessage = "User is not authenticated";
 
         private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
+        private readonly DbContext _dbContext;
     }
 }
