@@ -25,9 +25,32 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="data">DTO that contains data 4 creation. This data should be assigned to new model object </param>
         /// <returns>A result of operation with DTO of created object</returns>
         Task<OperationResultDto<TRes>> CreateAsync(TRes data);
+        /// <summary>
+        /// Updates existing item that could be found in persistent storage (i.e. database) by id. This method impl
+        /// should include update of only required field and probably couldn't be fully generalized
+        /// </summary>
+        /// <param name="id">Identifier of object in persistent storage</param>
+        /// <param name="data">DTO containing representation ob object in other systems or frontend</param>
+        /// <returns>A result of operation with DTO of updated object</returns>
         Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data);
+        /// <summary>
+        /// Removes object from persistent storage by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>true if object was removed successfully, otherwise - false</returns>
         Task<OperationResultDto<bool>> DeleteAsync(TId id);
+        /// <summary>
+        /// Return a set of DTO objects representation with paging
+        /// </summary>
+        /// <param name="page">number of page, starting from 1</param>
+        /// <param name="size">size of data potion (size of IList)</param>
+        /// <returns></returns>
         Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size);
+        /// <summary>
+        /// Return DTO representation of 1 object 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<OperationResultDto<TRes>> GetByIdAsync(TId id);
     }
 }
