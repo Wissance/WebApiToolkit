@@ -27,13 +27,13 @@ namespace Wissance.WebApiToolkit.Managers
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
         }
 
-        public async Task<OperationResultDto<IList<TRes>>> GetAsync<TKey>(DbSet<TObj> dbSet, int page, int size, 
+        public async Task<OperationResultDto<IList<TRes>>> GetAsync<TKey>(IQueryable<TObj> dbSet, int page, int size, 
                                                       Func<TObj, bool> filter, Func<TObj, TKey> sort,
                                                       Func<TObj, TRes> createFunc)
         {
             try
             {
-                // IQueryable<TObj> filteredObjects = dbSet;
+                //IQueryable<TObj> filteredObjects = dbSet;
                 IList<TObj> entities = null;
                 if (sort != null)
                 {
@@ -70,7 +70,7 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
-        public async Task<OperationResultDto<TRes>> GetAsync(DbSet<TObj> dbSet, TId id, Func<TObj, TRes> createFunc)
+        public async Task<OperationResultDto<TRes>> GetAsync(IQueryable<TObj> dbSet, TId id, Func<TObj, TRes> createFunc)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        public virtual Task<OperationResultDto<IList<TRes>>> GetAsync(int page, int size)
+        public virtual Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size)
         {
             throw new NotImplementedException("This function is ready in GetAsync that receive DbSet<T>, this " +
                                               "function should be overriden and used like a decorator for upper function.");

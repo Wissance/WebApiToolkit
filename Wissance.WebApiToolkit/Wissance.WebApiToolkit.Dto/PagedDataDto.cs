@@ -13,16 +13,6 @@ namespace Wissance.WebApiToolkit.Dto
         {
             Data = new List<T>();
         }
-        
-        [Obsolete]
-        // this method left 4 backward compatibility
-        public PagedDataDto(long page, IList<T> data)
-        {
-            Page = page;
-            Total = -1;
-            Pages = -1;
-            Data = data;
-        }
 
         public PagedDataDto(long page, long total, long pages, IList<T> data)
         {
