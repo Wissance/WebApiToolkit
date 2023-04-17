@@ -12,17 +12,28 @@ using Wissance.WebApiToolkit.Dto;
 namespace Wissance.WebApiToolkit.Managers
 {
     /// <summary>
-    ///    This is a semi-ready Manager for working with EntityFramework as a tool for perform CRUD operations over persistent objects
+    ///    This is a Model Manager for working with EntityFramework ORM as a tool for perform CRUD operations over persistent objects
+    ///    It has a default implementation of the following method of IModelManager:
+    ///    * GetAsync method for obtain many items
+    ///    * GetByIdAsync method for obtain one item by id
+    ///    * Delete method 
     /// </summary>
-    /// <typeparam name="TObj"></typeparam>
-    /// <typeparam name="TRes"></typeparam>
-    /// <typeparam name="TId"></typeparam>
+    /// <typeparam name="TObj">Model class deriving from IModelIdentifiable</typeparam>
+    /// <typeparam name="TRes">DTO class</typeparam>
+    /// <typeparam name="TId">Identifier type that is using as database PK</typeparam>
     public abstract class EfModelManager <TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class
                                                 where TId: IComparable
              
     {
+        /// <summary>
+        ///    Constructor of this abstract class
+        /// </summary>
+        /// <param name="dbContext">Context derived from EfDbContext </param>
+        /// <param name="createFunc">Delegate for creating DTO from Model</param>
+        /// <param name="loggerFactory">Logger factory</param>
+        /// <exception cref="ArgumentNullException"></exception>
         public EfModelManager(EfDbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
