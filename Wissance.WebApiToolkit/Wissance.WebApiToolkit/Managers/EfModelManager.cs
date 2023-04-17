@@ -12,15 +12,15 @@ using Wissance.WebApiToolkit.Dto;
 namespace Wissance.WebApiToolkit.Managers
 {
     /// <summary>
-    ///    This is a Model Manager for working with EntityFramework ORM as a tool for perform CRUD operations over persistent objects
+    ///    This is a Model Manager for working with EntityFramework ORM (EF) as a tool for perform CRUD operations over persistent objects
     ///    It has a default implementation of the following method of IModelManager:
     ///    * GetAsync method for obtain many items
     ///    * GetByIdAsync method for obtain one item by id
     ///    * Delete method 
     /// </summary>
-    /// <typeparam name="TObj">Model class deriving from IModelIdentifiable</typeparam>
-    /// <typeparam name="TRes">DTO class</typeparam>
-    /// <typeparam name="TId">Identifier type that is using as database PK</typeparam>
+    /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
+    /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
+    /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
     public abstract class EfModelManager <TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class
@@ -28,10 +28,10 @@ namespace Wissance.WebApiToolkit.Managers
              
     {
         /// <summary>
-        ///    Constructor of default model manager
+        ///    Constructor of default model manager requires that Model Context derives from EfDbContext
         /// </summary>
-        /// <param name="dbContext">Context derived from EfDbContext </param>
-        /// <param name="createFunc">Delegate for creating DTO from Model</param>
+        /// <param name="dbContext">Ef Database context</param>
+        /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
         public EfModelManager(EfDbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
@@ -41,6 +41,18 @@ namespace Wissance.WebApiToolkit.Managers
             _defaultCreateFunc = createFunc;
         }
 
+        /// <summary>
+        ///  GetManyAsync method allow to extract data from Ef using optional sorting and filtering (sorting applies first, then filter).
+        ///  This method contains more params then GetAsync(), GetAsync default impl calls this method and pass null as filter && sort.
+        ///  This method designed for having ADDITIONAL GET methods in controller.
+        /// </summary>
+        /// <param name="page">Page number starting from 1</param>
+        /// <param name="size">Data portion size</param>
+        /// <param name="filter">Function that describes how to filter data prior to get a portion</param>
+        /// <param name="sort">>Function that describes how to sort data prior to get a portion</param>
+        /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
+        /// <typeparam name="TKey">Key that is using 4 sorting</typeparam>
+        /// <returns>OperationResult with data portion</returns>
         public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, 
                                                       Func<TObj, bool> filter, Func<TObj, TKey> sort,
                                                       Func<TObj, TRes> createFunc = null)
@@ -94,6 +106,13 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
+        /// <summary>
+        /// GetOneAsync method used 4 getting ONE object by id from Database using EF. Optionally could be used different createFunc, but in most
+        /// cases (99.(9) percents) this method is identical to GetByIdAsync.
+        /// </summary>
+        /// <param name="id">item identifier</param>
+        /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
+        /// <returns></returns>
         public async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
         {
             try
@@ -114,27 +133,57 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
+        /// <summary>
+        /// GetAsync return portion of DTO unlike GetMany methods have not a default sorting && filtering . Default implementation
+        /// of IModelManager for get data portion via EF.
+        /// </summary>
+        /// <param name="page">page number starting from 1</param>
+        /// <param name="size">size of data portion</param>
+        /// <returns>OperationResult with data portion</returns>
         public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             return await GetManyAsync<TRes>(page, size, null, null);
         }
         
+        /// <summary>
+        /// GetByIdAsync returns one item by id, IModelManager default implementation
+        /// </summary>
+        /// <param name="id">item identifier</param>
+        /// <returns>OperationResult with one item</returns>
         public async Task<OperationResultDto<TRes>> GetByIdAsync(TId id)
         {
             return await GetOneAsync(id);
         }
         
+        /// <summary>
+        /// Method for create new object in database using Ef, in this class still have not a default impl, but will be
+        /// </summary>
+        /// <param name="data">DTO with Model representation</param>
+        /// <returns>DTO of newly created object</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public virtual Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Method for update existing objects using EF, still have not default impl, but will be
+        /// </summary>
+        /// <param name="id">item identifier</param>
+        /// <param name="data">>DTO with Model representation</param>
+        /// <returns>DTO of updated object</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public virtual Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
         {
             throw new NotImplementedException();
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
             try
@@ -154,33 +203,68 @@ namespace Wissance.WebApiToolkit.Managers
                 return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, "Error occurred during object delete, contact system maintainer", false);
             }
         }
-
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
         public string GetCreateFailureMessage(string entity, string exceptionMessage)
         {
             return string.Format(CreateFailureMessageTemplate, entity, exceptionMessage);
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetResourceNotFoundMessage(string resource, TId id)
         {
             return string.Format(ResourceNotFoundTemplate, resource, id);
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="id"></param>
+        /// <param name="exceptionMessage"></param>
+        /// <returns></returns>
         public string GetUpdateFailureMessage(string entity, int id, string exceptionMessage)
         {
             return string.Format(UpdateFailureMessageTemplate, entity, id, exceptionMessage);
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string GetUpdateNotFoundMessage(string entity, int id)
         {
             return string.Format(UpdateFailureNotFoundMessageTemplate, entity, id);
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resource"></param>
+        /// <returns></returns>
         public string GetCurrentUserResourceAccessErrorMessage(string resource)
         {
             return string.Format(CurrentUserIsNotResourceOwnerTemplate, resource);
         }
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="operation"></param>
+        /// <param name="resource"></param>
+        /// <returns></returns>
         public string GetUnknownErrorMessage(string operation, string resource)
         {
             return string.Format(UnknownErrorMessageTemplate, operation, resource);
