@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Wissance.WebApiToolkit.Data.EfContext;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
 
@@ -22,19 +23,22 @@ namespace Wissance.WebApiToolkit.Managers
                                                 where TId: IComparable
              
     {
-        public EfModelManager(DbContext dbContext, ILoggerFactory loggerFactory)
+        public EfModelManager(EfDbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
+            _defaultCreateFunc = createFunc;
         }
 
-        public async Task<OperationResultDto<IList<TRes>>> GetAsync<TKey>(IQueryable<TObj> dbSet, int page, int size, 
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, 
                                                       Func<TObj, bool> filter, Func<TObj, TKey> sort,
-                                                      Func<TObj, TRes> createFunc)
+                                                      Func<TObj, TRes> createFunc = null)
         {
             try
             {
                 //IQueryable<TObj> filteredObjects = dbSet;
+                long totalItems = 0;
+                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
                 IList<TObj> entities = null;
                 if (sort != null)
                 {
@@ -60,26 +64,30 @@ namespace Wissance.WebApiToolkit.Managers
                         entities = entities.Skip(size * (page - 1)).Take(size).ToList();
                     }
                 }
+                
 
-                return new OperationResultDto<IList<TRes>>(true, (int)HttpStatusCode.OK, null,
-                    entities.Select(e => createFunc(e)).ToList());
+                return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.OK, null,
+                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error: {e.Message} occurred during collection of object of type: {typeof(TObj)} retrieve and convert to objects of type: {typeof(TRes)}");
-                return new OperationResultDto<IList<TRes>>(true, (int)HttpStatusCode.InternalServerError, "Error occurred, contact system maintainer", null);
+                return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.InternalServerError, "Error occurred, contact system maintainer",
+                    new Tuple<IList<TRes>, long>(null, 0));
             }
         }
 
-        public async Task<OperationResultDto<TRes>> GetAsync(IQueryable<TObj> dbSet, TId id, Func<TObj, TRes> createFunc)
+        public async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
         {
             try
             {
+                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
                 TObj entity = await dbSet.FirstOrDefaultAsync(i => i.Id.Equals(id));
                 if (entity == null)
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
                                                         GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
-                return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, createFunc(entity));
+                return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
+                    createFunc != null?createFunc(entity): _defaultCreateFunc(entity));
             }
             catch (Exception e)
             {
@@ -89,10 +97,32 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
-        public async Task<OperationResultDto<bool>> DeleteAsync(DbSet<TObj> dbSet, TId id)
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size)
+        {
+            // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
+            return await GetManyAsync<TRes>(page, size, null, null);
+        }
+        
+        public async Task<OperationResultDto<TRes>> GetByIdAsync(TId id)
+        {
+            return await GetOneAsync(id);
+        }
+        
+        public virtual Task<OperationResultDto<TRes>> CreateAsync(TRes data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
             try
             {
+                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
                 TObj item = await dbSet.FirstOrDefaultAsync(t => t.Id.Equals(id));
 
                 if (item == null)
@@ -108,36 +138,6 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
-        public virtual Task<OperationResultDto<TRes>> CreateAsync(TRes data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task<OperationResultDto<bool>> DeleteAsync(TId id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size)
-        {
-            throw new NotImplementedException("This function is ready in GetAsync that receive DbSet<T>, this " +
-                                              "function should be overriden and used like a decorator for upper function.");
-        }
-
-        public virtual Task<OperationResultDto<TRes>> GetByIdAsync(TId id)
-        {
-            throw new NotImplementedException();
-        }
-        
-        public async Task<long> CountAsync()
-        {
-            throw new NotImplementedException();
-        }
 
         public string GetCreateFailureMessage(string entity, string exceptionMessage)
         {
@@ -180,6 +180,7 @@ namespace Wissance.WebApiToolkit.Managers
         public const string UserNotAuthenticatedMessage = "User is not authenticated";
 
         private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
-        private readonly DbContext _dbContext;
+        private readonly EfDbContext _dbContext;
+        private readonly Func<TObj, TRes> _defaultCreateFunc;
     }
 }
