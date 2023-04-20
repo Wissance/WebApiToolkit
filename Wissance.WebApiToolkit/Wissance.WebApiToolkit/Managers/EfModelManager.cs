@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using Wissance.WebApiToolkit.Data.EfContext;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
 
@@ -34,7 +33,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EfModelManager(EfDbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
+        public EfModelManager(DbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
@@ -61,7 +60,7 @@ namespace Wissance.WebApiToolkit.Managers
             {
                 //IQueryable<TObj> filteredObjects = dbSet;
                 long totalItems = 0;
-                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 IList<TObj> entities = null;
                 if (sort != null)
                 {
@@ -117,7 +116,7 @@ namespace Wissance.WebApiToolkit.Managers
         {
             try
             {
-                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 TObj entity = await dbSet.FirstOrDefaultAsync(i => i.Id.Equals(id));
                 if (entity == null)
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
@@ -188,7 +187,7 @@ namespace Wissance.WebApiToolkit.Managers
         {
             try
             {
-                DbSet<TObj> dbSet = _dbContext.Get<TObj, TId>();
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 TObj item = await dbSet.FirstOrDefaultAsync(t => t.Id.Equals(id));
 
                 if (item == null)
@@ -281,7 +280,7 @@ namespace Wissance.WebApiToolkit.Managers
         public const string UserNotAuthenticatedMessage = "User is not authenticated";
 
         private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
-        private readonly EfDbContext _dbContext;
+        private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
     }
 }
