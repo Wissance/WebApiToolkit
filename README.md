@@ -1,4 +1,4 @@
-## WebApiToolkit
+## Wissance.WebApiToolkit
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
@@ -248,3 +248,9 @@ pass `IHttpContextAccessor` to `Manager` class and check something like this: `C
 You could see our articles about Toolkit usage:
 * [Medium article about v1.0.x usage]( https://medium.com/@m-ushakov/how-to-reduce-amount-of-code-when-writing-netcore-rest-api-services-28352edcfca6)
 * [Dev.to article about v1.0.x usage]( https://dev.to/wissance/dry-your-web-api-net-core-with-our-toolkit-cbb)
+
+### 9. Contributors
+
+<a href="https://github.com/Wissance/WebApiToolkit/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Wissance/WebApiToolkit" />
+</a>
