@@ -2,8 +2,12 @@
 
 This lib helps to build `REST API` with `C#` and `AspNet` easily then writing it from scratch.
 Key Features:
-* `REST API Controller` with **full CRUD** contains ***only 20 lines*** of code (~ 10 are imports);
-* support to work with **any persistent storage** (`IModelManager` interface);
+* `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
+  - `GET` methods have builtin paging support;
+  - `GET` methods have sorting and filter by query params (coming soon, ***MORE STARS -> sooner RELEASE***);
+* support to work with **any persistent storage** (`IModelManager` interface); Good builtin EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) it has 2 WEB API projects: 
+  - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
+  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`.
 
 A set of useful C# reusable classes and components that could be used with any Net Core Web application, contains:
 * Dto clasess:
