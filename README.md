@@ -50,11 +50,89 @@ If this toolkit should be used with `EntityFramework` you should derive you reso
 
 
 ### 4. Toolkit usage algorithm with EntityFramework
-Full example mentioned in chapter 6 (see below). But if you are starting to build new `REST Resource`
+Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
 `API` you should do following:
-1. aaa
-2. sss
-3. ddd
+1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation, i.e.:
+```csharp
+public class BookEntity : IModelIdentifiable<int>
+{
+    public int Id {get; set;}
+    public string Title {get; set;}
+    public string Authors {get; set;} // for simplicity
+    public DateTimeOffset Created {get; set;}
+    public DateTimeOffset Updated {get; set;}
+}
+
+public class BookDto
+{
+    public int Id {get; set;}
+    public string Title {get; set;}
+    public string Authors {get; set;} 
+}
+```
+2. Create a factory function (i.e. static function of a static class) that converts `Model` to `DTO` i.e.:
+```csharp
+public static class BookFactory
+{
+    public static BookDto Create(BookEntity entity)
+    {
+        return new BookDto
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            Authors = entity.Authors;
+        };
+    }
+}
+```
+3. Create `IModelContext` interface that has you `BookEntity` as a DbSet and it's implementation class that also derives from DbContext (**Ef abstract class**):
+```csharp
+public interface IModelContext
+{
+    DbSet<BookEntity> Books {get;set;}
+}
+
+public MoidelContext: DbContext<ModelContext>, IModelContext
+{
+    // todo: not mrntioned here constructor, entity mapping and so on
+    public DbSet<BookEntity> Books {get; set;}
+}
+```
+4. Configure to inject `ModelContext` as a `DbContext` via `DI` see [Startup](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl/Startup.cs) class
+5. Create `Controller` class and a manager class pair, i.e. consider here full `CRUD`
+```csharp
+[ApiController]
+public class BookController : BasicCrudController<BookDto, BookEntity, int>
+{
+    public BookController(BookManager manager)
+    {
+        Manager = manager;  // this is for basic operations
+        _manager = manager; // this for extended operations
+    }
+    
+    private BookManager _manager;
+}
+
+public class BookManager : EfModelManager<BookEntity, BookDto, int>
+{
+    public BookManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, BookFactory.Create, loggerFactory)
+    {
+        _modelContext = modelContext;
+    }
+    
+    public override async Task<OperationResultDto<StationDto>> CreateAsync(StationDto data)
+    {
+        // todo: implement
+    }
+    
+    public override async Task<OperationResultDto<StationDto>> UpdateAsync(int id, StationDto data)
+    {
+        // todo: implement
+    }
+    
+    private readonly ModelContext _modelContext;
+}
+```
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
@@ -143,9 +221,30 @@ JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit
 ### 7. Extending API
 
 #### 7.1 Add new methods to existing controller
+Consider we would like to add method search to our controller:
+```csharp
+[HttpGet]
+[Route("api/[controller]/search")]
+public async Task<PagedDataDto<BookDto>>> SearchAsync([FromQuery]string query, [FromQuery]int page, [FromQuery]int size)
+{ 
+    OperationResultDto<Tuple<IList<BookDto>, long>> result = await Manager.GetAsync(page, size, query);
+    if (result == null)
+    {
+        HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+    }
+
+    HttpContext.Response.StatusCode = result.Status;
+    return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
+}
+```
 
 #### 7.2 Add security to protect you API
 
-Using WebApiToolkit we could also:
-* extend `controller` and `manager` classes
-* use authorization by passing `IHttpContextAccessor` to Manager and check somthing like this: `ClaimsPrincipal principal = _httpContext.HttpContext.User;`
+We have [additional project](https://github.com/Wissance/Authorization) to protect `API` with `Keycloak` `OpenId-Connect`.
+pass `IHttpContextAccessor` to `Manager` class and check something like this: `ClaimsPrincipal principal = _httpContext.HttpContext.User;`
+
+### 8. Additional materials
+
+You could see our articles about Toolkit usage:
+* [Medium article about v1.0.x usage]( https://medium.com/@m-ushakov/how-to-reduce-amount-of-code-when-writing-netcore-rest-api-services-28352edcfca6)
+* [Dev.to article about v1.0.x usage]( https://dev.to/wissance/dry-your-web-api-net-core-with-our-toolkit-cbb)
