@@ -1,4 +1,10 @@
 ## WebApiToolkit Description
+
+This lib helps to build `REST API` with `C#` and `AspNet` easily then writing it from scratch.
+Key Features:
+* `REST API Controller` with **full CRUD** contains ***only 20 lines*** of code (~ 10 are imports);
+* support to work with **any persistent storage** (`IModelManager` interface);
+
 A set of useful C# reusable classes and components that could be used with any Net Core Web application, contains:
 * Dto clasess:
     - `OperationResultDto` represents result of operation that changes Data in db
@@ -27,7 +33,7 @@ NUGET PACKAGE: https://www.nuget.org/packages/Wissance.WebApiToolkit/1.0.0
 ## Examples
 ### Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found here: https://github.com/Wissance/WeatherControl
 
-```c#
+```csharp
 [ApiController]
 public class StationController : BasicCrudController<StationDto, StationEntity, int>
 {
@@ -41,7 +47,7 @@ public class StationController : BasicCrudController<StationDto, StationEntity, 
 }
 ```
     
-```c#
+```csharp
  public class StationManager : ModelManager<StationEntity, StationDto, int>
  {
      public StationManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(loggerFactory)
