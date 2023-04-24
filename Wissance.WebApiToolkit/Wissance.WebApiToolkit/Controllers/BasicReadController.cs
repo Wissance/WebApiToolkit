@@ -51,7 +51,7 @@ namespace Wissance.WebApiToolkit.Controllers
         private const string PageQueryParam = "page";
         private const string SizeQueryParam = "size";
 
-        private IList<string> _paramsToOmit = new List<string>()
+        private readonly IList<string> _paramsToOmit = new List<string>()
         {
             PageQueryParam, SizeQueryParam
         };

@@ -31,13 +31,15 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="dbContext">Ef Database context</param>
         /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
+        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
             _defaultCreateFunc = createFunc;
+            _filterFunc = filterFunc;
         }
 
         /// <summary>
@@ -47,13 +49,15 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="page">Page number starting from 1</param>
         /// <param name="size">Data portion size</param>
-        /// <param name="filter">Function that describes how to filter data prior to get a portion</param>
-        /// <param name="sort">>Function that describes how to sort data prior to get a portion</param>
+        /// <param name="parameters">Query parameters for data filter</param>
+        /// <param name="filterFunc">Function that describes how to filter data prior to get a portion</param>
+        /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <typeparam name="TKey">Key that is using 4 sorting</typeparam>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, 
-                                                      Func<TObj, bool> filter, Func<TObj, TKey> sort,
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, IDictionary<string, string> parameters,
+                                                      Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+                                                      Func<TObj, TKey> sortFunc = null,
                                                       Func<TObj, TRes> createFunc = null)
         {
             try
@@ -62,12 +66,12 @@ namespace Wissance.WebApiToolkit.Managers
                 long totalItems = 0;
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 IList<TObj> entities = null;
-                if (sort != null)
+                if (sortFunc != null)
                 {
-                    entities = dbSet.OrderBy(sort).ToList();
+                    entities = dbSet.OrderBy(sortFunc).ToList();
                 }
 
-                if (filter != null)
+                if (filterFunc != null)
                 {
                     // filteredObjects = await dbSet.ToListAsync();
                     if (entities == null)
@@ -75,7 +79,7 @@ namespace Wissance.WebApiToolkit.Managers
                         entities = await dbSet.ToListAsync();
                     }
 
-                    IEnumerable<TObj> items = entities.Where(o => filter(o));
+                    IEnumerable<TObj> items = entities.Where(o => filterFunc(o, parameters));
                     totalItems = items.Count();
                     entities = items.Skip(size * (page - 1)).Take(size).ToList();
                 }
@@ -143,7 +147,7 @@ namespace Wissance.WebApiToolkit.Managers
         public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
-            return await GetManyAsync<TRes>(page, size, null, null);
+            return await GetManyAsync<TRes>(page, size, parameters, _filterFunc);
         }
         
         /// <summary>
@@ -283,5 +287,6 @@ namespace Wissance.WebApiToolkit.Managers
         private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
+        private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }
