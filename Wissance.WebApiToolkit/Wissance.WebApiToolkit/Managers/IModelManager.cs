@@ -44,8 +44,9 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="page">number of page, starting from 1</param>
         /// <param name="size">size of data potion (size of IList)</param>
+        /// <param name="parameters">raw query parameters</param>
         /// <returns></returns>
-        Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size);
+        Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, IDictionary<string, string> parameters = null);
         /// <summary>
         /// Return DTO representation of 1 object 
         /// </summary>

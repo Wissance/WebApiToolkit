@@ -138,8 +138,9 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="page">page number starting from 1</param>
         /// <param name="size">size of data portion</param>
+        /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size)
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             return await GetManyAsync<TRes>(page, size, null, null);
