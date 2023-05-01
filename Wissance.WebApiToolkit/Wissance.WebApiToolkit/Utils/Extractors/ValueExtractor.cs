@@ -3,9 +3,18 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Wissance.WebApiToolkit.Utils.Extractors
 {
+    /// <summary>
+    ///    ValueExtractor is a static class that helps to extract variables of a specific type when we deal with query string.
+    /// </summary>
     public static class ValueExtractor
     {
-        public  static Tuple<T, bool> TryGetVal<T>(string value)
+        /// <summary>
+        ///    Get scalar type value of type T as a Tuple of T and bool (represents success of data extract) from string
+        /// </summary>
+        /// <param name="value">string representation of variable of type T</param>
+        /// <typeparam name="T">type (scalar) of variable in a string</typeparam>
+        /// <returns>Tuple with variable of type T (default(T) if conversion failed) and a bool as a success of </returns>
+        public static Tuple<T, bool> TryGetVal<T>(string value)
         {
             try
             {
@@ -20,6 +29,13 @@ namespace Wissance.WebApiToolkit.Utils.Extractors
             
         }
 
+        /// <summary>
+        ///    Get vector type value of type T[] as a Tuple of T[] and bool (represents success of data extract) from string. Internally calls
+        ///    scalar version of this func 
+        /// </summary>
+        /// <param name="value">string representation of array of variables of type T</param>
+        /// <typeparam name="T">type of variable in a string</typeparam>
+        /// <returns>Tuple with array of T (T[]) and a bool (parsing result)</returns>
         public static Tuple<T[], bool> TryGetArray<T>(string value)
         {
             string[] parts = value.Split(",");
