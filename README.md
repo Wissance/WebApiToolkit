@@ -28,8 +28,9 @@ Key concepts:
     - `PagedDataDto` represents portion (page) of same objects (any type);
 * `Controllers` classes - abstract classes
     - basic read controller (`BasicReadController`) contains 2 methods:
-        - `GET /api/[controller]/?page={page}&size={size}` to get PagedDataDto<T>
-        - `GET /api/[controller]/{id}` to get one object by id
+        - `GET /api/[controller]/?page={page}&size={size}` to get `PagedDataDto<T>`
+          now we also have possibility to send ANY number of query params, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs)
+        - `GET /api/[controller]/{id}` to get one object by `id`
     - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
         - `POST   /api/[controller]` - for new object creation
         - `PUT    /api/[controller]/{id}` - for edit object by id
@@ -44,9 +45,9 @@ Key concepts:
 There is **only ONE requirement**: all Entity classes for any Persistence storage that are using with controllers & managers MUST implements `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`.
 If this toolkit should be used with `EntityFramework` you should derive you resource manager from
 `EfModelManager` it have built-in methods for:
-* get many
-* get one
-* delete
+* get many items
+* get one item by id
+* delete item by id
 
 
 ### 4. Toolkit usage algorithm with EntityFramework
