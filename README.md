@@ -29,7 +29,7 @@ Key concepts:
 * `Controllers` classes - abstract classes
     - basic read controller (`BasicReadController`) contains 2 methods:
         - `GET /api/[controller]/?page={page}&size={size}` to get `PagedDataDto<T>`
-          now we also have possibility to send ANY number of query params, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs)
+          now we also have possibility to send ANY number of query params, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** 
         - `GET /api/[controller]/{id}` to get one object by `id`
     - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
         - `POST   /api/[controller]` - for new object creation
