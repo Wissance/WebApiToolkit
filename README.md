@@ -3,7 +3,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v1.1.1/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v1.2.0/total?style=plastic)
 
 #### This lib helps to build `REST API` with `C#` and `AspNet` easily than writing it from scratch over and over in different projects.
 
@@ -13,6 +13,7 @@
 * `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
   - `GET` methods have ***built-in paging*** support;
   - `GET` methods have ***built-in sorting and filter*** by query params (coming soon, ***MORE STARS -> sooner RELEASE***);
+* support ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
 * support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 2 WEB API projects: 
   - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
   - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`.
@@ -35,6 +36,10 @@ Key concepts:
         - `POST   /api/[controller]` - for new object creation
         - `PUT    /api/[controller]/{id}` - for edit object by id
         - `DELETE /api/[controller]/{id}` - for delete object by id
+    - full `CRUD` with **Bulk** operations (operations over multiple objects at once), Base class - `BasicBulkCrudController` = basic read controller (`BasicReadController`) + `BulkCreate`, `BulkUpdate` and `BulkDelete` operations:
+        - `POST   /api/bulk/[controller]` - for new objects creation
+        - `PUT    /api/bulk/[controller]` - for edit objects passing in a request body
+        - `DELETE /api/bulk/[controller]/{idList}` - for delete multiple objects by id.
         
   Controllers classes expects that all operation will be performed using Manager classes (each controller must have it own manager)
 * Managers classes - classes that implements business logic of application
