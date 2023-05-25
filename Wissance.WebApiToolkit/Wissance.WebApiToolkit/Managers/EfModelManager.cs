@@ -136,11 +136,6 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
-        public Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         /// GetAsync return portion of DTO unlike GetMany methods have not a default sorting && filtering . Default implementation
         /// of IModelManager for get data portion via EF.
@@ -176,6 +171,12 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Method for create new objects in database using Ef, in this class still have not a default impl, but will be
+        /// </summary>
+        /// <param name="data">Array of DTO with Model representation</param>
+        /// <returns>Array of DTO of a newly created objects</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
         {
             throw new NotImplementedException();
@@ -193,6 +194,12 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Method for update existing objects in a database using Ef, in this class still have not a default impl, but will be
+        /// </summary>
+        /// <param name="data">Array of DTO with Model representation</param>
+        /// <returns>Array of DTO of a updated objects</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
         {
             throw new NotImplementedException();
@@ -221,6 +228,16 @@ namespace Wissance.WebApiToolkit.Managers
                 _logger.LogError($"An error occurred during object of type: {nameof(TObj)} with id: {id} remove: {e.Message}");
                 return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, "Error occurred during object delete, contact system maintainer", false);
             }
+        }
+        
+        /// <summary>
+        /// BulkDeleteAsync method for remove object from Database using Ef
+        /// </summary>
+        /// <param name="objectsIds">item identifiers</param>
+        /// <returns>true if removal was successful, otherwise false</returns>
+        public Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
+        {
+            throw new NotImplementedException();
         }
         
         /// <summary>
