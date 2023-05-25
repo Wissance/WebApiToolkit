@@ -136,6 +136,11 @@ namespace Wissance.WebApiToolkit.Managers
             }
         }
 
+        public Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// GetAsync return portion of DTO unlike GetMany methods have not a default sorting && filtering . Default implementation
         /// of IModelManager for get data portion via EF.
@@ -171,6 +176,11 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
+        public Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Method for update existing objects using EF, still have not default impl, but will be
         /// </summary>
@@ -182,7 +192,12 @@ namespace Wissance.WebApiToolkit.Managers
         {
             throw new NotImplementedException();
         }
-        
+
+        public Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// DeleteAsync method for remove object from Database using Ef
         /// </summary>
