@@ -177,7 +177,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a newly created objects</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
+        public virtual Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
         {
             throw new NotImplementedException();
         }
@@ -200,7 +200,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a updated objects</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
+        public virtual Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
         {
             throw new NotImplementedException();
         }
@@ -235,7 +235,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="objectsIds">item identifiers</param>
         /// <returns>true if removal was successful, otherwise false</returns>
-        public Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
+        public virtual Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
         {
             throw new NotImplementedException();
         }
