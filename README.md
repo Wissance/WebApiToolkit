@@ -45,6 +45,14 @@ Key concepts:
 * Managers classes - classes that implements business logic of application
     - `IModelManager` - interface that describes basic operations
     - `EfModelManager`- is abstract class that contains implementation of `Get` and `Delete` operations
+    
+Example of how faster Bulk vs Non-Bulk:
+![Bulk vs Non Bulk](/img/bulk_performance.png)
+```
+Elapsed time in Non-Bulk REST API with EF is 0.9759984016418457 secs.
+Elapsed time in Bulk API with EF is 0.004002094268798828 secs.
+```
+as a result we got almost ~`250 x` faster `API`.
 
 ### 3. Requirements
 There is **only ONE requirement**: all Entity classes for any Persistence storage that are using with controllers & managers MUST implements `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`.
