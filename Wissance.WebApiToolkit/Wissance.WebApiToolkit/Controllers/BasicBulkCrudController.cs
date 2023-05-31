@@ -17,7 +17,7 @@ namespace Wissance.WebApiToolkit.Controllers
         }
 
         [HttpPut]
-        [Route("api/bulk/[controller]/{id}")]
+        [Route("api/bulk/[controller]")]
         public virtual async Task<OperationResultDto<TRes[]>> UpdateAsync([FromBody] TRes[] data)
         {
             OperationResultDto<TRes[]> result = await Manager.BulkUpdateAsync(data);
