@@ -3,7 +3,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v1.2.0/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v1.2.2/total?style=plastic)
 
 #### This lib helps to build `REST API` with `C#` and `AspNet` easily than writing it from scratch over and over in different projects.
 
