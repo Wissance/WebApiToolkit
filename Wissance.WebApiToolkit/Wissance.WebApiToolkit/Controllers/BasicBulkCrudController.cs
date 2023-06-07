@@ -26,7 +26,7 @@ namespace Wissance.WebApiToolkit.Controllers
         }
 
         [HttpDelete]
-        [Route("api/bulk/[controller]/{id}")]
+        [Route("api/bulk/[controller]")]
         public virtual async Task DeleteAsync([FromQuery] TId[] id)
         {
             OperationResultDto<bool> result = await Manager.BulkDeleteAsync(id);
