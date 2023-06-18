@@ -51,15 +51,16 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="page">Page number starting from 1</param>
         /// <param name="size">Data portion size</param>
         /// <param name="parameters">Query parameters for data filter</param>
+        /// <param name="sorting">sorting params (Sort - Field name, Order - Sort direction (ASC, DESC))</param>
         /// <param name="filterFunc">Function that describes how to filter data prior to get a portion</param>
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <typeparam name="TKey">Key that is using 4 sorting</typeparam>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, IDictionary<string, string> parameters,
-                                                      Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
-                                                      Func<TObj, TKey> sortFunc = null,
-                                                      Func<TObj, TRes> createFunc = null)
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
+                                                                                           Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+                                                                                           Func<TObj, TKey> sortFunc = null,
+                                                                                           Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -150,7 +151,7 @@ namespace Wissance.WebApiToolkit.Managers
                                                                                  IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
-            return await GetManyAsync<TRes>(page, size, parameters, _filterFunc);
+            return await GetManyAsync<TRes>(page, size, parameters, sorting, _filterFunc);
         }
         
         /// <summary>
