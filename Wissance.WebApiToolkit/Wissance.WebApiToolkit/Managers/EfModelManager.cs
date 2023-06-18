@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
 
@@ -142,9 +143,11 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="page">page number starting from 1</param>
         /// <param name="size">size of data portion</param>
+        /// <param name="sorting">sorting params (Sort - Field name, Order - Sort direction (ASC, DESC))</param>
         /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, IDictionary<string, string> parameters = null)
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
+                                                                                 IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             return await GetManyAsync<TRes>(page, size, parameters, _filterFunc);

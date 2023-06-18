@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Managers
@@ -65,9 +66,11 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="page">number of page, starting from 1</param>
         /// <param name="size">size of data potion (size of IList)</param>
+        /// <param name="sorting">sorting params (Sort - Field name, Order - sort direction (ASC, DESC) )</param>
         /// <param name="parameters">raw query parameters</param>
         /// <returns></returns>
-        Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, IDictionary<string, string> parameters = null);
+        Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
+                                                                    IDictionary<string, string> parameters = null);
         /// <summary>
         /// Return DTO representation of 1 object 
         /// </summary>
