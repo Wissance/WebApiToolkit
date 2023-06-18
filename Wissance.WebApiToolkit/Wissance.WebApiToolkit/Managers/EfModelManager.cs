@@ -35,7 +35,8 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc, ILoggerFactory loggerFactory)
+        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc, 
+                              ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
@@ -59,8 +60,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <returns>OperationResult with data portion</returns>
         public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TKey>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
                                                                                            Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
-                                                                                           Func<TObj, TKey> sortFunc = null,
-                                                                                           Func<TObj, TRes> createFunc = null)
+                                                                                           Func<TObj, TKey> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -68,9 +68,14 @@ namespace Wissance.WebApiToolkit.Managers
                 long totalItems = 0;
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 IList<TObj> entities = null;
-                if (sortFunc != null)
+                if (sorting != null)
                 {
-                    entities = dbSet.OrderBy(sortFunc).ToList();
+                    if (sortFunc != null)
+                    {
+                        if (sorting.Order == SortOrder.Ascending)
+                            entities = dbSet.OrderBy(sortFunc).ToList();
+                        else entities = dbSet.OrderByDescending(sortFunc).ToList();
+                    }
                 }
 
                 if (filterFunc != null)
@@ -99,7 +104,6 @@ namespace Wissance.WebApiToolkit.Managers
                     }
                 }
                 
-
                 return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.OK, null,
                     new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
             }
