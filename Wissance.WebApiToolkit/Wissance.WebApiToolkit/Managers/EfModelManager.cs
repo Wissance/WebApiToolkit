@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
@@ -33,17 +34,15 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="dbContext">Ef Database context</param>
         /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
-        /// <param name="sortFunc">Function that is using for data sorting</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
         public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc,
-                              Func<TObj, object> sortFunc, ILoggerFactory loggerFactory)
+                              ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
             _defaultCreateFunc = createFunc;
             _filterFunc = filterFunc;
-            _sortFunc = sortFunc;
         }
 
         /// <summary>
@@ -59,9 +58,9 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
-                                                                                     Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
-                                                                                     Func<TObj, object> sortFunc = null, Func<TObj, TRes> createFunc = null)
+        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
+                                                                                         Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+                                                                                         Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -161,7 +160,20 @@ namespace Wissance.WebApiToolkit.Managers
                                                                                  IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
-            return await GetManyAsync(page, size, parameters, sorting, _filterFunc, _sortFunc);
+            Func<TObj, object> sortingFunc = null;
+            if (sorting != null)
+            {
+                MethodInfo prop = typeof(TObj).GetProperty(sorting.Sort)?.GetGetMethod();
+                if (prop != null)
+                {
+                    sortingFunc = o => prop.Invoke(o, null);
+                }
+            }
+
+            //var t = m.DeclaringType
+            //Func<TObj, object> sortFunc = () => { m.Invoke();}
+            // 1. Get property Type by name
+            return await GetManyAsync<object>(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
         
         /// <summary>
@@ -334,6 +346,5 @@ namespace Wissance.WebApiToolkit.Managers
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
-        private readonly Func<TObj, object> _sortFunc;
     }
 }
