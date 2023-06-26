@@ -58,9 +58,9 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
-                                                                                         Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
-                                                                                         Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
+        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
+                                                                                                 Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+                                                                                                 Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="id">item identifier</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns></returns>
-        public async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
+        public virtual async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -156,22 +156,21 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sorting">sorting params (Sort - Field name, Order - Sort direction (ASC, DESC))</param>
         /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
-        public async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
-                                                                                 IDictionary<string, string> parameters = null)
+        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
+                                                                                         IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             Func<TObj, object> sortingFunc = null;
             if (sorting != null)
             {
-                MethodInfo prop = typeof(TObj).GetProperty(sorting.Sort)?.GetGetMethod();
+                PropertyInfo[] modelProperties = typeof(TObj).GetProperties();
+                MethodInfo prop = modelProperties.FirstOrDefault(p => string.Equals(p.Name.ToLower(), sorting.Sort.ToLower()))?.GetGetMethod();
                 if (prop != null)
                 {
                     sortingFunc = o => prop.Invoke(o, null);
                 }
             }
 
-            //var t = m.DeclaringType
-            //Func<TObj, object> sortFunc = () => { m.Invoke();}
             // 1. Get property Type by name
             return await GetManyAsync<object>(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
