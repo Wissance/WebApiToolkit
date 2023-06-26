@@ -170,8 +170,7 @@ namespace Wissance.WebApiToolkit.Managers
                     sortingFunc = o => prop.Invoke(o, null);
                 }
             }
-
-            // 1. Get property Type by name
+            
             return await GetManyAsync<object>(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
         
