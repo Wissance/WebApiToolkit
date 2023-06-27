@@ -171,7 +171,7 @@ namespace Wissance.WebApiToolkit.Managers
                 }
             }
             
-            return await GetManyAsync<object>(page, size, parameters, sorting, _filterFunc, sortingFunc);
+            return await GetManyAsync(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
         
         /// <summary>
