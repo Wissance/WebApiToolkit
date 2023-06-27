@@ -12,7 +12,7 @@
 ### 1. Key Features
 * `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
   - `GET` methods have ***built-in paging*** support;
-  - `GET` methods have ***built-in sorting and filter*** by query params (coming soon, ***MORE STARS -> sooner RELEASE***);
+  - `GET` methods have ***built-in sorting and filter*** by query parameters;
 * support ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
 * support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 2 WEB API projects: 
   - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
@@ -29,8 +29,10 @@ Key concepts:
     - `PagedDataDto` represents portion (page) of same objects (any type);
 * `Controllers` classes - abstract classes
     - basic read controller (`BasicReadController`) contains 2 methods:
-        - `GET /api/[controller]/?page={page}&size={size}` to get `PagedDataDto<T>`
-          now we also have possibility to send ANY number of query params, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** 
+        - `GET /api/[controller]/?[page={page}&size={size}&sort={sort}&order={order}]` to get `PagedDataDto<T>`
+          now we also have possibility to send **ANY number of query params**, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). We also pass sort (column name) && order (`asc` or `desc`) to manager classes,
+          `EfModelManager` allows to sort **by any column**. 
+          Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** 
         - `GET /api/[controller]/{id}` to get one object by `id`
     - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
         - `POST   /api/[controller]` - for new object creation
@@ -58,9 +60,9 @@ as a result we got almost ~`250 x` faster `API`.
 There is **only ONE requirement**: all Entity classes for any Persistence storage that are using with controllers & managers MUST implements `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`.
 If this toolkit should be used with `EntityFramework` you should derive you resource manager from
 `EfModelManager` it have built-in methods for:
-* get many items
-* get one item by id
-* delete item by id
+* `get many` items
+* `get one` item `by id`
+* `delete` item `by id`
 
 
 ### 4. Toolkit usage algorithm with EntityFramework
