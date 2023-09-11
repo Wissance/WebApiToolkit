@@ -121,7 +121,7 @@ namespace Wissance.WebApiToolkit.Managers
             {
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 TObj entity = await dbSet.FirstOrDefaultAsync(i => i.Id.Equals(id));
-                if (entity == null)
+                if (entity == null || entity.IsDeleted)
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
                                                         GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
                 return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
@@ -229,9 +229,9 @@ namespace Wissance.WebApiToolkit.Managers
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 TObj item = await dbSet.FirstOrDefaultAsync(t => t.Id.Equals(id));
 
-                if (item == null)
+                if (item == null || item.IsDeleted)
                     return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Item does not exists", false);
-                dbSet.Remove(item);
+                item.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
                 return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
             }
