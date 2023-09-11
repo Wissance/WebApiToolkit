@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
+using Wissance.WebApiToolkit.Managers.Helpers;
 
 namespace Wissance.WebApiToolkit.Managers
 {
@@ -135,7 +136,7 @@ namespace Wissance.WebApiToolkit.Managers
                 TObj entity = await dbSet.FirstOrDefaultAsync(i => i.Id.Equals(id));
                 if (entity == null)
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
-                                                        GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                                                        ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
                 return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
                     createFunc != null?createFunc(entity): _defaultCreateFunc(entity));
             }
@@ -143,7 +144,7 @@ namespace Wissance.WebApiToolkit.Managers
             {
                 _logger.LogError($"An error: {e.Message} occurred during object of type: {typeof(TObj)} with id: {id} retrieve and convert to object of type: {typeof(TRes)}");
                 return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound,
-                                                    GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                                                    ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
             }
         }
 
@@ -263,82 +264,6 @@ namespace Wissance.WebApiToolkit.Managers
         {
             throw new NotImplementedException();
         }
-        
-        /// <summary>
-        /// Method for getting Create Failure reason message using entity and reason
-        /// </summary>
-        /// <param name="entity">Entity type/table</param>
-        /// <param name="exceptionMessage">Exception message</param>
-        /// <returns>Formatted text with object creation error</returns>
-        public string GetCreateFailureMessage(string entity, string exceptionMessage)
-        {
-            return string.Format(CreateFailureMessageTemplate, entity, exceptionMessage);
-        }
-        
-        /// <summary>
-        ///  Method for getting Resource Not Found Message (Get Method)
-        /// </summary>
-        /// <param name="resource">Resource = entity/table</param>
-        /// <param name="id">item identifier</param>
-        /// <returns></returns>
-        public string GetResourceNotFoundMessage(string resource, TId id)
-        {
-            return string.Format(ResourceNotFoundTemplate, resource, id);
-        }
-        
-        /// <summary>
-        /// Method for getting Update Failure reason message using entity and reason
-        /// </summary>
-        /// <param name="entity">Entity type/table</param>
-        /// <param name="id">Item identifier</param>
-        /// <param name="exceptionMessage">Exception method</param>
-        /// <returns></returns>
-        public string GetUpdateFailureMessage(string entity, int id, string exceptionMessage)
-        {
-            return string.Format(UpdateFailureMessageTemplate, entity, id, exceptionMessage);
-        }
-        
-        /// <summary>
-        /// Method for getting Resource Not Found Message (Update Method)
-        /// </summary>
-        /// <param name="entity">Entity type/table</param>
-        /// <param name="id">Item identifier</param>
-        /// <returns></returns>
-        public string GetUpdateNotFoundMessage(string entity, int id)
-        {
-            return string.Format(UpdateFailureNotFoundMessageTemplate, entity, id);
-        }
-        
-        /// <summary>
-        /// Method for getting User Has No Access to Resource Message
-        /// </summary>
-        /// <param name="resource">Resource = entity/table</param>
-        /// <returns></returns>
-        public string GetCurrentUserResourceAccessErrorMessage(string resource)
-        {
-            return string.Format(CurrentUserIsNotResourceOwnerTemplate, resource);
-        }
-        
-        /// <summary>
-        /// Method for getting Unknown Error Message
-        /// </summary>
-        /// <param name="operation">Operation type = Create, Update, Read or Delete</param>
-        /// <param name="resource">Resource = entity/table</param>
-        /// <returns></returns>
-        public string GetUnknownErrorMessage(string operation, string resource)
-        {
-            return string.Format(UnknownErrorMessageTemplate, operation, resource);
-        }
-
-
-        private const string ResourceNotFoundTemplate = "Recource of type \"{0}\" with id: {1} was not found";
-        private const string CurrentUserIsNotResourceOwnerTemplate = "Current user is not \"{0}\" owner";
-        private const string CreateFailureMessageTemplate = "An error occurred during \"{0}\" create with error: {1}";
-        private const string UpdateFailureMessageTemplate = "An error occurred during \"{0}\" update with id: \"{1}\", error: {2}";
-        private const string UpdateFailureNotFoundMessageTemplate = "{0} with id: {1} was not found";
-
-        private const string UnknownErrorMessageTemplate = "An error occurred during {0} \"{1}\", contact system maintainer";
-        public const string UserNotAuthenticatedMessage = "User is not authenticated";
 
         private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
         private readonly DbContext _dbContext;
