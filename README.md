@@ -47,6 +47,7 @@ Key concepts:
 * Managers classes - classes that implements business logic of application
     - `IModelManager` - interface that describes basic operations
     - `EfModelManager`- is abstract class that contains implementation of `Get` and `Delete` operations
+    - `EfSoftRemovableModelManager` is abstract class that contains implementation of `Get` and `Delete` operations with soft removable models (`IsDeleted = true` means model was removed)
     
 Example of how faster Bulk vs Non-Bulk:
 ![Bulk vs Non Bulk](/img/bulk_performance.png)
@@ -68,7 +69,7 @@ If this toolkit should be used with `EntityFramework` you should derive you reso
 ### 4. Toolkit usage algorithm with EntityFramework
 Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
 `API` you should do following:
-1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation, i.e.:
+1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation (**for soft remove** also **add** `IModelSoftRemovable` implementation), i.e.:
 ```csharp
 public class BookEntity : IModelIdentifiable<int>
 {
@@ -101,7 +102,7 @@ public static class BookFactory
     }
 }
 ```
-3. Create `IModelContext` interface that has you `BookEntity` as a DbSet and it's implementation class that also derives from DbContext (**Ef abstract class**):
+3. Create `IModelContext` interface that has you `BookEntity` as a `DbSet` and it's implementation class that also derives from `DbContext` (**Ef abstract class**):
 ```csharp
 public interface IModelContext
 {
