@@ -4,8 +4,9 @@ using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-    public class BasicBulkCrudController<TRes, TData, TId> : BasicReadController<TRes, TData, TId>
+    public class BasicBulkCrudController<TRes, TData, TId, TQueryArguments> : BasicReadController<TRes, TData, TId, TQueryArguments>
         where TRes : class
+        where TQueryArguments: class, new()
     {
         [HttpPost]
         [Route("api/bulk/[controller]")]

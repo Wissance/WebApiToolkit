@@ -1,32 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Managers;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-
-    public abstract class BasicReadController<TRes, TData, TId> : BasicPagedDataController
-        where TRes: class
+    public abstract class BasicReadController<TRes, TData, TId, TQueryParameters> : BasicPagedDataController
+        where TRes : class
+        where TQueryParameters : class, new()
     {
         [HttpGet]
         [Route("api/[controller]")]
-        public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort, 
-                                                                [FromQuery] string order)
+        public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort,
+                                                                [FromQuery] string order, [FromQuery] TQueryParameters parameters)
         {
             int pageNumber = GetPage(page);
             int pageSize = GetPageSize(size);
             SortOption sorting = !string.IsNullOrEmpty(sort) ? new SortOption(sort, order) : null;
-            string queryStrValue = HttpContext.Request.QueryString.Value;
-            IDictionary<string, StringValues> queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(queryStrValue);
-            IDictionary<string, string> parameters = queryDictionary.Where(kv => _paramsToOmit.All(p => !string.Equals(p, kv.Key.ToLower())))
-                .ToDictionary(k => k.Key, v => v.Value.ToString());
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, parameters);
             HttpContext.Response.StatusCode = result.Status;
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
@@ -61,7 +54,7 @@ namespace Wissance.WebApiToolkit.Controllers
         {
             PageQueryParam, SizeQueryParam, SortQueryParam, OrderQueryParam
         };
-        
-        public IModelManager<TRes, TData, TId> Manager { get; set; }
+
+        public IModelManager<TRes, TData, TId, TQueryParameters> Manager { get; set; }
     }
 }
