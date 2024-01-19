@@ -17,7 +17,7 @@ namespace Wissance.WebApiToolkit.Services
     /// <typeparam name="TRes">TRes (Resource) means Representation of Persistent data in external system i.e. DTO</typeparam>
     /// <typeparam name="TData">Persistent item type, in terms of Web App it is a Table or some ORM Entity Class</typeparam>
     /// <typeparam name="TId">Unique Identifier type (could be different for different apps i.e int/string/Guid)</typeparam>
-    public abstract class ResourceBasedManageableReadOnlyService<TRes, TData, TId> : IResourceBasedReadOnlyService<TRes, TData, TId>
+    public abstract class ResourceBasedDataManageableReadOnlyService<TRes, TData, TId> : IResourceBasedReadOnlyService<TRes, TData, TId>
         where TRes : class
     {
         public virtual async Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, IDictionary<string, string> filterParams)
