@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Wissance.WebApiToolkit.Utils;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
@@ -6,16 +7,12 @@ namespace Wissance.WebApiToolkit.Controllers
     {
         protected int GetPage(int? page)
         {
-            int selectedPage = page ?? DefaultPage;
-            return selectedPage < 1 ? 1 : selectedPage;
+            return PagingUtils.GetPage(page);
         }
 
         protected int GetPageSize(int? size)
         {
-            return size ?? DefaultSize;
+            return PagingUtils.GetPageSize(size);
         }
-
-        private const int DefaultPage = 1;
-        private const int DefaultSize = 25;
     }
 }
