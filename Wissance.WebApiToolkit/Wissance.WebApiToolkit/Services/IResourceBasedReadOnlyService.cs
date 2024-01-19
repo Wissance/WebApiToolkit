@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Managers;
 
-namespace Wissance.WebApiToolkit.Services.Grpc
+namespace Wissance.WebApiToolkit.Services
 {
     /// <summary>
     ///    This is a general RO-interface for object Reading. Mainly this interface is using for interact in a Resource-oriented way

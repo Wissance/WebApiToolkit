@@ -6,7 +6,7 @@ using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Managers;
 using Wissance.WebApiToolkit.Utils;
 
-namespace Wissance.WebApiToolkit.Services.Grpc
+namespace Wissance.WebApiToolkit.Services
 {
     /// <summary>
     ///    This is an implementation of IResourceBasedReadOnlyService based on usage IModelManager as a service class for accessing
