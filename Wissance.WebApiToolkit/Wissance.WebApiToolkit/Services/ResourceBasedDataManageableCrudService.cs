@@ -7,19 +7,22 @@ namespace Wissance.WebApiToolkit.Services
         IResourceBasedCrudService<TRes, TData, TId>
        where TRes: class
     {
-        public Task<OperationResultDto<TRes>> CreateAsync(TRes data)
+        public async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
-            throw new System.NotImplementedException();
+            OperationResultDto<TRes> result = await Manager.CreateAsync(data);
+            return result;
         }
 
-        public Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
+        public async Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
         {
-            throw new System.NotImplementedException();
+            OperationResultDto<TRes> result = await Manager.UpdateAsync(id, data);
+            return result;
         }
 
-        public Task DeleteAsync(TId id)
+        public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
-            throw new System.NotImplementedException();
+            OperationResultDto<bool> result = await Manager.DeleteAsync(id);
+            return result;
         }
     }
 }

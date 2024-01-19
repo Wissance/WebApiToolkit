@@ -13,6 +13,7 @@ namespace Wissance.WebApiToolkit.Services
     ///    persistent storage. This class has 2 Operations:
     ///        1. Read portion (page) of TData via Manager and Transform it to TRes inside Manager (see i.e. EfModelManager, EfSoftRemovableModelManager)
     ///        2. Read single item from Manager and return it TRes representation
+    ///    This service class ia analog of a REST BasicReadController
     /// </summary>
     /// <typeparam name="TRes">TRes (Resource) means Representation of Persistent data in external system i.e. DTO</typeparam>
     /// <typeparam name="TData">Persistent item type, in terms of Web App it is a Table or some ORM Entity Class</typeparam>

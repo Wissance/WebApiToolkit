@@ -8,6 +8,6 @@ namespace Wissance.WebApiToolkit.Services
     {
         Task<OperationResultDto<TRes>> CreateAsync(TRes data);
         Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data);
-        Task DeleteAsync(TId id);
+        Task<OperationResultDto<bool>> DeleteAsync(TId id);
     }
 }
