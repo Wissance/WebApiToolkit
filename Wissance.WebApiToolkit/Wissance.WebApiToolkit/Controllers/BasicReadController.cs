@@ -8,6 +8,7 @@ using Microsoft.Extensions.Primitives;
 using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Managers;
+using Wissance.WebApiToolkit.Utils;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
@@ -29,7 +30,7 @@ namespace Wissance.WebApiToolkit.Controllers
                 .ToDictionary(k => k.Key, v => v.Value.ToString());
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, parameters);
             HttpContext.Response.StatusCode = result.Status;
-            return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
+            return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
         }
 
         [HttpGet]
@@ -39,17 +40,6 @@ namespace Wissance.WebApiToolkit.Controllers
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
             HttpContext.Response.StatusCode = result.Status;
             return result.Data;
-        }
-
-        private long GetTotalPages(long totalItems, int pageSize)
-        {
-            if (pageSize <= 0)
-            {
-                // todo(UMV): this is hardly ever possible but add logging here for jokers
-                return -1;
-            }
-
-            return (long)Math.Ceiling((double)totalItems / pageSize);
         }
 
         private const string PageQueryParam = "page";
