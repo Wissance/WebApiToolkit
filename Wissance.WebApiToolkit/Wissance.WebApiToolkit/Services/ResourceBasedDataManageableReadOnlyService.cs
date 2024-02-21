@@ -30,10 +30,10 @@ namespace Wissance.WebApiToolkit.Services
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
         }
 
-        public virtual async Task<TRes> ReadByIdAsync(TId id)
+        public virtual async Task<OperationResultDto<TRes>> ReadByIdAsync(TId id)
         {
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
-            return result.Data;
+            return result;
         }
         
         public IModelManager<TRes, TData, TId> Manager { get; set; }

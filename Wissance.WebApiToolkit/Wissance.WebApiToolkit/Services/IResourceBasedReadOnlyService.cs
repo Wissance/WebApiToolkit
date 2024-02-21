@@ -16,6 +16,6 @@ namespace Wissance.WebApiToolkit.Services
         where TRes: class
     {
         Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, IDictionary<string, string> filterParams);
-        Task<TRes> ReadByIdAsync(TId id);
+        Task<OperationResultDto<TRes>> ReadByIdAsync(TId id);
     }
 }
