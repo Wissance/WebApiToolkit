@@ -13,10 +13,11 @@ using Wissance.WebApiToolkit.Managers.Helpers;
 
 namespace Wissance.WebApiToolkit.Managers
 {
-    public abstract class EfSoftRemovableModelManager<TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
-        where TObj: class, IModelIdentifiable<TId>, IModelSoftRemovable
-        where TRes: class
-        where TId: IComparable
+    public abstract class EfSoftRemovableModelManager<TObj, TRes, TId, TQueryParameters> : IModelManager<TRes, TObj, TId, TQueryParameters>
+        where TObj : class, IModelIdentifiable<TId>, IModelSoftRemovable
+        where TRes : class
+        where TId : IComparable
+        where TQueryParameters : class, new()
     {
         /// <summary>
         ///    Constructor of default model manager requires that Model Context derives from EfDbContext
@@ -26,11 +27,11 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EfSoftRemovableModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc,
+        public EfSoftRemovableModelManager(DbContext dbContext, Func<TObj, TQueryParameters, bool> filterFunc, Func<TObj, TRes> createFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
+            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId, TQueryParameters>>();
             _defaultCreateFunc = createFunc;
             _filterFunc = filterFunc;
         }
@@ -48,8 +49,8 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns>OperationResult with data portion</returns>
-        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
-                                                                                                 Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, TQueryParameters parameters, SortOption sorting,
+                                                                                                 Func<TObj, TQueryParameters, bool> filterFunc = null,
                                                                                                  Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
             try
@@ -97,9 +98,9 @@ namespace Wissance.WebApiToolkit.Managers
                         entities = entities.Skip(size * (page - 1)).Take(size).ToList();
                     }
                 }
-                
+
                 return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.OK, null,
-                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
+                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc != null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
             }
             catch (Exception e)
             {
@@ -123,10 +124,10 @@ namespace Wissance.WebApiToolkit.Managers
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 TObj entity = await dbSet.FirstOrDefaultAsync(i => i.Id.Equals(id));
                 if (entity == null || entity.IsDeleted)
-                    return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
+                    return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound,
                                                         ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
-                return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
-                    createFunc != null?createFunc(entity): _defaultCreateFunc(entity));
+                return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null,
+                    createFunc != null ? createFunc(entity) : _defaultCreateFunc(entity));
             }
             catch (Exception e)
             {
@@ -145,8 +146,8 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sorting">sorting params (Sort - Field name, Order - Sort direction (ASC, DESC))</param>
         /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
-        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
-                                                                                         IDictionary<string, string> parameters = null)
+        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null,
+                                                                                         TQueryParameters parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             Func<TObj, object> sortingFunc = null;
@@ -159,10 +160,10 @@ namespace Wissance.WebApiToolkit.Managers
                     sortingFunc = o => prop.Invoke(o, null);
                 }
             }
-            
+
             return await GetManyAsync(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
-        
+
         /// <summary>
         /// GetByIdAsync returns one item by id, IModelManager default implementation
         /// </summary>
@@ -172,7 +173,7 @@ namespace Wissance.WebApiToolkit.Managers
         {
             return await GetOneAsync(id);
         }
-        
+
         /// <summary>
         /// Method for create new object in database using Ef, in this class still have not a default impl, but will be
         /// </summary>
@@ -242,7 +243,7 @@ namespace Wissance.WebApiToolkit.Managers
                 return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, "Error occurred during object delete, contact system maintainer", false);
             }
         }
-        
+
         /// <summary>
         /// BulkDeleteAsync method for remove object from Database using Ef
         /// </summary>
@@ -253,9 +254,9 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
+        private readonly ILogger<EfModelManager<TObj, TRes, TId, TQueryParameters>> _logger;
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
-        private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
+        private readonly Func<TObj, TQueryParameters, bool> _filterFunc;
     }
 }

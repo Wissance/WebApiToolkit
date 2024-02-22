@@ -6,8 +6,9 @@ using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-    public abstract class BasicCrudController <TRes, TData, TId> : BasicReadController<TRes, TData, TId>
+    public abstract class BasicCrudController<TRes, TData, TId, TQueryArguments> : BasicReadController<TRes, TData, TId, TQueryArguments>
         where TRes : class
+        where TQueryArguments : class, new()
     {
         [HttpPost]
         [Route("api/[controller]")]
