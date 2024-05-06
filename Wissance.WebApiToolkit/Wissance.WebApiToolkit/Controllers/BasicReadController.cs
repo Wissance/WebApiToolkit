@@ -25,14 +25,9 @@ namespace Wissance.WebApiToolkit.Controllers
             int pageNumber = GetPage(page);
             int pageSize = GetPageSize(size);
             SortOption sorting = !string.IsNullOrEmpty(sort) ? new SortOption(sort, order) : null;
-            // string queryStrValue = HttpContext.Request.QueryString.Value;
-            // IDictionary<string, StringValues> queryDictionary = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(queryStrValue);
             IDictionary<string, string> additionalQueryParams = additionalFilters != null
                                                               ? additionalFilters.SelectFilters()
                                                               : new Dictionary<string, string>();
-            // umv: we don't need to exclude from here 
-            //IDictionary<string, string> parameters = queryDictionary.Where(kv => _paramsToOmit.All(p => !string.Equals(p, kv.Key.ToLower())))
-            //    .ToDictionary(k => k.Key, v => v.Value.ToString());
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, additionalQueryParams);
             HttpContext.Response.StatusCode = result.Status;
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
@@ -46,17 +41,6 @@ namespace Wissance.WebApiToolkit.Controllers
             HttpContext.Response.StatusCode = result.Status;
             return result.Data;
         }
-
-        // private const string PageQueryParam = "page";
-        // private const string SizeQueryParam = "size";
-        // private const string SortQueryParam = "sort";
-        // private const string OrderQueryParam = "order";
-
-        /*private readonly IList<string> _paramsToOmit = new List<string>()
-        {
-            PageQueryParam, SizeQueryParam, SortQueryParam, OrderQueryParam
-        };*/
-        
         public IModelManager<TRes, TData, TId> Manager { get; set; }
     }
 }
