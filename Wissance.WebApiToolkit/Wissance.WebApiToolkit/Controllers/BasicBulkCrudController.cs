@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-    public class BasicBulkCrudController<TRes, TData, TId> : BasicReadController<TRes, TData, TId>
+    public class BasicBulkCrudController<TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
+        where TFilter: class, IReadFilterable
     {
         [HttpPost]
         [Route("api/bulk/[controller]")]
