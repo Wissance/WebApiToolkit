@@ -32,7 +32,7 @@ Key concepts:
         - `GET /api/[controller]/?[page={page}&size={size}&sort={sort}&order={order}]` to get `PagedDataDto<T>`
           now we also have possibility to send **ANY number of query params**, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). We also pass sort (column name) && order (`asc` or `desc`) to manager classes,
           `EfModelManager` allows to sort **by any column**. 
-          Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** 
+          <strike> Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** </strike> Starting from `1.6.0` it is possible to see all parameters in `Swagger` and use them.
         - `GET /api/[controller]/{id}` to get one object by `id`
     - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
         - `POST   /api/[controller]` - for new object creation
@@ -119,7 +119,7 @@ public MoidelContext: DbContext<ModelContext>, IModelContext
 5. Create `Controller` class and a manager class pair, i.e. consider here full `CRUD`
 ```csharp
 [ApiController]
-public class BookController : BasicCrudController<BookDto, BookEntity, int>
+public class BookController : BasicCrudController<BookDto, BookEntity, int, EmptyAdditionalFilters>
 {
     public BookController(BookManager manager)
     {
@@ -130,7 +130,7 @@ public class BookController : BasicCrudController<BookDto, BookEntity, int>
     private BookManager _manager;
 }
 
-public class BookManager : EfModelManager<BookEntity, BookDto, int>
+public class BookManager : EfModelManager<BookEntity, BookDto, int, EmptyAdditionalFilters>
 {
     public BookManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, BookFactory.Create, loggerFactory)
     {
@@ -150,6 +150,34 @@ public class BookManager : EfModelManager<BookEntity, BookDto, int>
     private readonly ModelContext _modelContext;
 }
 ```
+
+Last generic parameter in above example - `EmptyAdditionalFilters` is a class that holds
+additional parameters for search to see in Swagger, just specify a new class implementing
+`IReadFilterable` i.e.:
+
+```csharp
+public class BooksFilterable : IReadFilterable
+{
+    public IDictionary<string, string> SelectFilters()
+    {
+            IDictionary<string, string> additionalFilters = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(Title))
+            {
+                additionalFilters.Add(FilterParamsNames.TitleParameter, Title);
+            }
+
+            if (Authors != null && Authors.Length > 0)
+            {
+                additionalFilters.Add(FilterParamsNames.AuthorsParameter, string.Join(",", Authors));
+            }
+
+            return additionalFilters;
+    }
+        
+    [FromQuery(Name = "title")] public string Title { get; set; }
+    [FromQuery(Name = "author")] public string[] Authors { get; set; }
+}
+```
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
@@ -159,7 +187,7 @@ You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebA
 
 ```csharp
 [ApiController]
-public class StationController : BasicCrudController<StationDto, StationEntity, int>
+public class StationController : BasicCrudController<StationDto, StationEntity, int, EmptyAdditionalFilters>
 {
     public StationController(StationManager manager)
     {

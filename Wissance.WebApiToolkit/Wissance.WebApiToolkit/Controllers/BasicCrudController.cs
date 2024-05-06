@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
-    public abstract class BasicCrudController <TRes, TData, TId> : BasicReadController<TRes, TData, TId>
+    public abstract class BasicCrudController <TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
+        where TFilter: class, IReadFilterable
     {
         [HttpPost]
         [Route("api/[controller]")]
