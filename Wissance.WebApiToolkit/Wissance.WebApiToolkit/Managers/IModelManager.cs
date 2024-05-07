@@ -17,7 +17,7 @@ namespace Wissance.WebApiToolkit.Managers
     /// <typeparam name="TRes">TRes is a Result parameter which used as input and output for operation (DTO)</typeparam>
     /// <typeparam name="TData">Model type (Class that is mapping to PERSISTENT storage)</typeparam>
     /// <typeparam name="TId">Type of identifier, because IModelIdentifiable is a GENERIC</typeparam>
-    public interface IModelManager<TRes, TData, TId>
+    public interface IModelManager<TRes, TData, TId, TFilter> where TFilter: class
     {
         /// <summary>
         /// Creates a new item in persistent storage (i.e. Database). To assign DTO to Model you should create a custom
@@ -70,7 +70,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="parameters">raw query parameters</param>
         /// <returns></returns>
         Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
-                                                                    IDictionary<string, string> parameters = null);
+                                                                    TFilter parameters = null);
         /// <summary>
         /// Return DTO representation of 1 object 
         /// </summary>

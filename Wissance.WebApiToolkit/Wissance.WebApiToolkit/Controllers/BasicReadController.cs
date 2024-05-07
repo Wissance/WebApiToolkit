@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
 using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Managers;
@@ -15,7 +12,7 @@ namespace Wissance.WebApiToolkit.Controllers
 
     public abstract class BasicReadController<TRes, TData, TId, TFilter> : BasicPagedDataController
         where TRes: class
-        where TFilter: class, IReadFilterable
+        where TFilter: class
     {
         [HttpGet]
         [Route("api/[controller]")]
@@ -25,10 +22,7 @@ namespace Wissance.WebApiToolkit.Controllers
             int pageNumber = GetPage(page);
             int pageSize = GetPageSize(size);
             SortOption sorting = !string.IsNullOrEmpty(sort) ? new SortOption(sort, order) : null;
-            IDictionary<string, string> additionalQueryParams = additionalFilters != null
-                                                              ? additionalFilters.SelectFilters()
-                                                              : new Dictionary<string, string>();
-            OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, additionalQueryParams);
+            OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, additionalFilters);
             HttpContext.Response.StatusCode = result.Status;
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
         }
@@ -41,6 +35,6 @@ namespace Wissance.WebApiToolkit.Controllers
             HttpContext.Response.StatusCode = result.Status;
             return result.Data;
         }
-        public IModelManager<TRes, TData, TId> Manager { get; set; }
+        public IModelManager<TRes, TData, TId, TFilter> Manager { get; set; }
     }
 }

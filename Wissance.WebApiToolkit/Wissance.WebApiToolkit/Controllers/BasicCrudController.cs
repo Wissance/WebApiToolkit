@@ -9,7 +9,7 @@ namespace Wissance.WebApiToolkit.Controllers
 {
     public abstract class BasicCrudController <TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
-        where TFilter: class, IReadFilterable
+        where TFilter: class
     {
         [HttpPost]
         [Route("api/[controller]")]

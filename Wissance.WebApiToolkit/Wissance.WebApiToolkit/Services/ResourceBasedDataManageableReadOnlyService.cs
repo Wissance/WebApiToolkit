@@ -18,10 +18,11 @@ namespace Wissance.WebApiToolkit.Services
     /// <typeparam name="TRes">TRes (Resource) means Representation of Persistent data in external system i.e. DTO</typeparam>
     /// <typeparam name="TData">Persistent item type, in terms of Web App it is a Table or some ORM Entity Class</typeparam>
     /// <typeparam name="TId">Unique Identifier type (could be different for different apps i.e int/string/Guid)</typeparam>
-    public abstract class ResourceBasedDataManageableReadOnlyService<TRes, TData, TId> : IResourceBasedReadOnlyService<TRes, TData, TId>
+    public abstract class ResourceBasedDataManageableReadOnlyService<TRes, TData, TId, TFilter> : IResourceBasedReadOnlyService<TRes, TData, TId, TFilter>
         where TRes : class
+        where TFilter: class
     {
-        public virtual async Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, IDictionary<string, string> filterParams)
+        public virtual async Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, TFilter filterParams)
         {
             int pageNumber = PagingUtils.GetPage(page);
             int pageSize = PagingUtils.GetPageSize(size);
@@ -36,6 +37,6 @@ namespace Wissance.WebApiToolkit.Services
             return result;
         }
         
-        public IModelManager<TRes, TData, TId> Manager { get; set; }
+        public IModelManager<TRes, TData, TId, TFilter> Manager { get; set; }
     }
 }
