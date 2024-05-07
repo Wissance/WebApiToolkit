@@ -21,7 +21,7 @@ namespace Wissance.WebApiToolkit.Controllers
         {
             int pageNumber = GetPage(page);
             int pageSize = GetPageSize(size);
-            SortOption sorting = new SortOption(sort ?? "", order ?? "");
+            SortOption sorting = !string.IsNullOrEmpty(sort) ? new SortOption(sort, order) : null;
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, additionalFilters);
             HttpContext.Response.StatusCode = result.Status;
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
