@@ -7,7 +7,7 @@ namespace Wissance.WebApiToolkit.Controllers
 {
     public class BasicBulkCrudController<TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
-        where TFilter: class, IReadFilterable
+        where TFilter: class
     {
         [HttpPost]
         [Route("api/bulk/[controller]")]

@@ -23,10 +23,12 @@ namespace Wissance.WebApiToolkit.Managers
     /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
     /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
-    public abstract class EfModelManager <TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
+    /// <typeparam name="TFilter">Type of arguments with fields marked by FromQuery attribute</typeparam>
+    public abstract class EfModelManager <TObj, TRes, TId, TFilter> : IModelManager<TRes, TObj, TId, TFilter>
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class
                                                 where TId: IComparable
+                                                where TFilter: class
              
     {
         /// <summary>
@@ -34,14 +36,14 @@ namespace Wissance.WebApiToolkit.Managers
         /// </summary>
         /// <param name="dbContext">Ef Database context</param>
         /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
-        /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
+        /// <param name="filterFunc">Function that use TFilter with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc,
+        public EfModelManager(DbContext dbContext, Func<TObj, TFilter, bool> filterFunc, Func<TObj, TRes> createFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
+            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId, TFilter>>();
             _defaultCreateFunc = createFunc;
             _filterFunc = filterFunc;
         }
@@ -59,8 +61,8 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns>OperationResult with data portion</returns>
-        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
-                                                                                                 Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
+        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, TFilter parameters, SortOption sorting,
+                                                                                                 Func<TObj, TFilter, bool> filterFunc = null, 
                                                                                                  Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
             try
@@ -158,7 +160,7 @@ namespace Wissance.WebApiToolkit.Managers
         /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
         public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
-                                                                                         IDictionary<string, string> parameters = null)
+                                                                                         TFilter parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
             Func<TObj, object> sortingFunc = null;
@@ -265,9 +267,9 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
+        private readonly ILogger<EfModelManager<TObj, TRes, TId, TFilter>> _logger;
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
-        private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
+        private readonly Func<TObj, TFilter, bool> _filterFunc;
     }
 }
