@@ -23,6 +23,7 @@ namespace Wissance.WebApiToolkit.Managers
     /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
     /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
+    /// <typeparam name="TFilter">Type of arguments with fields marked by FromQuery attribute</typeparam>
     public abstract class EfModelManager <TObj, TRes, TId, TFilter> : IModelManager<TRes, TObj, TId, TFilter>
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class

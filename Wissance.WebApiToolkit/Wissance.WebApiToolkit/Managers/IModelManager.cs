@@ -17,6 +17,7 @@ namespace Wissance.WebApiToolkit.Managers
     /// <typeparam name="TRes">TRes is a Result parameter which used as input and output for operation (DTO)</typeparam>
     /// <typeparam name="TData">Model type (Class that is mapping to PERSISTENT storage)</typeparam>
     /// <typeparam name="TId">Type of identifier, because IModelIdentifiable is a GENERIC</typeparam>
+    /// <typeparam name="TFilter">Type of arguments with fields marked by FromQuery attribute</typeparam>
     public interface IModelManager<TRes, TData, TId, TFilter> where TFilter: class
     {
         /// <summary>
