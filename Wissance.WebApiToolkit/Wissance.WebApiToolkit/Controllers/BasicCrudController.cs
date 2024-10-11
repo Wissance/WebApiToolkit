@@ -1,19 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
     public abstract class BasicCrudController <TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
-        where TFilter: class
+        where TFilter: class, IReadFilterable
     {
-        /// <summary>
-        /// Creates a new object
-        /// </summary>
-        /// <param name="data">The new object</param>
-        /// <returns></returns>
         [HttpPost]
         [Route("api/[controller]")]
         public virtual async Task<OperationResultDto<TRes>> CreateAsync([FromBody] TRes data)
@@ -23,12 +20,6 @@ namespace Wissance.WebApiToolkit.Controllers
             return result;
         }
 
-        /// <summary>
-        /// Updates an object
-        /// </summary>
-        /// <param name="id">Identifier of an object to update</param>
-        /// <param name="data">The object data</param>
-        /// <returns></returns>
         [HttpPut]
         [Route("api/[controller]/{id}")]
         public virtual async Task<OperationResultDto<TRes>> UpdateAsync([FromRoute] TId id, [FromBody] TRes data)
@@ -38,11 +29,6 @@ namespace Wissance.WebApiToolkit.Controllers
             return result;
         }
 
-        /// <summary>
-        /// Deletes an object by identifier
-        /// </summary>
-        /// <param name="id">Identifier of the object to delete</param>
-        /// <returns></returns>
         [HttpDelete]
         [Route("api/[controller]/{id}")]
         public virtual async Task DeleteAsync([FromRoute] TId id)
