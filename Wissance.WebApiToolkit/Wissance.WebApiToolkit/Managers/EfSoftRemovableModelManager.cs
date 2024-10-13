@@ -13,7 +13,7 @@ using Wissance.WebApiToolkit.Managers.Helpers;
 
 namespace Wissance.WebApiToolkit.Managers
 {
-    public abstract class EfSoftRemovableModelManager<TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
+    public abstract class EfSoftRemovableModelManager<TRes, TObj, TId> : IModelManager<TRes, TObj, TId>
         where TObj: class, IModelIdentifiable<TId>, IModelSoftRemovable
         where TRes: class
         where TId: IComparable
@@ -30,7 +30,7 @@ namespace Wissance.WebApiToolkit.Managers
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
+            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TRes, TObj, TId>>();
             _defaultCreateFunc = createFunc;
             _filterFunc = filterFunc;
         }
@@ -253,7 +253,7 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
+        private readonly ILogger<EfSoftRemovableModelManager<TRes, TObj, TId>> _logger;
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
