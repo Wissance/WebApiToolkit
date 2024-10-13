@@ -130,7 +130,7 @@ public class BookController : BasicCrudController<BookDto, BookEntity, int, Empt
     private BookManager _manager;
 }
 
-public class BookManager : EfModelManager<BookEntity, BookDto, int, EmptyAdditionalFilters>
+public class BookManager : EfModelManager<BookDto, BookEntity, int, EmptyAdditionalFilters>
 {
     public BookManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, BookFactory.Create, loggerFactory)
     {
@@ -200,7 +200,7 @@ public class StationController : BasicCrudController<StationDto, StationEntity, 
 ```
     
 ```csharp
-public class StationManager : EfModelManager<StationEntity, StationDto, int>
+public class StationManager : EfModelManager<StationDto, StationEntity, int>
 {
     public StationManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, StationFactory.Create, loggerFactory)
     {
