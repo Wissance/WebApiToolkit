@@ -12,7 +12,7 @@ namespace Wissance.WebApiToolkit.Controllers
         where TFilter: class, IReadFilterable
     {
         [HttpPost]
-        [Route("api/[controller]")]
+        // [Route("api/[controller]")]
         public virtual async Task<OperationResultDto<TRes>> CreateAsync([FromBody] TRes data)
         {
             OperationResultDto<TRes> result = await Manager.CreateAsync(data);
@@ -20,8 +20,8 @@ namespace Wissance.WebApiToolkit.Controllers
             return result;
         }
 
-        [HttpPut]
-        [Route("api/[controller]/{id}")]
+        [HttpPut("{id}")]
+        // [Route("api/[controller]/{id}")]
         public virtual async Task<OperationResultDto<TRes>> UpdateAsync([FromRoute] TId id, [FromBody] TRes data)
         {
             OperationResultDto<TRes> result = await Manager.UpdateAsync(id, data);
@@ -29,8 +29,8 @@ namespace Wissance.WebApiToolkit.Controllers
             return result;
         }
 
-        [HttpDelete]
-        [Route("api/[controller]/{id}")]
+        [HttpDelete("{id}")]
+        // [Route("api/[controller]/{id}")]
         public virtual async Task DeleteAsync([FromRoute] TId id)
         {
             OperationResultDto<bool> result = await Manager.DeleteAsync(id);

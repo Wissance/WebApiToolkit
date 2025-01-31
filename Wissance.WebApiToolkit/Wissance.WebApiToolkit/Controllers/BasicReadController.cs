@@ -42,7 +42,7 @@ namespace Wissance.WebApiToolkit.Controllers
         where TFilter: class, IReadFilterable
     {
         [HttpGet]
-        [Route("api/[controller]")]
+        // [Route("api/[controller]")]
         public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort, 
                                                                 [FromQuery] string order, TFilter additionalFilters = null)
         {
@@ -57,8 +57,8 @@ namespace Wissance.WebApiToolkit.Controllers
             return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
         }
 
-        [HttpGet]
-        [Route("api/[controller]/{id}")]
+        [HttpGet("{id}")]
+        // [Route("api/[controller]/{id}")]
         public async Task<TRes> ReadByIdAsync([FromRoute] TId id)
         {
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
