@@ -20,10 +20,10 @@ namespace Wissance.WebApiToolkit.Managers
     ///    * GetByIdAsync method for obtain one item by id
     ///    * Delete method 
     /// </summary>
-    /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
+    /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
     /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
-    public abstract class EfModelManager <TObj, TRes, TId> : IModelManager<TRes, TObj, TId>
+    public abstract class EfModelManager <TRes, TObj, TId> : IModelManager<TRes, TObj, TId>
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class
                                                 where TId: IComparable
@@ -41,7 +41,7 @@ namespace Wissance.WebApiToolkit.Managers
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TObj, TRes, TId>>();
+            _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
             _defaultCreateFunc = createFunc;
             _filterFunc = filterFunc;
         }
@@ -265,7 +265,7 @@ namespace Wissance.WebApiToolkit.Managers
             throw new NotImplementedException();
         }
 
-        private readonly ILogger<EfModelManager<TObj, TRes, TId>> _logger;
+        private readonly ILogger<EfModelManager<TRes, TObj, TId>> _logger;
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
