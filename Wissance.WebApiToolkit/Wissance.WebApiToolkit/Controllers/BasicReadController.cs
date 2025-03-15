@@ -37,12 +37,12 @@ namespace Wissance.WebApiToolkit.Controllers
     /// <typeparam name="TData">Is a type that represents persistent object (i.e. Entity class)</typeparam>
     /// <typeparam name="TId">Is a type of persistant object identifier</typeparam>
     /// <typeparam name="TFilter">Is a type of filter class</typeparam>
+    [Route("api/[controller]")]
     public abstract class BasicReadController<TRes, TData, TId, TFilter> : BasicPagedDataController
         where TRes: class
         where TFilter: class, IReadFilterable
     {
         [HttpGet]
-        // [Route("api/[controller]")]
         public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort, 
                                                                 [FromQuery] string order, TFilter additionalFilters = null)
         {
@@ -58,7 +58,6 @@ namespace Wissance.WebApiToolkit.Controllers
         }
 
         [HttpGet("{id}")]
-        // [Route("api/[controller]/{id}")]
         public async Task<TRes> ReadByIdAsync([FromRoute] TId id)
         {
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
