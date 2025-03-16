@@ -2,15 +2,17 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <LangVersion>10</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
         <PackageReference Include="xunit" Version="2.5.3" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
