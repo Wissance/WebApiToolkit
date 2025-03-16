@@ -43,7 +43,7 @@ namespace Wissance.WebApiToolkit.Controllers
         where TFilter: class, IReadFilterable
     {
         [HttpGet]
-        public virtual async Task<PagedDataDto<TRes>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort, 
+        public virtual async Task<OperationResultDto<PagedDataDto<TRes>>> ReadAsync([FromQuery] int? page, [FromQuery] int? size, [FromQuery] string sort, 
                                                                 [FromQuery] string order, TFilter additionalFilters = null)
         {
             int pageNumber = GetPage(page);
@@ -54,15 +54,16 @@ namespace Wissance.WebApiToolkit.Controllers
                                                               : new Dictionary<string, string>();
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, additionalQueryParams);
             HttpContext.Response.StatusCode = result.Status;
-            return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
+            return new OperationResultDto<PagedDataDto<TRes>>(result.Success, result.Status, result.Message, 
+                new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1));
         }
 
         [HttpGet("{id}")]
-        public async Task<TRes> ReadByIdAsync([FromRoute] TId id)
+        public virtual async Task<OperationResultDto<TRes>> ReadByIdAsync([FromRoute] TId id)
         {
             OperationResultDto<TRes> result = await Manager.GetByIdAsync(id);
             HttpContext.Response.StatusCode = result.Status;
-            return result.Data;
+            return result;
         }
         public IModelManager<TRes, TData, TId> Manager { get; set; }
     }
