@@ -1,6 +1,6 @@
 using Wissance.WebApiToolkit.Data.Entity;
 
-namespace Wissance.WebApiToolkit.Tests.TestServer.Data.Entity
+namespace Wissance.WebApiToolkit.TestApp.Entity
 {
     public class OrganizationEntity : IModelIdentifiable<int>
     {
