@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wissance.WebApiToolkit.TestApp.Data;
+using Wissance.WebApiToolkit.TestApp.Factories;
 using Wissance.WebApiToolkit.TestApp.Managers;
 
 namespace Wissance.WebApiToolkit.TestApp
@@ -40,7 +41,12 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureManagers(IServiceCollection services)
         {
-            services.AddScoped<CodeManager>();
+            services.AddScoped<CodeManager>(sp =>
+            {
+                // filter function was not written here yet
+                return new CodeManager(sp.GetRequiredService<ModelContext>(),
+                    null, CodeFactory.Create, sp.GetRequiredService<ILoggerFactory>());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
