@@ -7,5 +7,6 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity
     {
         public int Id { get; }
         public string Code { get; set; }
+        public string Name { get; set; }
     }
 }

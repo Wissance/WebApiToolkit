@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Wissance.WebApiToolkit.TestApp.Data;
+
 namespace Wissance.WebApiToolkit.TestApp
 {
     public class Startup
@@ -18,10 +21,15 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureLogging(IServiceCollection services)
         {
+            
         }
         
         private void ConfigureDatabase(IServiceCollection services)
         {
+            Guid id = Guid.NewGuid();
+            services.AddDbContext<ModelContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
+                .UseInMemoryDatabase(id.ToString())
+                );
         }
 
         private void ConfigureWebApi(IServiceCollection services)
