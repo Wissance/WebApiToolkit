@@ -10,10 +10,15 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.20" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Wissance.WebApiToolkit.Data\Wissance.WebApiToolkit.Data.csproj" />
+      <ProjectReference Include="..\Wissance.WebApiToolkit.Dto\Wissance.WebApiToolkit.Dto.csproj" />
+      <ProjectReference Include="..\Wissance.WebApiToolkit\Wissance.WebApiToolkit.csproj" />
     </ItemGroup>
 
 </Project>

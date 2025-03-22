@@ -1,6 +1,6 @@
-
 using Microsoft.EntityFrameworkCore;
 using Wissance.WebApiToolkit.TestApp.Data;
+using Wissance.WebApiToolkit.TestApp.Managers;
 
 namespace Wissance.WebApiToolkit.TestApp
 {
@@ -21,26 +21,31 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureLogging(IServiceCollection services)
         {
-            
+            services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(Configuration).AddConsole());
+            services.AddLogging(loggingBuilder => loggingBuilder.AddConfiguration(Configuration).AddDebug());
         }
         
         private void ConfigureDatabase(IServiceCollection services)
         {
             Guid id = Guid.NewGuid();
             services.AddDbContext<ModelContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
-                .UseInMemoryDatabase(id.ToString())
-                );
+                .UseInMemoryDatabase(id.ToString()));
         }
 
         private void ConfigureWebApi(IServiceCollection services)
         {
+            services.AddControllers();
+            ConfigureManagers(services);
         }
 
+        private void ConfigureManagers(IServiceCollection services)
+        {
+            services.AddScoped<CodeManager>();
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -48,6 +53,6 @@ namespace Wissance.WebApiToolkit.TestApp
         }
         
         private IConfiguration Configuration { get; }
-        public IWebHostEnvironment Environment { get; }
+        private IWebHostEnvironment Environment { get; }
     }
 }
