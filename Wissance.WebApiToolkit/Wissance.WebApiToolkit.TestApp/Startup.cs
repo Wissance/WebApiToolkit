@@ -31,6 +31,10 @@ namespace Wissance.WebApiToolkit.TestApp
             Guid id = Guid.NewGuid();
             services.AddDbContext<ModelContext>(options => options.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll)
                 .UseInMemoryDatabase(id.ToString()));
+            // init database with test data
+            ServiceProvider sp = services.BuildServiceProvider();
+            ModelContext context = sp.GetRequiredService<ModelContext>();
+            DataInitializer.Init(context);
         }
 
         private void ConfigureWebApi(IServiceCollection services)
