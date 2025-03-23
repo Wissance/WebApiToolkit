@@ -51,6 +51,12 @@ namespace Wissance.WebApiToolkit.TestApp
                 return new CodeManager(sp.GetRequiredService<ModelContext>(),
                     null, CodeFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
+
+            services.AddScoped<OrganizationManager>(sp =>
+            {
+                return new OrganizationManager(sp.GetRequiredService<ModelContext>(),
+                    null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
