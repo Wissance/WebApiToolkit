@@ -1,9 +1,9 @@
 using Wissance.WebApiToolkit.Data.Entity;
 
-namespace Wissance.WebApiToolkit.TestApp.Entity
+namespace Wissance.WebApiToolkit.TestApp.Data.Entity
 {
     public class UserEntity : IModelIdentifiable<int>
     {
-        public int Id { get; }
+        public int Id { get; set; }
     }
 }

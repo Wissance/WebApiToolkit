@@ -1,4 +1,4 @@
-namespace Wissance.WebApiToolkit.TestApp.Entity
+namespace Wissance.WebApiToolkit.TestApp.Data.Entity
 {
     public class ProfileEntity
     {
