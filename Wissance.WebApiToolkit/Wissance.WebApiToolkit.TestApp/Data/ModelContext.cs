@@ -36,7 +36,10 @@ namespace Wissance.WebApiToolkit.TestApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
             modelBuilder.Entity<CodeEntity>().Map();
+            modelBuilder.Entity<OrganizationEntity>().Map();
+            modelBuilder.Entity<UserEntity>().Map();
         }
 
         public DbSet<CodeEntity> Codes { get; set; }
