@@ -1,8 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Managers;
 using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
+using Wissance.WebApiToolkit.TestApp.Factories;
 
 namespace Wissance.WebApiToolkit.TestApp.Managers
 {
@@ -11,6 +18,47 @@ namespace Wissance.WebApiToolkit.TestApp.Managers
         public OrganizationManager(ModelContext dbContext, Func<OrganizationEntity, IDictionary<string, string>, bool> filterFunc, Func<OrganizationEntity, OrganizationDto> createFunc, ILoggerFactory loggerFactory) 
             : base(dbContext, filterFunc, createFunc, loggerFactory)
         {
+            _dbContext = dbContext;
         }
+
+        public override async Task<OperationResultDto<OrganizationDto>> CreateAsync(OrganizationDto data)
+        {
+            try
+            {
+                OrganizationEntity organization = new OrganizationEntity()
+                {
+                    Name = data.Name,
+                    ShortName = data.ShortName,
+                    TaxNumber = data.TaxNumber
+                };
+                
+                // todo(UMV): temporarily offed
+                /*if (data.Codes != null)
+                {
+                    foreach (int code in data.Codes)
+                    {
+                        CodeEntity organizationCode = await _dbContext.Codes.FirstOrDefaultAsync(c => c.Id == code);
+                        organization.Codes.Add(organizationCode);
+                    }
+                }*/
+
+                int result = await _dbContext.SaveChangesAsync();
+                if (result < 0)
+                {
+                    return new OperationResultDto<OrganizationDto>(false, (int) HttpStatusCode.InternalServerError,
+                        $"An unknown error occurred during Organization create", null);
+                }
+
+                return new OperationResultDto<OrganizationDto>(true, (int) HttpStatusCode.Created, String.Empty,
+                    OrganizationFactory.Create(organization));
+            }
+            catch (Exception e)
+            {
+                return new OperationResultDto<OrganizationDto>(false, (int) HttpStatusCode.InternalServerError,
+                    $"An error occurred during Organization create: {e.Message}", null);
+            }
+        }
+
+        private readonly ModelContext _dbContext;
     }
 }

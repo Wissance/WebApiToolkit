@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
@@ -24,6 +26,34 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.NotNull(result);
                 Assert.True(result.Success);
             }
+        }
+
+        [Fact]
+        public async Task TestCreateAsync()
+        {
+            using (HttpClient client = Application.CreateClient())
+            {
+                OrganizationDto organization = new OrganizationDto()
+                {
+                    Name = "LLC SuperDuper",
+                    ShortName = "SuperDuper",
+                    TaxNumber = "999091234",
+                    Codes = new List<int>(){1, 3}
+                };
+                JsonContent content = JsonContent.Create(organization);
+                HttpResponseMessage resp = await client.PostAsync("api/Organization", content);
+                Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+            }
+        }
+        
+        [Fact]
+        public async Task TestUpdateAsync()
+        {
+        }
+        
+        [Fact]
+        public async Task TestDeleteAsync()
+        {
         }
     }
 }

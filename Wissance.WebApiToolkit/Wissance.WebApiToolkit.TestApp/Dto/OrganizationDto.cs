@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Wissance.WebApiToolkit.TestApp.Dto
 {
     public class OrganizationDto
