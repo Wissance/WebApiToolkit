@@ -43,6 +43,12 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 JsonContent content = JsonContent.Create(organization);
                 HttpResponseMessage resp = await client.PostAsync("api/Organization", content);
                 Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
+                string orgCreateDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(orgCreateDataStr.Length > 0);
+                OperationResultDto<OrganizationDto> result = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(orgCreateDataStr);
+                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
+                Assert.NotNull(result);
+                Assert.True(result.Success);
             }
         }
         
@@ -52,7 +58,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         }
         
         [Fact]
-        public async Task TestDeleteAsync()
+        public async Task TestDleteAsync()
         {
         }
     }
