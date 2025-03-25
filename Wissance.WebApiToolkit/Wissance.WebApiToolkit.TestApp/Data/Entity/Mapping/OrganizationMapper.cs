@@ -13,7 +13,7 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity.Mapping
             builder.HasMany(p => p.Users)
                 .WithOne(p => p.Organization)
                 .HasForeignKey(p => p.OrganizationId);
-            builder.HasMany(p => p.Codes).WithMany();
+            builder.HasMany(p => p.Codes).WithMany(p => p.Organizations);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Wissance.WebApiToolkit.Data.Entity;
 
 namespace Wissance.WebApiToolkit.TestApp.Data.Entity
