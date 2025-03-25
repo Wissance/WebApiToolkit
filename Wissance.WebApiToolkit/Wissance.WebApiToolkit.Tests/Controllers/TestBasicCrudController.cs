@@ -80,10 +80,24 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
             }
         }
         
-        [Fact]
-        public async Task TestDeleteAsync()
+        [Theory]
+        [InlineData(1)]
+        public async Task TestDeleteAsync(int organizationId)
         {
-            // todo(UMV):implement
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage resp = await client.DeleteAsync($"api/Organization/{organizationId}");
+                Assert.Equal(HttpStatusCode.NoContent, resp.StatusCode);
+                resp = await client.DeleteAsync($"api/Organization/{organizationId}");
+                Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
+                resp = await client.GetAsync($"api/Organization/{organizationId}");
+                Assert.Equal(HttpStatusCode.NotFound, resp.StatusCode);
+                string orgDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(orgDataStr.Length > 0);
+                OperationResultDto<OrganizationDto> result = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(orgDataStr);
+                Assert.NotNull(result);
+                Assert.False(result.Success);
+            }
         }
     }
 }
