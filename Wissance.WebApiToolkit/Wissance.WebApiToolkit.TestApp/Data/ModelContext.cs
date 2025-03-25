@@ -15,7 +15,7 @@ namespace Wissance.WebApiToolkit.TestApp.Data
         {
         }
         
-        public int SaveChanges()
+        public override int SaveChanges()
         {
             try
             {
