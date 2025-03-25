@@ -59,6 +59,37 @@ namespace Wissance.WebApiToolkit.TestApp.Managers
             }
         }
 
+        public override async Task<OperationResultDto<OrganizationDto>> UpdateAsync(int id, OrganizationDto data)
+        {
+            try
+            {
+                OrganizationEntity organization = await _dbContext.Organizations.FirstOrDefaultAsync(o => o.Id == id);
+                if (organization == null)
+                {
+                    return new OperationResultDto<OrganizationDto>(false, (int) HttpStatusCode.NotFound,
+                        $"Organization with id: {id} was not found", null);
+                }
+
+                organization.Name = data.Name;
+                organization.ShortName = data.ShortName;
+                organization.TaxNumber = data.TaxNumber;
+
+                int result = await _dbContext.SaveChangesAsync();
+                if (result < 0)
+                {
+                    return new OperationResultDto<OrganizationDto>(false, (int) HttpStatusCode.InternalServerError,
+                        $"An unknown error occurred during Organization update", null);
+                }
+                return new OperationResultDto<OrganizationDto>(true, (int) HttpStatusCode.OK,
+                    String.Empty, OrganizationFactory.Create(organization));
+            }
+            catch (Exception e)
+            {
+                return new OperationResultDto<OrganizationDto>(false, (int) HttpStatusCode.InternalServerError,
+                    $"An error occurred during Organization update: {e.Message}", null);
+            }
+        }
+
         private readonly ModelContext _dbContext;
     }
 }

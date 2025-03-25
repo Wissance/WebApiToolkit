@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
+using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
 namespace Wissance.WebApiToolkit.Tests.Controllers
 {
@@ -52,10 +53,31 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
             }
         }
         
-        [Fact]
-        public async Task TestUpdateAsync()
+        [Theory]
+        [InlineData(1)]
+        public async Task TestUpdateAsync(int organizationId)
         {
-            // todo(UMV):implement
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage resp = await client.GetAsync($"api/Organization/{organizationId}");
+                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+                string orgDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(orgDataStr.Length > 0);
+                OperationResultDto<OrganizationDto> result = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(orgDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                result.Data.Name = "TestNameUpd LLC";
+                result.Data.ShortName = "TestNameUpd";
+                JsonContent content = JsonContent.Create(result.Data);
+                resp = await client.PutAsync($"api/Organization/{organizationId}", content);
+                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+                string updOrgDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(updOrgDataStr.Length > 0);
+                OperationResultDto<OrganizationDto> updResult = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(updOrgDataStr);
+                Assert.NotNull(updResult);
+                Assert.True(updResult.Success);
+                OrganizationChecker.Check(result.Data, updResult.Data);
+            }
         }
         
         [Fact]
