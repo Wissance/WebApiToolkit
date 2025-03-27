@@ -2,7 +2,7 @@ syntax = "proto2";
 
 option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
 
-import 'Common.proto';
+import 'Common/Common.proto';
 
 message Code {
     required int32 id = 1;
@@ -16,6 +16,6 @@ message CodeOperationResult {
     }
 }
 
-service Objects {
+service CodeService {
     rpc ReadOne (OneItemRequest) returns (CodeOperationResult);
 }

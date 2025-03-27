@@ -28,7 +28,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="Server|Client" />
+        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="Both" OutputDir="$(ProjectDir)WebServices\Grpc\Generated" ProtoCompile="True" CompileOutputs="true" />
+        <Protobuf Include="WebServices\Grpc\Proto\Common\*.proto" GrpcServices="None"/>
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true' ">
+        <DisableProtobufDesignTimeBuild>true</DisableProtobufDesignTimeBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="WebServices\Grpc\Generated" />
     </ItemGroup>
 
 </Project>
