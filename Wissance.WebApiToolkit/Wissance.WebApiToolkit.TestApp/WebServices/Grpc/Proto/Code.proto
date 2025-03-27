@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
+
+import 'Common.proto';
+
+service Objects {
+    rpc ReadOne (CommonItemRequest) returns (CodeOperationResult);
+}

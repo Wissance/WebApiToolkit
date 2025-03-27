@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="WebServices\Grpc" />
+        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Protos" GrpcServices="Server|Client" />
     </ItemGroup>
 
 </Project>
