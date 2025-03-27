@@ -1,10 +1,14 @@
-syntax = "proto3";
+syntax = "proto2";
 
 option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
 
 message OperationResultStats {
-    extensions 1000 to max
-    bool success = 1;
-    string message = 2;
-    int32 status = 3;
+    extensions 1000 to max;
+    required bool success = 1;
+    required string message = 2;
+    required int32 status = 3;
+}
+
+message OneItemRequest {
+    required int32 id = 1;
 }

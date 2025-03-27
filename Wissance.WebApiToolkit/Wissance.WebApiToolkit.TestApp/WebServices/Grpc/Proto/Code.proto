@@ -1,9 +1,21 @@
-syntax = "proto3";
+syntax = "proto2";
 
 option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
 
 import 'Common.proto';
 
+message Code {
+    required int32 id = 1;
+    required string code = 2;
+    required string name = 3;
+}
+
+message CodeOperationResult {
+    extend OperationResultStats {
+        optional Code data = 1000;
+    }
+}
+
 service Objects {
-    rpc ReadOne (CommonItemRequest) returns (CodeOperationResult);
+    rpc ReadOne (OneItemRequest) returns (CodeOperationResult);
 }
