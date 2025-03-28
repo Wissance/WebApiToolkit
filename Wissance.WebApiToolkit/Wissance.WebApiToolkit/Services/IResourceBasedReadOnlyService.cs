@@ -20,7 +20,7 @@ namespace Wissance.WebApiToolkit.Services
         where TData: IModelIdentifiable<TId>
         where TFilter: class, IReadFilterable
     {
-        Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, TFilter filterParams);
+        Task<OperationResultDto<PagedDataDto<TRes>>> ReadAsync(int? page, int? size, string sort, string order, TFilter filterParams);
         Task<OperationResultDto<TRes>> ReadByIdAsync(TId id);
     }
 }

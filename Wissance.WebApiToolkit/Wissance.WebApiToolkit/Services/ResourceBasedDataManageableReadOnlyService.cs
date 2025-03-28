@@ -25,13 +25,16 @@ namespace Wissance.WebApiToolkit.Services
         where TData: IModelIdentifiable<TId>
         where TFilter: class, IReadFilterable
     {
-        public virtual async Task<PagedDataDto<TRes>> ReadAsync(int? page, int? size, string sort, string order, TFilter filterParams)
+        public virtual async Task<OperationResultDto<PagedDataDto<TRes>>> ReadAsync(int? page, int? size, string sort, string order, 
+            TFilter filterParams)
         {
             int pageNumber = PagingUtils.GetPage(page);
             int pageSize = PagingUtils.GetPageSize(size);
             SortOption sorting = !string.IsNullOrEmpty(sort) ? new SortOption(sort, order) : null;
             OperationResultDto<Tuple<IList<TRes>, long>> result = await Manager.GetAsync(pageNumber, pageSize, sorting, filterParams.SelectFilters());
-            return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
+            return new OperationResultDto<PagedDataDto<TRes>>(result.Success, result.Status, result.Message, 
+                new PagedDataDto<TRes>(pageNumber, result.Data.Item2, PagingUtils.GetTotalPages(result.Data.Item2, pageSize), 
+                                           result.Data.Item1));
         }
 
         public virtual async Task<OperationResultDto<TRes>> ReadByIdAsync(TId id)
