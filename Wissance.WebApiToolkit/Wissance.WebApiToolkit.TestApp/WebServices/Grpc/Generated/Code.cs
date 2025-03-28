@@ -27,15 +27,21 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
             "CgpDb2RlLnByb3RvGhNDb21tb24vQ29tbW9uLnByb3RvIi4KBENvZGUSCgoC",
             "aWQYASACKAUSDAoEY29kZRgCIAIoCRIMCgRuYW1lGAMgAigJIkIKE0NvZGVP",
             "cGVyYXRpb25SZXN1bHQyKwoEZGF0YRIVLk9wZXJhdGlvblJlc3VsdFN0YXRz",
-            "GOgHIAEoCzIFLkNvZGUyPwoLQ29kZVNlcnZpY2USMAoHUmVhZE9uZRIPLk9u",
-            "ZUl0ZW1SZXF1ZXN0GhQuQ29kZU9wZXJhdGlvblJlc3VsdEI8qgI5V2lzc2Fu",
-            "Y2UuV2ViQXBpVG9vbGtpdC5UZXN0QXBwLldlYlNlcnZpY2VzLkdycGMuR2Vu",
-            "ZXJhdGVk"));
+            "GOgHIAEoCzIFLkNvZGUiPQoTQ29kZVBhZ2VkRGF0YVJlc3VsdDImCgRkYXRh",
+            "EhAuUGFnZWREYXRhUmVzdWx0GOgHIAMoCzIFLkNvZGUiWgocQ29kZVBhZ2Vk",
+            "RGF0YU9wZXJhdGlvblJlc3VsdDI6CgRkYXRhEhUuT3BlcmF0aW9uUmVzdWx0",
+            "U3RhdHMY0A8gASgLMhQuQ29kZVBhZ2VkRGF0YVJlc3VsdDJ8CgtDb2RlU2Vy",
+            "dmljZRIwCgdSZWFkT25lEg8uT25lSXRlbVJlcXVlc3QaFC5Db2RlT3BlcmF0",
+            "aW9uUmVzdWx0EjsKCFJlYWRNYW55EhAuUGFnZURhdGFSZXF1ZXN0Gh0uQ29k",
+            "ZVBhZ2VkRGF0YU9wZXJhdGlvblJlc3VsdEI8qgI5V2lzc2FuY2UuV2ViQXBp",
+            "VG9vbGtpdC5UZXN0QXBwLldlYlNlcnZpY2VzLkdycGMuR2VuZXJhdGVk"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser, new[]{ "Id", "Code_", "Name" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Extensions.Data }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Extensions.Data }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Extensions.Data }, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Extensions.Data }, null)
           }));
     }
     #endregion
@@ -525,6 +531,348 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     public static partial class Extensions {
       public static readonly pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> Data =
         new pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code>(1000, pb::FieldCodec.ForMessage(8002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser));
+    }
+    #endregion
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CodePagedDataResult : pb::IMessage<CodePagedDataResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CodePagedDataResult> _parser = new pb::MessageParser<CodePagedDataResult>(() => new CodePagedDataResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CodePagedDataResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataResult(CodePagedDataResult other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataResult Clone() {
+      return new CodePagedDataResult(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CodePagedDataResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CodePagedDataResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CodePagedDataResult other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+    #region Extensions
+    /// <summary>Container for extensions for other messages declared in the CodePagedDataResult message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Extensions {
+      public static readonly pb::RepeatedExtension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PagedDataResult, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> Data =
+        new pb::RepeatedExtension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PagedDataResult, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code>(1000, pb::FieldCodec.ForMessage(8002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser));
+    }
+    #endregion
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class CodePagedDataOperationResult : pb::IMessage<CodePagedDataOperationResult>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CodePagedDataOperationResult> _parser = new pb::MessageParser<CodePagedDataOperationResult>(() => new CodePagedDataOperationResult());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CodePagedDataOperationResult> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataOperationResult() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataOperationResult(CodePagedDataOperationResult other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CodePagedDataOperationResult Clone() {
+      return new CodePagedDataOperationResult(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CodePagedDataOperationResult);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CodePagedDataOperationResult other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CodePagedDataOperationResult other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+    #region Extensions
+    /// <summary>Container for extensions for other messages declared in the CodePagedDataOperationResult message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Extensions {
+      public static readonly pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult> Data =
+        new pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult>(2000, pb::FieldCodec.ForMessage(16002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Parser));
     }
     #endregion
 

@@ -9,6 +9,21 @@ message OperationResultStats {
     required int32 status = 3;
 }
 
+message PagedDataResult {
+    extensions 1000 to max;
+    required int64 page = 1;
+    required int64 pages = 2;
+    required int64 total = 3;
+}
+
 message OneItemRequest {
     required int32 id = 1;
+}
+
+message PageDataRequest {
+    extensions 1000 to max;
+    optional int32 page = 1;
+    optional int32 size = 2;
+    optional string sort = 3;
+    optional string order = 4;
 }

@@ -16,6 +16,19 @@ message CodeOperationResult {
     }
 }
 
+message CodePagedDataResult {
+    extend PagedDataResult {
+        repeated Code data = 1000;
+    }
+}
+
+message CodePagedDataOperationResult {
+    extend OperationResultStats {
+        optional CodePagedDataResult data = 2000;
+    }
+}
+
 service CodeService {
-    rpc ReadOne (OneItemRequest) returns (CodeOperationResult);
+    rpc ReadOne(OneItemRequest) returns (CodeOperationResult);
+    rpc ReadMany(PageDataRequest) returns (CodePagedDataOperationResult);
 }

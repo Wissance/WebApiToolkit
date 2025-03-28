@@ -49,6 +49,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     static readonly grpc::Marshaller<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest> __Marshaller_OneItemRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult> __Marshaller_CodeOperationResult = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest> __Marshaller_PageDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult> __Marshaller_CodePagedDataOperationResult = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult> __Method_ReadOne = new grpc::Method<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult>(
@@ -57,6 +61,14 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
         "ReadOne",
         __Marshaller_OneItemRequest,
         __Marshaller_CodeOperationResult);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult> __Method_ReadMany = new grpc::Method<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "ReadMany",
+        __Marshaller_PageDataRequest,
+        __Marshaller_CodePagedDataOperationResult);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -70,6 +82,12 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     {
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::System.Threading.Tasks.Task<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult> ReadOne(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::System.Threading.Tasks.Task<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult> ReadMany(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -123,6 +141,26 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       {
         return CallInvoker.AsyncUnaryCall(__Method_ReadOne, null, options, request);
       }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult ReadMany(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ReadMany(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult ReadMany(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_ReadMany, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult> ReadManyAsync(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ReadManyAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult> ReadManyAsync(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ReadMany, null, options, request);
+      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       protected override CodeServiceClient NewInstance(ClientBaseConfiguration configuration)
@@ -137,7 +175,8 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     public static grpc::ServerServiceDefinition BindService(CodeServiceBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_ReadOne, serviceImpl.ReadOne).Build();
+          .AddMethod(__Method_ReadOne, serviceImpl.ReadOne)
+          .AddMethod(__Method_ReadMany, serviceImpl.ReadMany).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the service binding logic.
@@ -148,6 +187,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     public static void BindService(grpc::ServiceBinderBase serviceBinder, CodeServiceBase serviceImpl)
     {
       serviceBinder.AddMethod(__Method_ReadOne, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OneItemRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult>(serviceImpl.ReadOne));
+      serviceBinder.AddMethod(__Method_ReadMany, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PageDataRequest, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult>(serviceImpl.ReadMany));
     }
 
   }
