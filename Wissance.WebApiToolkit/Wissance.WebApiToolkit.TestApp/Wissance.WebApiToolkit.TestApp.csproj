@@ -29,7 +29,7 @@
 
     <ItemGroup>
         <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="Both" OutputDir="$(ProjectDir)WebServices\Grpc\Generated" ProtoCompile="True" CompileOutputs="true" />
-        <Protobuf Include="WebServices\Grpc\Proto\Common\*.proto" GrpcServices="None" />
+        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\Common\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="None" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true' ">

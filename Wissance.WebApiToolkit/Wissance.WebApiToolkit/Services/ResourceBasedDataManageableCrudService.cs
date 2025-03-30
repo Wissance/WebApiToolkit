@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Wissance.WebApiToolkit.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
+using Wissance.WebApiToolkit.Managers;
 
 namespace Wissance.WebApiToolkit.Services
 {
@@ -14,12 +15,17 @@ namespace Wissance.WebApiToolkit.Services
     /// <typeparam name="TData">Persistent item type, in terms of Web App it is a Table or some ORM Entity Class</typeparam>
     /// <typeparam name="TId">Unique Identifier type (could be different for different apps i.e int/string/Guid)</typeparam>
     /// <typeparam name="TFilter">Filter class</typeparam>
-    public abstract class ResourceBasedDataManageableCrudService<TRes, TData, TId, TFilter> : ResourceBasedDataManageableReadOnlyService<TRes, TData, TId, TFilter>,
+    public class ResourceBasedDataManageableCrudService<TRes, TData, TId, TFilter> : ResourceBasedDataManageableReadOnlyService<TRes, TData, TId, TFilter>,
         IResourceBasedCrudService<TRes, TData, TId, TFilter>
         where TRes: class
         where TData: IModelIdentifiable<TId>
         where TFilter: class, IReadFilterable
     {
+        public ResourceBasedDataManageableCrudService(IModelManager<TRes, TData, TId> manager)
+            :base(manager)
+        {
+        }
+
         public async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
             OperationResultDto<TRes> result = await Manager.CreateAsync(data);

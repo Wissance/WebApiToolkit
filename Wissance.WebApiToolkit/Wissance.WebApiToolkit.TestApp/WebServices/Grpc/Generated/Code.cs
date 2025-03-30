@@ -25,23 +25,25 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgpDb2RlLnByb3RvGhNDb21tb24vQ29tbW9uLnByb3RvIi4KBENvZGUSCgoC",
-            "aWQYASACKAUSDAoEY29kZRgCIAIoCRIMCgRuYW1lGAMgAigJIkIKE0NvZGVP",
-            "cGVyYXRpb25SZXN1bHQyKwoEZGF0YRIVLk9wZXJhdGlvblJlc3VsdFN0YXRz",
-            "GOgHIAEoCzIFLkNvZGUiPQoTQ29kZVBhZ2VkRGF0YVJlc3VsdDImCgRkYXRh",
-            "EhAuUGFnZWREYXRhUmVzdWx0GOgHIAMoCzIFLkNvZGUiWgocQ29kZVBhZ2Vk",
-            "RGF0YU9wZXJhdGlvblJlc3VsdDI6CgRkYXRhEhUuT3BlcmF0aW9uUmVzdWx0",
-            "U3RhdHMY0A8gASgLMhQuQ29kZVBhZ2VkRGF0YVJlc3VsdDJ8CgtDb2RlU2Vy",
-            "dmljZRIwCgdSZWFkT25lEg8uT25lSXRlbVJlcXVlc3QaFC5Db2RlT3BlcmF0",
-            "aW9uUmVzdWx0EjsKCFJlYWRNYW55EhAuUGFnZURhdGFSZXF1ZXN0Gh0uQ29k",
-            "ZVBhZ2VkRGF0YU9wZXJhdGlvblJlc3VsdEI8qgI5V2lzc2FuY2UuV2ViQXBp",
-            "VG9vbGtpdC5UZXN0QXBwLldlYlNlcnZpY2VzLkdycGMuR2VuZXJhdGVk"));
+            "aWQYASACKAUSDAoEY29kZRgCIAIoCRIMCgRuYW1lGAMgAigJIlwKE0NvZGVP",
+            "cGVyYXRpb25SZXN1bHQSDwoHc3VjY2VzcxgBIAIoCBIPCgdtZXNzYWdlGAIg",
+            "ASgJEg4KBnN0YXR1cxgDIAIoBRITCgRkYXRhGAQgASgLMgUuQ29kZSJWChND",
+            "b2RlUGFnZWREYXRhUmVzdWx0EgwKBHBhZ2UYASACKAMSDQoFcGFnZXMYAiAC",
+            "KAMSDQoFdG90YWwYAyACKAMSEwoEZGF0YRgEIAMoCzIFLkNvZGUidAocQ29k",
+            "ZVBhZ2VkRGF0YU9wZXJhdGlvblJlc3VsdBIPCgdzdWNjZXNzGAEgAigIEg8K",
+            "B21lc3NhZ2UYAiABKAkSDgoGc3RhdHVzGAMgAigFEiIKBGRhdGEYBCABKAsy",
+            "FC5Db2RlUGFnZWREYXRhUmVzdWx0MnwKC0NvZGVTZXJ2aWNlEjAKB1JlYWRP",
+            "bmUSDy5PbmVJdGVtUmVxdWVzdBoULkNvZGVPcGVyYXRpb25SZXN1bHQSOwoI",
+            "UmVhZE1hbnkSEC5QYWdlRGF0YVJlcXVlc3QaHS5Db2RlUGFnZWREYXRhT3Bl",
+            "cmF0aW9uUmVzdWx0QjyqAjlXaXNzYW5jZS5XZWJBcGlUb29sa2l0LlRlc3RB",
+            "cHAuV2ViU2VydmljZXMuR3JwYy5HZW5lcmF0ZWQ="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser, new[]{ "Id", "Code_", "Name" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Extensions.Data }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Extensions.Data }, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Parser, null, null, null, new pb::Extension[] { global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Extensions.Data }, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodeOperationResult.Parser, new[]{ "Success", "Message", "Status", "Data" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Parser, new[]{ "Page", "Pages", "Total", "Data" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult), global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataOperationResult.Parser, new[]{ "Success", "Message", "Status", "Data" }, null, null, null, null)
           }));
     }
     #endregion
@@ -373,6 +375,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
   {
     private static readonly pb::MessageParser<CodeOperationResult> _parser = new pb::MessageParser<CodeOperationResult>(() => new CodeOperationResult());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<CodeOperationResult> Parser { get { return _parser; } }
@@ -400,6 +403,11 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodeOperationResult(CodeOperationResult other) : this() {
+      _hasBits0 = other._hasBits0;
+      success_ = other.success_;
+      message_ = other.message_;
+      status_ = other.status_;
+      data_ = other.data_ != null ? other.data_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -407,6 +415,98 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodeOperationResult Clone() {
       return new CodeOperationResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private readonly static bool SuccessDefaultValue = false;
+
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { if ((_hasBits0 & 1) != 0) { return success_; } else { return SuccessDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        success_ = value;
+      }
+    }
+    /// <summary>Gets whether the "success" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSuccess {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "success" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSuccess() {
+      _hasBits0 &= ~1;
+    }
+
+    /// <summary>Field number for the "message" field.</summary>
+    public const int MessageFieldNumber = 2;
+    private readonly static string MessageDefaultValue = "";
+
+    private string message_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Message {
+      get { return message_ ?? MessageDefaultValue; }
+      set {
+        message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+    /// <summary>Gets whether the "message" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMessage {
+      get { return message_ != null; }
+    }
+    /// <summary>Clears the value of the "message" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMessage() {
+      message_ = null;
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 3;
+    private readonly static int StatusDefaultValue = 0;
+
+    private int status_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Status {
+      get { if ((_hasBits0 & 2) != 0) { return status_; } else { return StatusDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        status_ = value;
+      }
+    }
+    /// <summary>Gets whether the "status" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasStatus {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "status" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearStatus() {
+      _hasBits0 &= ~2;
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 4;
+    private global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code data_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code Data {
+      get { return data_; }
+      set {
+        data_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -424,6 +524,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Success != other.Success) return false;
+      if (Message != other.Message) return false;
+      if (Status != other.Status) return false;
+      if (!object.Equals(Data, other.Data)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -431,6 +535,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (HasSuccess) hash ^= Success.GetHashCode();
+      if (HasMessage) hash ^= Message.GetHashCode();
+      if (HasStatus) hash ^= Status.GetHashCode();
+      if (data_ != null) hash ^= Data.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -449,6 +557,22 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (HasSuccess) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (HasMessage) {
+        output.WriteRawTag(18);
+        output.WriteString(Message);
+      }
+      if (HasStatus) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Status);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Data);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -459,6 +583,22 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (HasSuccess) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (HasMessage) {
+        output.WriteRawTag(18);
+        output.WriteString(Message);
+      }
+      if (HasStatus) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Status);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Data);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -469,6 +609,18 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (HasSuccess) {
+        size += 1 + 1;
+      }
+      if (HasMessage) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+      }
+      if (HasStatus) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Status);
+      }
+      if (data_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Data);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -480,6 +632,21 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     public void MergeFrom(CodeOperationResult other) {
       if (other == null) {
         return;
+      }
+      if (other.HasSuccess) {
+        Success = other.Success;
+      }
+      if (other.HasMessage) {
+        Message = other.Message;
+      }
+      if (other.HasStatus) {
+        Status = other.Status;
+      }
+      if (other.data_ != null) {
+        if (data_ == null) {
+          Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code();
+        }
+        Data.MergeFrom(other.Data);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -500,6 +667,25 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Status = input.ReadInt32();
+            break;
+          }
+          case 34: {
+            if (data_ == null) {
+              Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code();
+            }
+            input.ReadMessage(Data);
+            break;
+          }
         }
       }
     #endif
@@ -519,20 +705,29 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Status = input.ReadInt32();
+            break;
+          }
+          case 34: {
+            if (data_ == null) {
+              Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code();
+            }
+            input.ReadMessage(Data);
+            break;
+          }
         }
       }
     }
     #endif
-
-    #region Extensions
-    /// <summary>Container for extensions for other messages declared in the CodeOperationResult message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Extensions {
-      public static readonly pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> Data =
-        new pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code>(1000, pb::FieldCodec.ForMessage(8002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser));
-    }
-    #endregion
 
   }
 
@@ -544,6 +739,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
   {
     private static readonly pb::MessageParser<CodePagedDataResult> _parser = new pb::MessageParser<CodePagedDataResult>(() => new CodePagedDataResult());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<CodePagedDataResult> Parser { get { return _parser; } }
@@ -571,6 +767,11 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodePagedDataResult(CodePagedDataResult other) : this() {
+      _hasBits0 = other._hasBits0;
+      page_ = other.page_;
+      pages_ = other.pages_;
+      total_ = other.total_;
+      data_ = other.data_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -578,6 +779,98 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodePagedDataResult Clone() {
       return new CodePagedDataResult(this);
+    }
+
+    /// <summary>Field number for the "page" field.</summary>
+    public const int PageFieldNumber = 1;
+    private readonly static long PageDefaultValue = 0L;
+
+    private long page_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Page {
+      get { if ((_hasBits0 & 1) != 0) { return page_; } else { return PageDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        page_ = value;
+      }
+    }
+    /// <summary>Gets whether the "page" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasPage {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "page" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearPage() {
+      _hasBits0 &= ~1;
+    }
+
+    /// <summary>Field number for the "pages" field.</summary>
+    public const int PagesFieldNumber = 2;
+    private readonly static long PagesDefaultValue = 0L;
+
+    private long pages_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Pages {
+      get { if ((_hasBits0 & 2) != 0) { return pages_; } else { return PagesDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        pages_ = value;
+      }
+    }
+    /// <summary>Gets whether the "pages" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasPages {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "pages" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearPages() {
+      _hasBits0 &= ~2;
+    }
+
+    /// <summary>Field number for the "total" field.</summary>
+    public const int TotalFieldNumber = 3;
+    private readonly static long TotalDefaultValue = 0L;
+
+    private long total_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Total {
+      get { if ((_hasBits0 & 4) != 0) { return total_; } else { return TotalDefaultValue; } }
+      set {
+        _hasBits0 |= 4;
+        total_ = value;
+      }
+    }
+    /// <summary>Gets whether the "total" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasTotal {
+      get { return (_hasBits0 & 4) != 0; }
+    }
+    /// <summary>Clears the value of the "total" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearTotal() {
+      _hasBits0 &= ~4;
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 4;
+    private static readonly pb::FieldCodec<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> _repeated_data_codec
+        = pb::FieldCodec.ForMessage(34, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser);
+    private readonly pbc::RepeatedField<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> data_ = new pbc::RepeatedField<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> Data {
+      get { return data_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -595,6 +888,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Page != other.Page) return false;
+      if (Pages != other.Pages) return false;
+      if (Total != other.Total) return false;
+      if(!data_.Equals(other.data_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -602,6 +899,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (HasPage) hash ^= Page.GetHashCode();
+      if (HasPages) hash ^= Pages.GetHashCode();
+      if (HasTotal) hash ^= Total.GetHashCode();
+      hash ^= data_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -620,6 +921,19 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (HasPage) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Page);
+      }
+      if (HasPages) {
+        output.WriteRawTag(16);
+        output.WriteInt64(Pages);
+      }
+      if (HasTotal) {
+        output.WriteRawTag(24);
+        output.WriteInt64(Total);
+      }
+      data_.WriteTo(output, _repeated_data_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -630,6 +944,19 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (HasPage) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Page);
+      }
+      if (HasPages) {
+        output.WriteRawTag(16);
+        output.WriteInt64(Pages);
+      }
+      if (HasTotal) {
+        output.WriteRawTag(24);
+        output.WriteInt64(Total);
+      }
+      data_.WriteTo(ref output, _repeated_data_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -640,6 +967,16 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (HasPage) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Page);
+      }
+      if (HasPages) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Pages);
+      }
+      if (HasTotal) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Total);
+      }
+      size += data_.CalculateSize(_repeated_data_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -652,6 +989,16 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       if (other == null) {
         return;
       }
+      if (other.HasPage) {
+        Page = other.Page;
+      }
+      if (other.HasPages) {
+        Pages = other.Pages;
+      }
+      if (other.HasTotal) {
+        Total = other.Total;
+      }
+      data_.Add(other.data_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -671,6 +1018,22 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 8: {
+            Page = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            Pages = input.ReadInt64();
+            break;
+          }
+          case 24: {
+            Total = input.ReadInt64();
+            break;
+          }
+          case 34: {
+            data_.AddEntriesFrom(input, _repeated_data_codec);
+            break;
+          }
         }
       }
     #endif
@@ -690,20 +1053,26 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 8: {
+            Page = input.ReadInt64();
+            break;
+          }
+          case 16: {
+            Pages = input.ReadInt64();
+            break;
+          }
+          case 24: {
+            Total = input.ReadInt64();
+            break;
+          }
+          case 34: {
+            data_.AddEntriesFrom(ref input, _repeated_data_codec);
+            break;
+          }
         }
       }
     }
     #endif
-
-    #region Extensions
-    /// <summary>Container for extensions for other messages declared in the CodePagedDataResult message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Extensions {
-      public static readonly pb::RepeatedExtension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PagedDataResult, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code> Data =
-        new pb::RepeatedExtension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.PagedDataResult, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code>(1000, pb::FieldCodec.ForMessage(8002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.Code.Parser));
-    }
-    #endregion
 
   }
 
@@ -715,6 +1084,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
   {
     private static readonly pb::MessageParser<CodePagedDataOperationResult> _parser = new pb::MessageParser<CodePagedDataOperationResult>(() => new CodePagedDataOperationResult());
     private pb::UnknownFieldSet _unknownFields;
+    private int _hasBits0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pb::MessageParser<CodePagedDataOperationResult> Parser { get { return _parser; } }
@@ -742,6 +1112,11 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodePagedDataOperationResult(CodePagedDataOperationResult other) : this() {
+      _hasBits0 = other._hasBits0;
+      success_ = other.success_;
+      message_ = other.message_;
+      status_ = other.status_;
+      data_ = other.data_ != null ? other.data_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -749,6 +1124,98 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public CodePagedDataOperationResult Clone() {
       return new CodePagedDataOperationResult(this);
+    }
+
+    /// <summary>Field number for the "success" field.</summary>
+    public const int SuccessFieldNumber = 1;
+    private readonly static bool SuccessDefaultValue = false;
+
+    private bool success_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Success {
+      get { if ((_hasBits0 & 1) != 0) { return success_; } else { return SuccessDefaultValue; } }
+      set {
+        _hasBits0 |= 1;
+        success_ = value;
+      }
+    }
+    /// <summary>Gets whether the "success" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasSuccess {
+      get { return (_hasBits0 & 1) != 0; }
+    }
+    /// <summary>Clears the value of the "success" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSuccess() {
+      _hasBits0 &= ~1;
+    }
+
+    /// <summary>Field number for the "message" field.</summary>
+    public const int MessageFieldNumber = 2;
+    private readonly static string MessageDefaultValue = "";
+
+    private string message_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Message {
+      get { return message_ ?? MessageDefaultValue; }
+      set {
+        message_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+    /// <summary>Gets whether the "message" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMessage {
+      get { return message_ != null; }
+    }
+    /// <summary>Clears the value of the "message" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMessage() {
+      message_ = null;
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 3;
+    private readonly static int StatusDefaultValue = 0;
+
+    private int status_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int Status {
+      get { if ((_hasBits0 & 2) != 0) { return status_; } else { return StatusDefaultValue; } }
+      set {
+        _hasBits0 |= 2;
+        status_ = value;
+      }
+    }
+    /// <summary>Gets whether the "status" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasStatus {
+      get { return (_hasBits0 & 2) != 0; }
+    }
+    /// <summary>Clears the value of the "status" field</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearStatus() {
+      _hasBits0 &= ~2;
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 4;
+    private global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult data_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult Data {
+      get { return data_; }
+      set {
+        data_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -766,6 +1233,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Success != other.Success) return false;
+      if (Message != other.Message) return false;
+      if (Status != other.Status) return false;
+      if (!object.Equals(Data, other.Data)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -773,6 +1244,10 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (HasSuccess) hash ^= Success.GetHashCode();
+      if (HasMessage) hash ^= Message.GetHashCode();
+      if (HasStatus) hash ^= Status.GetHashCode();
+      if (data_ != null) hash ^= Data.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -791,6 +1266,22 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (HasSuccess) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (HasMessage) {
+        output.WriteRawTag(18);
+        output.WriteString(Message);
+      }
+      if (HasStatus) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Status);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Data);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -801,6 +1292,22 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (HasSuccess) {
+        output.WriteRawTag(8);
+        output.WriteBool(Success);
+      }
+      if (HasMessage) {
+        output.WriteRawTag(18);
+        output.WriteString(Message);
+      }
+      if (HasStatus) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Status);
+      }
+      if (data_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Data);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -811,6 +1318,18 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (HasSuccess) {
+        size += 1 + 1;
+      }
+      if (HasMessage) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Message);
+      }
+      if (HasStatus) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Status);
+      }
+      if (data_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Data);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -822,6 +1341,21 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
     public void MergeFrom(CodePagedDataOperationResult other) {
       if (other == null) {
         return;
+      }
+      if (other.HasSuccess) {
+        Success = other.Success;
+      }
+      if (other.HasMessage) {
+        Message = other.Message;
+      }
+      if (other.HasStatus) {
+        Status = other.Status;
+      }
+      if (other.data_ != null) {
+        if (data_ == null) {
+          Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult();
+        }
+        Data.MergeFrom(other.Data);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -842,6 +1376,25 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Status = input.ReadInt32();
+            break;
+          }
+          case 34: {
+            if (data_ == null) {
+              Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult();
+            }
+            input.ReadMessage(Data);
+            break;
+          }
         }
       }
     #endif
@@ -861,20 +1414,29 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 8: {
+            Success = input.ReadBool();
+            break;
+          }
+          case 18: {
+            Message = input.ReadString();
+            break;
+          }
+          case 24: {
+            Status = input.ReadInt32();
+            break;
+          }
+          case 34: {
+            if (data_ == null) {
+              Data = new global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult();
+            }
+            input.ReadMessage(Data);
+            break;
+          }
         }
       }
     }
     #endif
-
-    #region Extensions
-    /// <summary>Container for extensions for other messages declared in the CodePagedDataOperationResult message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Extensions {
-      public static readonly pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult> Data =
-        new pb::Extension<global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.OperationResultStats, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult>(2000, pb::FieldCodec.ForMessage(16002, global::Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated.CodePagedDataResult.Parser));
-    }
-    #endregion
 
   }
 

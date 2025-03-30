@@ -11,21 +11,24 @@ message Code {
 }
 
 message CodeOperationResult {
-    extend OperationResultStats {
-        optional Code data = 1000;
-    }
+    required bool success = 1;
+    optional string message = 2;
+    required int32 status = 3;
+    optional Code data = 4;
 }
 
 message CodePagedDataResult {
-    extend PagedDataResult {
-        repeated Code data = 1000;
-    }
+    required int64 page = 1;
+    required int64 pages = 2;
+    required int64 total = 3;
+    repeated Code data = 4;
 }
 
 message CodePagedDataOperationResult {
-    extend OperationResultStats {
-        optional CodePagedDataResult data = 2000;
-    }
+    required bool success = 1;
+    optional string message = 2;
+    required int32 status = 3;
+    optional CodePagedDataResult data = 4;
 }
 
 service CodeService {

@@ -20,11 +20,16 @@ namespace Wissance.WebApiToolkit.Services
     /// <typeparam name="TData">Persistent item type, in terms of Web App it is a Table or some ORM Entity Class</typeparam>
     /// <typeparam name="TId">Unique Identifier type (could be different for different apps i.e int/string/Guid)</typeparam>
     /// <typeparam name="TFilter">Filter class</typeparam>
-    public abstract class ResourceBasedDataManageableReadOnlyService<TRes, TData, TId, TFilter> : IResourceBasedReadOnlyService<TRes, TData, TId, TFilter>
+    public class ResourceBasedDataManageableReadOnlyService<TRes, TData, TId, TFilter> : IResourceBasedReadOnlyService<TRes, TData, TId, TFilter>
         where TRes: class
         where TData: IModelIdentifiable<TId>
         where TFilter: class, IReadFilterable
     {
+        public ResourceBasedDataManageableReadOnlyService(IModelManager<TRes, TData, TId> manager)
+        {
+            Manager = manager;
+        }
+
         public virtual async Task<OperationResultDto<PagedDataDto<TRes>>> ReadAsync(int? page, int? size, string sort, string order, 
             TFilter filterParams)
         {
