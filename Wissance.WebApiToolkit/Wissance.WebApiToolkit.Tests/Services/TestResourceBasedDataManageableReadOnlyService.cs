@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated;
 using Wissance.WebApiToolkit.Tests.Utils;
+using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
 namespace Wissance.WebApiToolkit.Tests.Services
 {
@@ -21,6 +22,26 @@ namespace Wissance.WebApiToolkit.Tests.Services
             
             CodePagedDataOperationResult response = await client.ReadManyAsync(request);
             Assert.True(response.Success);
+            Assert.Equal(expectedPages, response.Data.Pages);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public async Task TestReadByIdAsync(int id)
+        {
+            CodeService.CodeServiceClient client = new CodeService.CodeServiceClient(CreateChannel());
+            OneItemRequest request = new OneItemRequest()
+            {
+                Id = id
+            };
+            CodeOperationResult response = await client.ReadOneAsync(request);
+            Code expected = new Code()
+            {
+                Id = 1,
+                Name = "Software development",
+                Code_ = "1"
+            };
+            CodeChecker.Check(expected, response.Data);
         }
     }
 }
