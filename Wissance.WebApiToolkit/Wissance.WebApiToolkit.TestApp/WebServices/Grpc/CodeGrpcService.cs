@@ -24,7 +24,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc
             CodePagedDataOperationResult response = new CodePagedDataOperationResult()
             {
                 Success = result.Success,
-                Message = result.Message,
+                Message = result.Message ?? String.Empty,
                 Status = result.Status,
             };
 
@@ -49,7 +49,7 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc
             CodeOperationResult response = new CodeOperationResult()
             {
                 Success = result.Success,
-                Message = result.Message,
+                Message = result.Message ?? String.Empty,
                 Status = result.Status,
                 Data = Convert(result.Data)
             };
