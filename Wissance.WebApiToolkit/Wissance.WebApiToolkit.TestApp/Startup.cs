@@ -74,7 +74,11 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureWebServices(IServiceCollection services)
         {
-            services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>();
+            services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>(
+                sp =>
+                {
+                    return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
