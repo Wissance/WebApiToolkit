@@ -25,17 +25,49 @@ namespace Wissance.WebApiToolkit.TestApp.WebServices.Grpc
             {
                 Success = result.Success,
                 Message = result.Message,
-                Status = result.Status
+                Status = result.Status,
             };
+
+            if (result.Data != null)
+            {
+                response.Data = new CodePagedDataResult()
+                {
+                    Page = result.Data.Page,
+                    Pages = result.Data.Pages,
+                    Total = result.Data.Total,
+                    Data = {result.Data.Data.Select(c => Convert(c))}
+                };
+            }
 
             return response;
         }
 
         public override async Task<CodeOperationResult> ReadOne(OneItemRequest request, ServerCallContext context)
         {
-            return await base.ReadOne(request, context);
+            OperationResultDto<CodeDto> result = await _serviceImpl.ReadByIdAsync(request.Id);
+            context.Status = GrpcErrorCodeHelper.GetGrpcStatus(result.Status, result.Message);
+            CodeOperationResult response = new CodeOperationResult()
+            {
+                Success = result.Success,
+                Message = result.Message,
+                Status = result.Status,
+                Data = Convert(result.Data)
+            };
+            return response;
         }
-        
+
+        private Code Convert(CodeDto dto)
+        {
+            if (dto == null)
+                return null;
+            return new Code()
+            {
+                Id = dto.Id,
+                Code_ = dto.Code,
+                Name = dto.Name
+            };
+        }
+
         private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
     }
 }
