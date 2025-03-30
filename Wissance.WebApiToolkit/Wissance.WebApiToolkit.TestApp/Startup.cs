@@ -5,9 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Services;
 using Wissance.WebApiToolkit.TestApp.Data;
+using Wissance.WebApiToolkit.TestApp.Data.Entity;
+using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.TestApp.Factories;
 using Wissance.WebApiToolkit.TestApp.Managers;
+using Wissance.WebApiToolkit.TestApp.WebServices.Grpc;
 
 namespace Wissance.WebApiToolkit.TestApp
 {
@@ -47,6 +52,8 @@ namespace Wissance.WebApiToolkit.TestApp
         {
             services.AddControllers();
             ConfigureManagers(services);
+            services.AddGrpc();
+            ConfigureWebServices(services);
         }
 
         private void ConfigureManagers(IServiceCollection services)
@@ -65,13 +72,20 @@ namespace Wissance.WebApiToolkit.TestApp
             });
         }
 
+        private void ConfigureWebServices(IServiceCollection services)
+        {
+            services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>();
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapGrpcService<CodeGrpcService>();
             });
+            
         }
         
         private IConfiguration Configuration { get; }
