@@ -5,9 +5,10 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v2.0.0/total?style=plastic)
 
-#### This lib helps to build `REST API` with `C#` and `AspNet` easily than writing it from scratch over and over in different projects.
+#### This lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build consistent API (with same `REST` routes scheme) with minimal amount of code: minimal REST controller contains 10 lines of code.
 
 ![WebApiToolkit helps to build application easily](/img/cover.png)
+
 
 ### 1. Key Features
 * `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
@@ -16,7 +17,8 @@
 * support ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
 * support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 2 WEB API projects: 
   - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
-  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`.
+  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`
+* support writing `GRPC` services with examples (see `Wissance.WebApiToolkit.TestApp` and `Wissance.WebApiToolkit.Tests`)
   
 Key concepts:
 1. `Controller` is a class that handles `HTTP-requests` to `REST Resource`.
@@ -67,6 +69,9 @@ If this toolkit should be used with `EntityFramework` you should derive you reso
 
 
 ### 4. Toolkit usage algorithm with EntityFramework
+
+#### 4.1 REST Services
+
 Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
 `API` you should do following:
 1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation (**for soft remove** also **add** `IModelSoftRemovable` implementation), i.e.:
@@ -178,12 +183,38 @@ public class BooksFilterable : IReadFilterable
     [FromQuery(Name = "author")] public string[] Authors { get; set; }
 }
 ```
+
+#### 4.2 GRPC Services
+
+Starting from `v3.0.0` it possible to create GRPC Services and we have algorithm for this with example based on same Manager classes with service classes that works as a proxy for generating GRPC-services, here we have 2 type of services:
+1. `RO` service with methods for Read data - `ResourceBasedDataManageableReadOnlyService` (GRPC equivalent to `BasicReadController`)
+2. `CRUD` service with methods Read + Create + Update and Delete - `ResourceBasedDataManageableCrudService`
+
+For building GRPC services based on these service implementation we just need to pass instance of this class to constructor, consider that we are having `CodeService` 
+
+```csharp
+public class CodeGrpcService : CodeService.CodeServiceBase
+{
+    public CodeGrpcService(ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> serviceImpl)
+    {
+        _serviceImpl = serviceImpl;
+    }
+    
+    // GRPC methods impl
+    
+    private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
+}
+```
+
+Unfortunately GRPC generates all types Request and therefore we should implement additional mapping to convert `DTO` to Response, see full example in this solution in the `Wissance.WebApiToolkit.TestApp` project 
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
     
 ### 6. Examples
-### Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found here: https://github.com/Wissance/WeatherControl
+Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found [here]( https://github.com/Wissance/WeatherControl)
+
+#### 6.1 REST Service example
 
 ```csharp
 [ApiController]
@@ -261,7 +292,96 @@ public class StationManager : EfModelManager<StationDto, StationEntity, int>
     private readonly ModelContext _modelContext;
 }
 ```
-JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit
+
+*JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit*
+
+#### 6.2 GRPC Service example
+
+For building GRPC service all what we need:
+1. `.proto` file, consider our CodeService example, we have the following GRPC methods:
+```proto
+service CodeService {
+    rpc ReadOne(OneItemRequest) returns (CodeOperationResult);
+    rpc ReadMany(PageDataRequest) returns (CodePagedDataOperationResult);
+}
+```
+2. `DI` for making service implementation:
+```csharp
+private void ConfigureWebServices(IServiceCollection services)
+{
+    services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>(
+        sp =>
+        {
+            return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
+        });
+}
+```
+3. GRPC Service that derives from generated service and use as a proxy to `ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>`:
+```csharp
+public class CodeGrpcService : CodeService.CodeServiceBase
+    {
+        public CodeGrpcService(ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> serviceImpl)
+        {
+            _serviceImpl = serviceImpl;
+        }
+
+        public override async Task<CodePagedDataOperationResult> ReadMany(PageDataRequest request, ServerCallContext context)
+        {
+            OperationResultDto<PagedDataDto<CodeDto>> result = await _serviceImpl.ReadAsync(request.Page, request.Size, request.Sort, request.Order,
+                new EmptyAdditionalFilters());
+            context.Status = GrpcErrorCodeHelper.GetGrpcStatus(result.Status, result.Message);
+            CodePagedDataOperationResult response = new CodePagedDataOperationResult()
+            {
+                Success = result.Success,
+                Message = result.Message ?? String.Empty,
+                Status = result.Status,
+            };
+
+            if (result.Data != null)
+            {
+                response.Data = new CodePagedDataResult()
+                {
+                    Page = result.Data.Page,
+                    Pages = result.Data.Pages,
+                    Total = result.Data.Total,
+                    Data = {result.Data.Data.Select(c => Convert(c))}
+                };
+            }
+
+            return response;
+        }
+
+        public override async Task<CodeOperationResult> ReadOne(OneItemRequest request, ServerCallContext context)
+        {
+            OperationResultDto<CodeDto> result = await _serviceImpl.ReadByIdAsync(request.Id);
+            context.Status = GrpcErrorCodeHelper.GetGrpcStatus(result.Status, result.Message);
+            CodeOperationResult response = new CodeOperationResult()
+            {
+                Success = result.Success,
+                Message = result.Message ?? String.Empty,
+                Status = result.Status,
+                Data = Convert(result.Data)
+            };
+            return response;
+        }
+
+        private Code Convert(CodeDto dto)
+        {
+            if (dto == null)
+                return null;
+            return new Code()
+            {
+                Id = dto.Id,
+                Code_ = dto.Code,
+                Name = dto.Name
+            };
+        }
+
+        private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
+    }
+```
+
+**Full example how it all works see in `Wissance.WebApiToolkit.TestApp` project**.
 
 ### 7. Extending API
 
