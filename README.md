@@ -381,6 +381,8 @@ public class CodeGrpcService : CodeService.CodeServiceBase
     }
 ```
 
+**Full example how it all works see in `Wissance.WebApiToolkit.TestApp` project**.
+
 ### 7. Extending API
 
 #### 7.1 Add new methods to existing controller
