@@ -186,7 +186,26 @@ public class BooksFilterable : IReadFilterable
 
 #### 4.2 GRPC Services
 
-Starting from `v3.0.0` it possible to create GRPC Services and we have algorithm for this with example
+Starting from `v3.0.0` it possible to create GRPC Services and we have algorithm for this with example based on same Manager classes with service classes that works as a proxy for generating GRPC-services, here we have 2 type of services:
+1. `RO` service with methods for Read data - `ResourceBasedDataManageableReadOnlyService` (GRPC equivalent to `BasicReadController`)
+2. `CRUD` service with methods Read + Create + Update and Delete - `ResourceBasedDataManageableCrudService`
+
+For building GRPC services based on these service implementation we just need to pass instance of this class to constructor, consider that we are having `CodeService` 
+
+```csharp
+public class CodeGrpcService : CodeService.CodeServiceBase
+{
+    public CodeGrpcService(ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> serviceImpl)
+    {
+        _serviceImpl = serviceImpl;
+    }
+    
+    // GRPC methods impl
+    
+    private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
+}
+```
+
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
