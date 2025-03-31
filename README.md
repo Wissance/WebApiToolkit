@@ -206,12 +206,15 @@ public class CodeGrpcService : CodeService.CodeServiceBase
 }
 ```
 
+Unfortunately GRPC generates all types Request and therefore we should implement additional mapping to convert `DTO` to Response, see full example in this solution in the `Wissance.WebApiToolkit.TestApp` project 
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
     
 ### 6. Examples
-### Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found here: https://github.com/Wissance/WeatherControl
+Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found [here]( https://github.com/Wissance/WeatherControl)
+
+#### 6.1 REST Service example
 
 ```csharp
 [ApiController]
@@ -289,7 +292,31 @@ public class StationManager : EfModelManager<StationDto, StationEntity, int>
     private readonly ModelContext _modelContext;
 }
 ```
-JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit
+
+*JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit*
+
+#### 6.2 GRPC Service example
+
+For building GRPC service all what we need:
+1. `.proto` file, consider our CodeService example, we have the following GRPC methods:
+```proto
+service CodeService {
+    rpc ReadOne(OneItemRequest) returns (CodeOperationResult);
+    rpc ReadMany(PageDataRequest) returns (CodePagedDataOperationResult);
+}
+```
+2. `DI` for making service implementation:
+```csharp
+private void ConfigureWebServices(IServiceCollection services)
+{
+    services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>(
+        sp =>
+        {
+            return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
+        });
+}
+```
+3. GRPC Service that derives from generated service and use as a proxy to `ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>`
 
 ### 7. Extending API
 
