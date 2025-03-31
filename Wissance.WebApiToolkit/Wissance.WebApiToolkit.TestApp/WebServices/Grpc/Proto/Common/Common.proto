@@ -1,0 +1,29 @@
+syntax = "proto2";
+
+option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
+
+message OperationResultStats {
+    required bool success = 1;
+    required string message = 2;
+    required int32 status = 3;
+    extensions 4 to max;
+}
+
+message PagedDataResult {
+    required int64 page = 1;
+    required int64 pages = 2;
+    required int64 total = 3;
+    extensions 4 to max;
+}
+
+message OneItemRequest {
+    required int32 id = 1;
+}
+
+message PageDataRequest {
+    optional int32 page = 1;
+    optional int32 size = 2;
+    optional string sort = 3;
+    optional string order = 4;
+    extensions 5 to max;
+}

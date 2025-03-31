@@ -23,7 +23,8 @@ namespace Wissance.WebApiToolkit.Utils
 
         public static int GetPageSize(int? size)
         {
-            return size ?? DefaultSize;
+            int selectedSize = size ?? DefaultSize;
+            return selectedSize <= 0 ? DefaultSize : selectedSize;
         }
         
         private const int DefaultPage = 1;

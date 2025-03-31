@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+option csharp_namespace = "Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated";
+
+import 'Common/Common.proto';
+
+message Code {
+    required int32 id = 1;
+    required string code = 2;
+    required string name = 3;
+}
+
+message CodeOperationResult {
+    required bool success = 1;
+    optional string message = 2;
+    required int32 status = 3;
+    optional Code data = 4;
+}
+
+message CodePagedDataResult {
+    required int64 page = 1;
+    required int64 pages = 2;
+    required int64 total = 3;
+    repeated Code data = 4;
+}
+
+message CodePagedDataOperationResult {
+    required bool success = 1;
+    optional string message = 2;
+    required int32 status = 3;
+    optional CodePagedDataResult data = 4;
+}
+
+service CodeService {
+    rpc ReadOne(OneItemRequest) returns (CodeOperationResult);
+    rpc ReadMany(PageDataRequest) returns (CodePagedDataOperationResult);
+}

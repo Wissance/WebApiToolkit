@@ -5,12 +5,12 @@ using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Controllers
 {
+    [Route("api/bulk/[controller]")]
     public class BasicBulkCrudController<TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
         where TRes : class
         where TFilter: class, IReadFilterable
     {
         [HttpPost]
-        [Route("api/bulk/[controller]")]
         public virtual async Task<OperationResultDto<TRes[]>> BulkCreateAsync([FromBody] TRes[] data)
         {
             OperationResultDto<TRes[]> result = await Manager.BulkCreateAsync(data);
@@ -19,7 +19,6 @@ namespace Wissance.WebApiToolkit.Controllers
         }
 
         [HttpPut]
-        [Route("api/bulk/[controller]")]
         public virtual async Task<OperationResultDto<TRes[]>> UpdateAsync([FromBody] TRes[] data)
         {
             OperationResultDto<TRes[]> result = await Manager.BulkUpdateAsync(data);
@@ -28,7 +27,6 @@ namespace Wissance.WebApiToolkit.Controllers
         }
 
         [HttpDelete]
-        [Route("api/bulk/[controller]")]
         public virtual async Task DeleteAsync([FromQuery] TId[] id)
         {
             OperationResultDto<bool> result = await Manager.BulkDeleteAsync(id);

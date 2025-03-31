@@ -22,7 +22,7 @@ namespace Wissance.WebApiToolkit.Utils.Extractors
                 T typedValue = (T)Convert.ChangeType(value, tType);
                 return new Tuple<T, bool>(typedValue, true);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new Tuple<T, bool>(default(T), false);
             }

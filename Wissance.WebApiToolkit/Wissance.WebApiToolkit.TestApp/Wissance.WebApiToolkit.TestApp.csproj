@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>10</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google.Protobuf" Version="3.30.1" />
+      <PackageReference Include="Grpc.AspNetCore" Version="2.70.0" />
+      <PackageReference Include="Grpc.AspNetCore.Server" Version="2.70.0" />
+      <PackageReference Include="Grpc.Core.Api" Version="2.70.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.71.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.17" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Wissance.WebApiToolkit.Data\Wissance.WebApiToolkit.Data.csproj" />
+      <ProjectReference Include="..\Wissance.WebApiToolkit.Dto\Wissance.WebApiToolkit.Dto.csproj" />
+      <ProjectReference Include="..\Wissance.WebApiToolkit\Wissance.WebApiToolkit.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="Both" OutputDir="$(ProjectDir)WebServices\Grpc\Generated" ProtoCompile="True" CompileOutputs="true" />
+        <Protobuf Include="$(ProjectDir)WebServices\Grpc\Proto\Common\*.proto" ProtoRoot="$(ProjectDir)WebServices\Grpc\Proto" GrpcServices="None" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true' ">
+        <DisableProtobufDesignTimeBuild>true</DisableProtobufDesignTimeBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="WebServices\Grpc\Generated" />
+    </ItemGroup>
+
+</Project>
