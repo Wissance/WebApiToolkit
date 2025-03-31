@@ -5,9 +5,10 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v2.0.0/total?style=plastic)
 
-#### This lib helps to build `REST API` with `C#` and `AspNet` easily than writing it from scratch over and over in different projects.
+#### This lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build consistent API (with same `REST` routes scheme) with minimal amount of code: minimal REST controller contains 10 lines of code.
 
 ![WebApiToolkit helps to build application easily](/img/cover.png)
+
 
 ### 1. Key Features
 * `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
@@ -16,7 +17,8 @@
 * support ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
 * support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 2 WEB API projects: 
   - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
-  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`.
+  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`
+* support writing `GRPC` services with examples (see `Wissance.WebApiToolkit.TestApp` and `Wissance.WebApiToolkit.Tests`)
   
 Key concepts:
 1. `Controller` is a class that handles `HTTP-requests` to `REST Resource`.
@@ -67,6 +69,9 @@ If this toolkit should be used with `EntityFramework` you should derive you reso
 
 
 ### 4. Toolkit usage algorithm with EntityFramework
+
+#### 4.1 REST Services
+
 Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
 `API` you should do following:
 1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation (**for soft remove** also **add** `IModelSoftRemovable` implementation), i.e.:
@@ -178,6 +183,10 @@ public class BooksFilterable : IReadFilterable
     [FromQuery(Name = "author")] public string[] Authors { get; set; }
 }
 ```
+
+#### 4.2 GRPC Services
+
+Starting from `v3.0.0` it possible to create GRPC Services and we have algorithm for this with example
     
 ### 5. Nuget package
 You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
