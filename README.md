@@ -3,11 +3,27 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v2.0.0/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v3.0.0/total?style=plastic)
 
 #### This lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build consistent API (with same `REST` routes scheme) with minimal amount of code: minimal REST controller contains 10 lines of code.
 
 ![WebApiToolkit helps to build application easily](/img/cover.png)
+
+ * [1. Key Features](#1-key-features)
+  * [2. API Contract](#2-api-contract)
+  * [3. Requirements](#3-requirements)
+  * [4. Toolkit usage algorithm with EntityFramework](#4-toolkit-usage-algorithm-with-entityframework)
+    + [4.1 REST Services](#41-rest-services)
+    + [4.2 GRPC Services](#42-grpc-services)
+  * [5. Nuget package](#5-nuget-package)
+  * [6. Examples](#6-examples)
+    + [6.1 REST Service example](#61-rest-service-example)
+    + [6.2 GRPC Service example](#62-grpc-service-example)
+  * [7. Extending API](#7-extending-api)
+    + [7.1 Add new methods to existing controller](#71-add-new-methods-to-existing-controller)
+    + [7.2 Add security to protect you API](#72-add-security-to-protect-you-api)
+  * [8. Additional materials](#8-additional-materials)
+  * [9. Contributors](#9-contributors)
 
 
 ### 1. Key Features
