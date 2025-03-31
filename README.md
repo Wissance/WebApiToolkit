@@ -9,6 +9,21 @@
 
 ![WebApiToolkit helps to build application easily](/img/cover.png)
 
+ * [1. Key Features](#1-key-features)
+  * [2. API Contract](#2-api-contract)
+  * [3. Requirements](#3-requirements)
+  * [4. Toolkit usage algorithm with EntityFramework](#4-toolkit-usage-algorithm-with-entityframework)
+    + [4.1 REST Services](#41-rest-services)
+    + [4.2 GRPC Services](#42-grpc-services)
+  * [5. Nuget package](#5-nuget-package)
+  * [6. Examples](#6-examples)
+    + [6.1 REST Service example](#61-rest-service-example)
+    + [6.2 GRPC Service example](#62-grpc-service-example)
+  * [7. Extending API](#7-extending-api)
+    + [7.1 Add new methods to existing controller](#71-add-new-methods-to-existing-controller)
+    + [7.2 Add security to protect you API](#72-add-security-to-protect-you-api)
+  * [8. Additional materials](#8-additional-materials)
+  * [9. Contributors](#9-contributors)
 
 ### 1. Key Features
 * `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
