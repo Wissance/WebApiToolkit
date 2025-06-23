@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Wissance.WebApiToolkit.Utils;
+using Wissance.WebApiToolkit.Core.Utils;
 
-namespace Wissance.WebApiToolkit.Controllers
+namespace Wissance.WebApiToolkit.Core.Controllers
 {
     public abstract class BasicPagedDataController : ControllerBase
     {

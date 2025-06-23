@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit", "Wissance.WebApiToolkit\Wissance.WebApiToolkit.csproj", "{8FB88DB6-B241-4B50-B6C9-385615183E0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Core", "Wissance.WebApiToolkit.Core\Wissance.WebApiToolkit.Core.csproj", "{8FB88DB6-B241-4B50-B6C9-385615183E0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Dto", "Wissance.WebApiToolkit.Dto\Wissance.WebApiToolkit.Dto.csproj", "{2E1C637A-A6A8-45A6-A568-24DDCCF9558C}"
 EndProject

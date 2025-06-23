@@ -26,7 +26,7 @@
       <ProjectReference Include="..\Wissance.WebApiToolkit.Data\Wissance.WebApiToolkit.Data.csproj" />
       <ProjectReference Include="..\Wissance.WebApiToolkit.Dto\Wissance.WebApiToolkit.Dto.csproj" />
       <ProjectReference Include="..\Wissance.WebApiToolkit.Ef\Wissance.WebApiToolkit.Ef.csproj" />
-      <ProjectReference Include="..\Wissance.WebApiToolkit\Wissance.WebApiToolkit.csproj" />
+      <ProjectReference Include="..\Wissance.WebApiToolkit.Core\Wissance.WebApiToolkit.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>

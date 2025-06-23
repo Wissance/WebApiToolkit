@@ -6,11 +6,11 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Managers;
-using Wissance.WebApiToolkit.Managers.Helpers;
+using Wissance.WebApiToolkit.Core.Managers;
+using Wissance.WebApiToolkit.Core.Managers.Helpers;
 
 namespace Wissance.WebApiToolkit.Ef.Managers
 {

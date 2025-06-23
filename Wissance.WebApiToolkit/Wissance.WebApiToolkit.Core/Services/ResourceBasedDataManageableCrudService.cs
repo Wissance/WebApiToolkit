@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Data;
+using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Managers;
 
-namespace Wissance.WebApiToolkit.Services
+namespace Wissance.WebApiToolkit.Core.Services
 {
     /// <summary>
     ///     This is a full CRUD service implementation based on usage IModelManager as a service class for accessing

@@ -5,12 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Managers;
+using Wissance.WebApiToolkit.Core.Utils;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Managers;
-using Wissance.WebApiToolkit.Utils;
 
-namespace Wissance.WebApiToolkit.Controllers
+namespace Wissance.WebApiToolkit.Core.Controllers
 {
 
     /// <summary>

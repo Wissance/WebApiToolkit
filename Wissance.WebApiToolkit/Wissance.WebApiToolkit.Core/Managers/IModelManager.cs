@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Dto;
 
-namespace Wissance.WebApiToolkit.Managers
+namespace Wissance.WebApiToolkit.Core.Managers
 {
     /// <summary>
     ///     This is a common interface to perform CRUD and some other common operation over PERSISTENCE Data.

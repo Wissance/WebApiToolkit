@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Wissance.WebApiToolkit.Data
+namespace Wissance.WebApiToolkit.Core.Data
 {
     public class EmptyAdditionalFilters : IReadFilterable
     {

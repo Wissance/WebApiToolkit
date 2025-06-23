@@ -1,7 +1,7 @@
 using Grpc.Core;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Services;
+using Wissance.WebApiToolkit.Core.Services;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.TestApp.WebServices.Grpc.Generated;

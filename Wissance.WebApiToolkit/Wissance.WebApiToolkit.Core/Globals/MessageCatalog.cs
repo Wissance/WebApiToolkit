@@ -1,4 +1,4 @@
-namespace Wissance.WebApiToolkit.Globals
+namespace Wissance.WebApiToolkit.Core.Globals
 {
     public static class MessageCatalog
     {

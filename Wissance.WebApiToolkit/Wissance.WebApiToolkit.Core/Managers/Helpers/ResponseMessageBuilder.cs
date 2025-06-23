@@ -1,6 +1,6 @@
-using Wissance.WebApiToolkit.Globals;
+using Wissance.WebApiToolkit.Core.Globals;
 
-namespace Wissance.WebApiToolkit.Managers.Helpers
+namespace Wissance.WebApiToolkit.Core.Managers.Helpers
 {
     public static class ResponseMessageBuilder
     {

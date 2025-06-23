@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Dto;
 
-namespace Wissance.WebApiToolkit.Controllers
+namespace Wissance.WebApiToolkit.Core.Controllers
 {
     [Route("api/[controller]")]
     public abstract class BasicCrudController <TRes, TData, TId, TFilter> : BasicReadController<TRes, TData, TId, TFilter>
