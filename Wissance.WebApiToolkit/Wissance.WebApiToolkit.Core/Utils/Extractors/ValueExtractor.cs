@@ -1,5 +1,4 @@
 using System;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Wissance.WebApiToolkit.Core.Utils.Extractors
 {

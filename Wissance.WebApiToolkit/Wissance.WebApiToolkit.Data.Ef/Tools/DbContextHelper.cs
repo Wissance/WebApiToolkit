@@ -6,7 +6,7 @@ using System.Threading.Tasks.Dataflow;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 
-namespace Wissance.WebApiToolkit.Data.Tools
+namespace Wissance.WebApiToolkit.Data.Ef.Tools
 {
     /// <summary>
     ///    This class is a set of tools that helps us working with EntityFramework especially for migration generation
