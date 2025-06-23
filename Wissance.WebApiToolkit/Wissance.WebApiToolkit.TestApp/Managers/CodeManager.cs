@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using Wissance.WebApiToolkit.Ef.Managers;
 using Wissance.WebApiToolkit.Managers;
 using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;

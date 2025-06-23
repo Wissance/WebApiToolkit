@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.TestApp", "Wissance.WebApiToolkit.TestApp\Wissance.WebApiToolkit.TestApp.csproj", "{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Ef", "Wissance.WebApiToolkit.Ef\Wissance.WebApiToolkit.Ef.csproj", "{96F355D5-13E4-4FB8-99C3-64B60001550A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
