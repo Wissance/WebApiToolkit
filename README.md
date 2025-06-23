@@ -7,7 +7,7 @@
 
 #### This lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build consistent API (with same `REST` routes scheme) with minimal amount of code: minimal REST controller contains 10 lines of code.
 
-![WebApiToolkit helps to build application easily](/img/cover.png)
+![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
 
  * [1. Key Features](#1-key-features)
   * [2. API Contract](#2-api-contract)
