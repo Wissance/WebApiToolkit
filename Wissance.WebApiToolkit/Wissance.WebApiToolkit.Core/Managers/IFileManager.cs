@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Wissance.WebApiToolkit.Core.Data.Files;
@@ -6,6 +7,13 @@ using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Core.Managers
 {
+    /// <summary>
+    ///    General file manager interface that could be used for different source types:
+    ///      - local file system folders
+    ///      - nfs i.e. samba
+    ///      - ftp
+    ///      - S3 (Cloud like Amazon, Cloudflare) or Local (MinIO)
+    /// </summary>
     public interface IFileManager
     {
         /// <summary>
@@ -17,18 +25,44 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <param name="source">source identifier</param>
         /// <param name="path">relative path inside source</param>
         /// <returns></returns>
-        Task<OperationResultDto<IList<TinyFileInfo>>> GetFiles(string source, string path);
-        // todo(UMV): add GetFileContent()
+        Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = ".");
+        /// <summary>
+        ///     Returns file content (bytes)
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath);
         /// <summary>
         ///     This method creates directory in specified source relative to path
         /// </summary>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
+        /// <param name="path">relative path inside source</param>
+        /// <param name="dirName">creating directory name</param>
+        /// <returns>Success in operation result if directory was created, otherwise - failure</returns>
+        Task<OperationResultDto<bool>> CreateDirAsync(string source, string path, string dirName);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath);
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="source"></param>
         /// <param name="path"></param>
-        /// <param name="dirName"></param>
+        /// <param name="fileName"></param>
+        /// <param name="fileContent"></param>
         /// <returns></returns>
-        Task<OperationResultDto<bool>> CreateDir(string source, string path, string dirName);
-        Task<OperationResultDto<bool>> RemoveDir(string source, string path, string dirName);
-        Task<OperationResultDto<bool>> CreateFile(string source, string path, IFormFile file);
-        Task<OperationResultDto<bool>> RemoveFile(string source, string path, string fileName);
+        Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath);
     }
 }
