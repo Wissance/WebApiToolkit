@@ -13,6 +13,12 @@ namespace Wissance.WebApiToolkit.Core.Managers
     ///      - nfs i.e. samba
     ///      - ftp
     ///      - S3 (Cloud like Amazon, Cloudflare) or Local (MinIO)
+    ///    Source is an every method parameter, string key that references credentials && access option
+    ///    Here we don't expect to work with files > 100 Mb and greater, there should be IStreamManager or
+    ///    something like this. One thing that also should be noted : we are plan to implement Controller
+    ///    that allows to deal with files and usually files are not exists without some other persistant
+    ///    data therefore we are going to implement mechanism that allows to manipulate files and related
+    ///    data.
     /// </summary>
     public interface IFileManager
     {
@@ -22,15 +28,15 @@ namespace Wissance.WebApiToolkit.Core.Managers
         ///    startup. In case of S3 implementation we could dynamically Create && Delete Buckets therefore
         ///    S3 implementation is more complicated
         /// </summary>
-        /// <param name="source">source identifier</param>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="path">relative path inside source</param>
         /// <returns></returns>
         Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = ".");
         /// <summary>
         ///     Returns file content (bytes)
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="filePath"></param>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
+        /// <param name="filePath">full</param>
         /// <returns></returns>
         Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath);
         /// <summary>
@@ -44,15 +50,15 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="dirPath"></param>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
+        /// <param name="dirPath">relative path inside source</param>
         /// <returns></returns>
         Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath);
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="path"></param>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
+        /// <param name="path">relative path inside source</param>
         /// <param name="fileName"></param>
         /// <param name="fileContent"></param>
         /// <returns></returns>
@@ -60,7 +66,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="filePath"></param>
         /// <returns></returns>
         Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath);
