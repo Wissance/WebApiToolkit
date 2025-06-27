@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Wissance.WebApiToolkit.Core.Data.Files;
 using Wissance.WebApiToolkit.Dto;
 
@@ -40,31 +39,32 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <returns></returns>
         Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath);
         /// <summary>
-        ///     This method creates directory in specified source relative to path
+        ///     Create directory in the source (web folder or s3 Bucket) by relative
+        ///     path with name provided in dirName 
         /// </summary>
         /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="path">relative path inside source</param>
         /// <param name="dirName">creating directory name</param>
-        /// <returns>Success in operation result if directory was created, otherwise - failure</returns>
-        Task<OperationResultDto<bool>> CreateDirAsync(string source, string path, string dirName);
+        /// <returns>OperationResultDto with Directory full path inside source, if directory wasn't created - null</returns>
+        Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName);
         /// <summary>
-        /// 
+        ///     Removes directory in source (if directory is not empty it will be removed with all children)
         /// </summary>
         /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="dirPath">relative path inside source</param>
-        /// <returns></returns>
+        /// <returns>OperationResultDto with bool value: true - directory was removed, false - wasn't</returns>
         Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath);
         /// <summary>
-        /// 
+        ///     Creates a new file in source by relative path with specified fileName and content in a MemoryStream
         /// </summary>
         /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="path">relative path inside source</param>
-        /// <param name="fileName"></param>
-        /// <param name="fileContent"></param>
-        /// <returns></returns>
+        /// <param name="fileName">name of a creating file</param>
+        /// <param name="fileContent">binary data as a stream</param>
+        /// <returns> Operation result with full path inside source </returns>
         Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent);
         /// <summary>
-        /// 
+        ///     Removes file from source
         /// </summary>
         /// <param name="source">source identifier : web folder id or Bucket name</param>
         /// <param name="filePath"></param>
