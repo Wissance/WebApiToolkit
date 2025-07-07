@@ -10,5 +10,7 @@ namespace Wissance.WebApiToolkit.Core.Globals
 
         public const string UnknownErrorMessageTemplate = "An error occurred during {0} \"{1}\", contact system maintainer";
         public const string UserNotAuthenticatedMessage = "User is not authenticated";
+
+        public const string BadSourceProvidedTemplate = "Source: \"{0}\" does not exist or was not provided";
     }
 }

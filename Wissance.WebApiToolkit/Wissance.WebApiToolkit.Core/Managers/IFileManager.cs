@@ -2,10 +2,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Wissance.WebApiToolkit.Core.Data.Files;
+using Wissance.WebApiToolkit.Core.Events;
 using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Core.Managers
 {
+
+    public delegate void DirectorySuccessfullyCreatedHandler(object sender, DirectorySuccessfullyCreatedEventArgs e);
+    public delegate void DirectorySuccessfullyDeletedHandler(object sender, DirectorySuccessfullyDeletedEventArgs e);
+    public delegate void FileSuccessfullyCreatedHandler(object sender, FileSuccessfullyCreatedEventArgs e);
+    public delegate void FileSuccessfullyDeletedHandler(object sender, FileSuccessfullyDeletedEventArgs e);
+    
     /// <summary>
     ///    General file manager interface that could be used for different source types:
     ///      - local file system folders
@@ -70,5 +77,21 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <param name="filePath"></param>
         /// <returns></returns>
         Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath);
+        /// <summary>
+        ///     Event occurs when Directory was successfully created via CreateDirAsync
+        /// </summary>
+        event DirectorySuccessfullyCreatedHandler OnDirectoryCreated;
+        /// <summary>
+        ///     Event occurs when Directory was successfully deleted via DeleteDirAsync
+        /// </summary>
+        event DirectorySuccessfullyDeletedHandler OnDirectoryDeleted;
+        /// <summary>
+        ///     Event occurs when File was successfully created via CreateFileAsync
+        /// </summary>
+        event FileSuccessfullyCreatedHandler OnFileCreated;
+        /// <summary>
+        ///     Event occurs when File was successfully deleted via DeleteFileAsync
+        /// </summary>
+        event FileSuccessfullyDeletedHandler OnFileDeleted;
     }
 }

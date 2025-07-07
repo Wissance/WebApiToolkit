@@ -69,5 +69,10 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         {
             return string.Format(MessageCatalog.UnknownErrorMessageTemplate, operation, resource);
         }
+
+        public static string GetBadSourceErrorMessage(string source)
+        {
+            return string.Format(MessageCatalog.BadSourceProvidedTemplate, source);
+        }
     }
 }
