@@ -106,6 +106,13 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="path"></param>
+        /// <param name="dirName"></param>
+        /// <returns></returns>
         public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName)
         {
             try
@@ -130,28 +137,83 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="dirPath"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath)
         {
-            if (!_sources.ContainsKey(source))
+            try
+            {
+                if (!_sources.ContainsKey(source))
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
+                string fullDirPath = Path.GetFullPath(Path.Combine(_sources[source], dirPath));
+                if (!Directory.Exists(fullDirPath))
+                {
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
+                        ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), false);
+                }
+
+                throw new System.NotImplementedException();
+            }
+            catch (Exception e)
+            {
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
-            throw new System.NotImplementedException();
+                    ResponseMessageBuilder.GetUnknownErrorMessage("DeleteDir", e.Message), false);
+            }
         }
 
-        public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="path"></param>
+        /// <param name="fileName"></param>
+        /// <param name="fileContent"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, 
+            MemoryStream fileContent)
         {
-            if (!_sources.ContainsKey(source))
+            try
+            {
+                if (!_sources.ContainsKey(source))
+                    return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetBadSourceErrorMessage(source), null);
+                throw new System.NotImplementedException();
+            }
+            catch (Exception e)
+            {
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetBadSourceErrorMessage(source), null);
-            throw new System.NotImplementedException();
+                    ResponseMessageBuilder.GetUnknownErrorMessage("CreateFile", e.Message), null);
+            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath)
         {
-            if (!_sources.ContainsKey(source))
+            try
+            {
+                if (!_sources.ContainsKey(source))
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
+                throw new System.NotImplementedException();
+            }
+            catch (Exception e)
+            {
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
-            throw new System.NotImplementedException();
+                    ResponseMessageBuilder.GetUnknownErrorMessage("DeleteFile", e.Message), false);
+            }
         }
 
         public event DirectorySuccessfullyCreatedHandler OnDirectoryCreated;
