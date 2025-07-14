@@ -43,12 +43,12 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        ///     Returns list of files or dirs in source in specified directory (path). Does not return list of files
-        ///     in directories, should be queried separately
+        ///     Returns a list of files or directories in the source in the specified directory (path).
+        ///     Does not return a list of files in subdirectories; should be queried separately.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="source">source identifier</param>
+        /// <param name="path">directory in the source to get list of a files and dirs</param>
+        /// <returns>List of FileInfo with a tiny info about items (name, file or dir, and size if file) </returns>
         public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = "")
         {
             try
@@ -70,17 +70,19 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during \"GetFiles\" method call for source: \"{source}\" for path: \"{path}\", error: {e.Message}");
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<IList<TinyFileInfo>>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("GetFiles", e.Message), null);
             }
         }
 
         /// <summary>
-        ///    
+        ///    Reads file content in a source and returns it content as a MemoryStream wrapped in OperationResultDto
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
+        /// <param name="source">source identifier</param>
+        /// <param name="filePath">path to file</param>
+        /// <returns>File binary content as a MemoryStream</returns>
         public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath)
         {
             try
@@ -102,26 +104,29 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during \"GetFileContent\" method call for source: \"{source}\" for file: \"{filePath}\", error: {e.Message}");
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<MemoryStream>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("GetFileContent", e.Message), null);
             }
         }
 
         /// <summary>
-        /// 
+        ///     Creates a new directory with specified dirName in a source relative to a path 
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="path"></param>
-        /// <param name="dirName"></param>
+        /// <param name="source">source identifier</param>
+        /// <param name="path">folder relative to source</param>
+        /// <param name="dirName">name of creating directory</param>
         /// <returns></returns>
         public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName)
         {
+            string dirPath = "";
             try
             {
                 if (!_sources.ContainsKey(source))
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                         ResponseMessageBuilder.GetBadSourceErrorMessage(source), null);
-                string dirPath = Path.GetFullPath(Path.Combine(_sources[source], path, dirName));
+                dirPath = Path.GetFullPath(Path.Combine(_sources[source], path, dirName));
                 if (Directory.Exists(dirPath))
                 {
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.Conflict,
@@ -133,6 +138,8 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during \"CreateDir\" method call for source: \"{source}\" for file: \"{dirPath}\", error: {e.Message}");
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("CreateDir", e.Message), null);
             }
@@ -141,7 +148,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source"> source identifier </param>
         /// <param name="dirPath"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
@@ -165,6 +172,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("DeleteDir", e.Message), false);
             }
@@ -173,7 +181,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source"> source identifier </param>
         /// <param name="path"></param>
         /// <param name="fileName"></param>
         /// <param name="fileContent"></param>
@@ -199,6 +207,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("CreateFile", e.Message), null);
             }
@@ -207,7 +216,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source"> source identifier </param>
         /// <param name="filePath"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
@@ -229,6 +238,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("DeleteFile", e.Message), false);
             }
