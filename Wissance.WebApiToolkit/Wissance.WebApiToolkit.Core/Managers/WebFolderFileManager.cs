@@ -43,7 +43,8 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        /// 
+        ///     Returns list of files or dirs in source in specified directory (path). Does not return list of files
+        ///     in directories, should be queried separately
         /// </summary>
         /// <param name="source"></param>
         /// <param name="path"></param>
@@ -75,7 +76,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        /// 
+        ///    
         /// </summary>
         /// <param name="source"></param>
         /// <param name="filePath"></param>
@@ -158,7 +159,9 @@ namespace Wissance.WebApiToolkit.Core.Managers
                         ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), false);
                 }
 
-                throw new System.NotImplementedException();
+                Directory.Delete(dirPath, true);
+                return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent,
+                    ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), true);
             }
             catch (Exception e)
             {
@@ -215,7 +218,14 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (!_sources.ContainsKey(source))
                     return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                         ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
-                throw new System.NotImplementedException();
+                string fullFileName = Path.GetFullPath(Path.Combine(_sources[source], filePath));
+                if (!File.Exists(fullFileName))
+                {
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
+                        ResponseMessageBuilder.GetResourceNotFoundMessage("File", filePath), false);
+                }
+                File.Delete(fullFileName);
+                return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent, String.Empty, true);
             }
             catch (Exception e)
             {
