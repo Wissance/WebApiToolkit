@@ -128,7 +128,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 }
 
                 DirectoryInfo info = Directory.CreateDirectory(dirPath);
-                return new OperationResultDto<string>(true, (int) HttpStatusCode.OK, String.Empty, dirPath);
+                return new OperationResultDto<string>(true, (int) HttpStatusCode.Created, String.Empty, dirPath);
             }
             catch (Exception e)
             {
@@ -184,7 +184,15 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (!_sources.ContainsKey(source))
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                         ResponseMessageBuilder.GetBadSourceErrorMessage(source), null);
-                throw new System.NotImplementedException();
+                string fullFileName = Path.Combine(_sources[source], path, fileName);
+                if (File.Exists(fullFileName))
+                {
+                    return new OperationResultDto<string>(false, (int) HttpStatusCode.Conflict,
+                        string.Format(DirectoryAlreadyExistsMessage, fullFileName, source), null);
+                }
+
+                await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
+                return new OperationResultDto<string>(true, (int) HttpStatusCode.Created, String.Empty, fullFileName);
             }
             catch (Exception e)
             {
