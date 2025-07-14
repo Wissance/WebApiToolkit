@@ -112,12 +112,13 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        ///     Creates a new directory with specified dirName in a source relative to a path 
+        ///     Creates a new directory with specified dirName in a source relative to a path. If directory already
+        ///     exists returns error (Conflict)
         /// </summary>
         /// <param name="source">source identifier</param>
         /// <param name="path">folder relative to source</param>
         /// <param name="dirName">name of creating directory</param>
-        /// <returns></returns>
+        /// <returns>Path to created directory wrapped in a OperationResultDto</returns>
         public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName)
         {
             string dirPath = "";
@@ -138,7 +139,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during \"CreateDir\" method call for source: \"{source}\" for file: \"{dirPath}\", error: {e.Message}");
+                _logger.LogError($"An error occurred during \"CreateDir\" method call for source: \"{source}\" for directory: \"{dirPath}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("CreateDir", e.Message), null);
@@ -146,12 +147,12 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        /// 
+        ///     Removes directory recursively with all files and subdirectories, if directory does not exists
+        ///     returns false in success (NotFound)
         /// </summary>
-        /// <param name="source"> source identifier </param>
-        /// <param name="dirPath"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="source">source identifier</param>
+        /// <param name="dirPath">path of removing directory</param>
+        /// <returns> bool as a result of directory delete</returns>
         public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath)
         {
             try
@@ -172,6 +173,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during \"DeleteDir\" method call for source: \"{source}\" for directory: \"{dirPath}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("DeleteDir", e.Message), false);
@@ -179,23 +181,23 @@ namespace Wissance.WebApiToolkit.Core.Managers
         }
 
         /// <summary>
-        /// 
+        ///     Creates a new file in a source, if file with such name already exists returns error (Conflict).
         /// </summary>
-        /// <param name="source"> source identifier </param>
-        /// <param name="path"></param>
-        /// <param name="fileName"></param>
-        /// <param name="fileContent"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="source">source identifier</param>
+        /// <param name="path">path where file should be created</param>
+        /// <param name="fileName">name of a newly creating file</param>
+        /// <param name="fileContent">binary file content</param>
+        /// <returns>Path to a newly created file wrapped in OperationResultDto</returns>
         public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, 
             MemoryStream fileContent)
         {
+            string fullFileName = "";
             try
             {
                 if (!_sources.ContainsKey(source))
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                         ResponseMessageBuilder.GetBadSourceErrorMessage(source), null);
-                string fullFileName = Path.Combine(_sources[source], path, fileName);
+                fullFileName = Path.Combine(_sources[source], path, fileName);
                 if (File.Exists(fullFileName))
                 {
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.Conflict,
@@ -208,26 +210,27 @@ namespace Wissance.WebApiToolkit.Core.Managers
             catch (Exception e)
             {
                 _logger.LogDebug(e.ToString());
+                _logger.LogError($"An error occurred during \"CreateFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("CreateFile", e.Message), null);
             }
         }
 
         /// <summary>
-        /// 
+        ///     Removes file in source. Returns error if file does not exists (NotFound). 
         /// </summary>
         /// <param name="source"> source identifier </param>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="filePath">path to file</param>
+        /// <returns>bool as a result of file delete operation</returns>
         public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath)
         {
+            string fullFileName = "";
             try
             {
                 if (!_sources.ContainsKey(source))
                     return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                         ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
-                string fullFileName = Path.GetFullPath(Path.Combine(_sources[source], filePath));
+                fullFileName = Path.GetFullPath(Path.Combine(_sources[source], filePath));
                 if (!File.Exists(fullFileName))
                 {
                     return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
@@ -238,6 +241,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
             catch (Exception e)
             {
+                _logger.LogError($"An error occurred during \"DeleteFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
                     ResponseMessageBuilder.GetUnknownErrorMessage("DeleteFile", e.Message), false);
