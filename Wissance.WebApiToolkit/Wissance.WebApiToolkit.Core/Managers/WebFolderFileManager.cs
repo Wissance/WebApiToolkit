@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wissance.WebApiToolkit.Core.Data.Files;
+using Wissance.WebApiToolkit.Core.Globals;
 using Wissance.WebApiToolkit.Core.Managers.Helpers;
 using Wissance.WebApiToolkit.Dto;
 
@@ -94,7 +95,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (!File.Exists(fullFilePath))
                 {
                     return new OperationResultDto<MemoryStream>(false, (int) HttpStatusCode.BadRequest,
-                        String.Format(FileNotExistMessageTemplate, filePath, source), null);
+                        ResponseMessageBuilder.GetBadRequestErrorMessage(MessageCatalog.FileResourceType, PathProperty, filePath), null);
                 }
 
                 FileStream fStream = new FileStream(fullFilePath, FileMode.Open);
@@ -131,7 +132,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (Directory.Exists(dirPath))
                 {
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.Conflict,
-                        string.Format(DirectoryAlreadyExistsMessage, dirPath, source), null);
+                        ResponseMessageBuilder.GetConflictErrorMessage(MessageCatalog.DirectoryResourceType, PathProperty, dirPath), null);
                 }
 
                 DirectoryInfo info = Directory.CreateDirectory(dirPath);
@@ -201,7 +202,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (File.Exists(fullFileName))
                 {
                     return new OperationResultDto<string>(false, (int) HttpStatusCode.Conflict,
-                        string.Format(DirectoryAlreadyExistsMessage, fullFileName, source), null);
+                        ResponseMessageBuilder.GetConflictErrorMessage(MessageCatalog.FileResourceType, PathProperty, fullFileName), null);
                 }
 
                 await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
@@ -234,7 +235,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 if (!File.Exists(fullFileName))
                 {
                     return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
-                        ResponseMessageBuilder.GetResourceNotFoundMessage("File", filePath), false);
+                        ResponseMessageBuilder.GetResourceNotFoundMessage(MessageCatalog.FileResourceType, filePath), false);
                 }
                 File.Delete(fullFileName);
                 return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent, String.Empty, true);
@@ -253,8 +254,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         public event FileSuccessfullyCreatedHandler OnFileCreated;
         public event FileSuccessfullyDeletedHandler OnFileDeleted;
 
-        private const string FileNotExistMessageTemplate = "File \"{0}\" does not exists in source:\"{1}\"";
-        private const string DirectoryAlreadyExistsMessage = "Directory \"{0}\" already exists in source:\"{1}\"";
+        private const string PathProperty = "path";
 
         private readonly IDictionary<string, string> _sources;
         private readonly ILogger<WebFolderFileManager> _logger;
