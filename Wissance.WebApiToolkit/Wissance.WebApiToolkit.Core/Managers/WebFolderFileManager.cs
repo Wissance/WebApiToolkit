@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Wissance.WebApiToolkit.Core.Data.Files;
+using Wissance.WebApiToolkit.Core.Events;
 using Wissance.WebApiToolkit.Core.Globals;
 using Wissance.WebApiToolkit.Core.Managers.Helpers;
 using Wissance.WebApiToolkit.Dto;
@@ -136,6 +137,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 }
 
                 DirectoryInfo info = Directory.CreateDirectory(dirPath);
+                OnDirectoryCreated?.Invoke(this, new DirectorySuccessfullyCreatedEventArgs(source, dirPath));
                 return new OperationResultDto<string>(true, (int) HttpStatusCode.Created, String.Empty, dirPath);
             }
             catch (Exception e)
@@ -169,6 +171,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 }
 
                 Directory.Delete(dirPath, true);
+                OnDirectoryDeleted?.Invoke(this, new DirectorySuccessfullyDeletedEventArgs());
                 return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent,
                     ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), true);
             }
@@ -206,6 +209,8 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 }
 
                 await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
+                OnFileCreated?.Invoke(this, new FileSuccessfullyCreatedEventArgs(source, fullFileName));
+
                 return new OperationResultDto<string>(true, (int) HttpStatusCode.Created, String.Empty, fullFileName);
             }
             catch (Exception e)
@@ -238,6 +243,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                         ResponseMessageBuilder.GetResourceNotFoundMessage(MessageCatalog.FileResourceType, filePath), false);
                 }
                 File.Delete(fullFileName);
+                OnFileDeleted?.Invoke(this, new FileSuccessfullyDeletedEventArgs());
                 return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent, String.Empty, true);
             }
             catch (Exception e)
