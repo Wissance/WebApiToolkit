@@ -255,6 +255,32 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
         }
 
+        public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent)
+        {
+            string fullFileName = "";
+            try
+            {
+                if (!_sources.ContainsKey(source))
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetBadSourceErrorMessage(source), false);
+                fullFileName = Path.GetFullPath(Path.Combine(_sources[source], filePath));
+                if (!File.Exists(fullFileName))
+                {
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
+                        ResponseMessageBuilder.GetResourceNotFoundMessage(MessageCatalog.FileResourceType, filePath), false);
+                }
+                await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
+                return new OperationResultDto<bool>(true, (int) HttpStatusCode.OK, String.Empty, true);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"An error occurred during \"UpdateFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
+                    ResponseMessageBuilder.GetUnknownErrorMessage("UpdateFile", e.Message), false);
+            }
+        }
+
         public event DirectorySuccessfullyCreatedHandler OnDirectoryCreated;
         public event DirectorySuccessfullyDeletedHandler OnDirectoryDeleted;
         public event FileSuccessfullyCreatedHandler OnFileCreated;

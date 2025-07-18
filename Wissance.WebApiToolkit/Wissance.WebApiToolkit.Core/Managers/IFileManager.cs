@@ -78,6 +78,14 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <returns></returns>
         Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath);
         /// <summary>
+        ///     Updates existing file
+        /// </summary>
+        /// <param name="source">source identifier : web folder id or Bucket name</param>
+        /// <param name="filePath">path to a file</param>
+        /// <param name="fileContent">binary data as a stream</param>
+        /// <returns></returns>
+        Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent);
+        /// <summary>
         ///     Event occurs when Directory was successfully created via CreateDirAsync
         /// </summary>
         event DirectorySuccessfullyCreatedHandler OnDirectoryCreated;
