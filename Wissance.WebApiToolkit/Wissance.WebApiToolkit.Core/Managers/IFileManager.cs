@@ -29,6 +29,11 @@ namespace Wissance.WebApiToolkit.Core.Managers
     public interface IFileManager
     {
         /// <summary>
+        ///   Returns list of available sources
+        /// </summary>
+        /// <returns></returns>
+        OperationResultDto<IList<string>> GetSources();
+        /// <summary>
         ///    Returns list of items files or folders from specified source (webFolder id or S3 Bucket name).
         ///    In case of FileSystem source probably is a directory that is setting up during the application
         ///    startup. In case of S3 implementation we could dynamically Create && Delete Buckets therefore

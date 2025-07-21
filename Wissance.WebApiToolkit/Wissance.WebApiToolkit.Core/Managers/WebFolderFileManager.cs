@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -37,11 +38,27 @@ namespace Wissance.WebApiToolkit.Core.Managers
         ///     list of sources contains string key and string path to web folder.
         ///     i.e. : {"tmp", "./files/share"}
         /// </param>
+        /// <param name="defaultSource"> Sources using by default (key for sources) </param>
         /// <param name="loggerFactory"> Logger factory </param>
-        public WebFolderFileManager(IDictionary<string, string> sources, ILoggerFactory loggerFactory)
+        public WebFolderFileManager(IDictionary<string, string> sources, string defaultSource, ILoggerFactory loggerFactory)
         {
             _sources = sources;
+            _defaultSource = defaultSource;
             _logger = loggerFactory.CreateLogger<WebFolderFileManager>();
+        }
+
+        /// <summary>
+        ///    This method returns Keys of _sources (Dictionary)
+        /// </summary>
+        /// <returns></returns>
+        public OperationResultDto<IList<string>> GetSources()
+        {
+            if (_sources == null)
+                return new OperationResultDto<IList<string>>(false, (int) HttpStatusCode.InternalServerError,
+                    "sources are empty", null);
+            IList<string> sourcesKeys = _sources.Keys.ToList();
+            return new OperationResultDto<IList<string>>(true, (int) HttpStatusCode.OK,
+                String.Empty, sourcesKeys);
         }
 
         /// <summary>
@@ -289,6 +306,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
         private const string PathProperty = "path";
 
         private readonly IDictionary<string, string> _sources;
+        private readonly string _defaultSource;
         private readonly ILogger<WebFolderFileManager> _logger;
     }
 }
