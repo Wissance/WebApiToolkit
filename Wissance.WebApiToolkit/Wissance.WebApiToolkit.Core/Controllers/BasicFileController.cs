@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Wissance.WebApiToolkit.Core.Data.Files;
@@ -28,12 +29,15 @@ namespace Wissance.WebApiToolkit.Core.Controllers
 
         public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync([FromQuery]string source, [FromQuery]string path)
         {
-            // Manager.GetFilesAsync()
-            return null;
+            OperationResultDto<IList<TinyFileInfo>> result = await Manager.GetFilesAsync(source, path);
+            Response.StatusCode = result.Status;
+            return result;
         }
 
-        public async Task<IActionResult> ReadFileAsync()
+        public async Task<IActionResult> ReadFileAsync([FromQuery]string source, [FromQuery]string file)
         {
+            OperationResultDto<MemoryStream> result = await Manager.GetFileContentAsync(source, file);
+            Response.StatusCode = result.Status;
             return null;
         }
 
