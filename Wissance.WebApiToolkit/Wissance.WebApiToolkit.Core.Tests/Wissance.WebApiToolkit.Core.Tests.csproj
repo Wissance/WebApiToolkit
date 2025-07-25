@@ -20,4 +20,8 @@
         <Using Include="Xunit" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Wissance.WebApiToolkit.Core\Wissance.WebApiToolkit.Core.csproj" />
+    </ItemGroup>
+
 </Project>
