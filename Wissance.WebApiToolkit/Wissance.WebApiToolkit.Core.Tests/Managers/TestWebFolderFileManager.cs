@@ -25,14 +25,11 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
         public async Task TestGetAllFilesSuccessfully(string source, string path, bool exactMatch, int expectedNumber)
         {
             OperationResultDto<IList<TinyFileInfo>> actual = await _manager.GetFilesAsync(source, path);
+            Assert.True(actual.Success);
             if (exactMatch)
-            {
                 Assert.Equal(expectedNumber, actual.Data.Count);
-            }
             else
-            {
                 Assert.True(actual.Data.Count >= expectedNumber);
-            }
         }
 
         private void CreateTestWebFolders()
