@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Core.Data.Files;
 using Wissance.WebApiToolkit.Core.Managers;
+using Wissance.WebApiToolkit.Dto;
 
 namespace Wissance.WebApiToolkit.Core.Tests.Managers
 {
@@ -17,9 +19,20 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             RemoveTestWebFolders();
         }
 
-        public void TestGetAllFiles()
+        [Theory]
+        [InlineData("source1", ".", false, 2)]
+        [InlineData("source2", ".", false, 2)]
+        public async Task TestGetAllFilesSuccessfully(string source, string path, bool exactMatch, int expectedNumber)
         {
-            
+            OperationResultDto<IList<TinyFileInfo>> actual = await _manager.GetFilesAsync(source, path);
+            if (exactMatch)
+            {
+                Assert.Equal(expectedNumber, actual.Data.Count);
+            }
+            else
+            {
+                Assert.True(actual.Data.Count >= expectedNumber);
+            }
         }
 
         private void CreateTestWebFolders()
@@ -27,12 +40,15 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             Random rnd = new Random(DateTime.Now.Millisecond);
             foreach (KeyValuePair<string, string> webFolder in _webFolderTestSources)
             {
+                if (!Directory.Exists(webFolder.Value))
+                    Directory.CreateDirectory(webFolder.Value);
                 int initialFilesInFolder = rnd.Next(2, 3);
                 for (int i = 0; i < initialFilesInFolder; i++)
                 {
                     string testFileName = $"test_file_{i+1}.txt";
+                    string fullTestFilePath = Path.Combine(webFolder.Value, testFileName);
                     string rndContent = GenerateAlphaDigitalStr(rnd.Next(10, 20));
-                    File.WriteAllText(testFileName, rndContent);
+                    File.WriteAllText(fullTestFilePath, rndContent);
                 }
             }
         }
