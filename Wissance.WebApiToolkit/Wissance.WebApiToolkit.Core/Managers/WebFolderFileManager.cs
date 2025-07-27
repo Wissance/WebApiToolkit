@@ -119,6 +119,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 FileStream fStream = new FileStream(fullFilePath, FileMode.Open);
                 MemoryStream mStream = new MemoryStream();
                 await fStream.CopyToAsync(mStream);
+                fStream.Close();
                 return new OperationResultDto<MemoryStream>(true, (int) HttpStatusCode.OK, String.Empty, mStream);
             }
             catch (Exception e)

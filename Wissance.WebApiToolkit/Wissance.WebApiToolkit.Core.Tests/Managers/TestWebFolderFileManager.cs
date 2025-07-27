@@ -40,6 +40,16 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             Assert.False(result.Success);
         }
 
+        [Fact]
+        public async Task TestGetFileContentSuccessfully()
+        {
+            OperationResultDto<MemoryStream> result = await _manager.GetFileContentAsync("source1", "test_file_1.txt");
+            Assert.True(result.Success);
+            byte[] data = result.Data.GetBuffer();
+            Assert.True(data.Length >= 10);
+            result.Data.Close();
+        }
+
         private void CreateTestWebFolders()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
@@ -58,7 +68,7 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             }
         }
         
-        public static string GenerateAlphaDigitalStr(int length)
+        private string GenerateAlphaDigitalStr(int length)
         {
             Random rnd = new Random((int)DateTime.UtcNow.Ticks);
             string randomStr = new string(Enumerable.Repeat(AlphabeticalDigitsCharset, length).Select(s => s[rnd.Next(s.Length)]).ToArray());
