@@ -32,6 +32,14 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
                 Assert.True(actual.Data.Count >= expectedNumber);
         }
 
+        [Fact]
+        public async Task TestGetAllFilesFailsNoSource()
+        {
+            string source = $"source_{Guid.NewGuid()}";
+            OperationResultDto<IList<TinyFileInfo>> result = await _manager.GetFilesAsync(source, ".");
+            Assert.False(result.Success);
+        }
+
         private void CreateTestWebFolders()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
