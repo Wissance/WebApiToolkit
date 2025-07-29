@@ -65,6 +65,10 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             Assert.True(result.Success);
             expectedPath = Path.GetFullPath(Path.Combine(_webFolderTestSources[source], dirName, subDirectory));
             Assert.Equal(expectedPath, result.Data);
+            
+            OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.True(filesResult.Data.Count >= 3);
+            Assert.Equal(1, filesResult.Data.Count(f => f.IsDirectory));
         }
 
         private void CreateTestWebFolders()

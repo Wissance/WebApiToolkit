@@ -81,7 +81,14 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 foreach (string file in files)
                 {
                     FileInfo f = new FileInfo(file);
-                    filesInfo.Add(new TinyFileInfo(file, f.Length > 0, f.Length));
+                    filesInfo.Add(new TinyFileInfo(file, false, f.Length));
+                }
+
+                string[] directories = Directory.GetDirectories(dirPath);
+                foreach (string directory in directories)
+                {
+                    FileInfo d = new FileInfo(directory);
+                    filesInfo.Add(new TinyFileInfo(directory, true, 0));
                 }
 
                 return new OperationResultDto<IList<TinyFileInfo>>(true, (int) HttpStatusCode.OK, String.Empty, filesInfo);

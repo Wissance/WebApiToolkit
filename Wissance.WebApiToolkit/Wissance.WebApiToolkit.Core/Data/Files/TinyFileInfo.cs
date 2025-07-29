@@ -6,7 +6,7 @@ namespace Wissance.WebApiToolkit.Core.Data.Files
         {
         }
 
-        public TinyFileInfo(string name, bool? isDirectory, long size)
+        public TinyFileInfo(string name, bool isDirectory, long size)
         {
             Name = name;
             IsDirectory = isDirectory;
@@ -14,7 +14,7 @@ namespace Wissance.WebApiToolkit.Core.Data.Files
         }
 
         public string Name { get; set; }
-        public bool? IsDirectory { get; set; }
+        public bool IsDirectory { get; set; }
         public long Size { get; set; }
     }
 }
