@@ -101,13 +101,16 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
         [Fact]
         public async Task TestUpdateFile()
         {
-            /*string source = "source1";
+            string source = "source1";
+            string newFile = "newFile.txt";
+            OperationResultDto<string> result = await _manager.CreateFileAsync(source, ".", newFile, 
+                new MemoryStream(new byte[] {0, 1, 2, 4, 8, 16, 32, 64, 128}));
+            Assert.True(result.Success);
             OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
-            Assert.True(filesResult.Success);
-            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(source, filesResult.Data[0].Name);
-            Assert.True(rmResult.Success);
-            OperationResultDto<IList<TinyFileInfo>> filesResultAfterRm = await _manager.GetFilesAsync(source, ".");
-            Assert.Equal(filesResultAfterRm.Data.Count + 1, filesResult.Data.Count);*/
+            Assert.Equal(1, filesResult.Data.Count(f => f.Name.Contains(newFile)));
+            OperationResultDto<bool> updRes = await _manager.UpdateFileAsync(source, newFile,
+                new MemoryStream(new byte[] {1, 2, 3, 5, 9, 17, 33, 65, 129}));
+            Assert.True(updRes.Success);
         }
         
         [Fact]

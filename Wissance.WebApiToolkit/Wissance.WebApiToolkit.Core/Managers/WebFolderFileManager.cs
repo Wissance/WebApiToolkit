@@ -294,7 +294,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                     return new OperationResultDto<bool>(false, (int) HttpStatusCode.NotFound,
                         ResponseMessageBuilder.GetResourceNotFoundMessage(MessageCatalog.FileResourceType, filePath), false);
                 }
-                await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
+                await File.WriteAllBytesAsync(fullFileName, fileContent.ToArray());
                 return new OperationResultDto<bool>(true, (int) HttpStatusCode.OK, String.Empty, true);
             }
             catch (Exception e)
