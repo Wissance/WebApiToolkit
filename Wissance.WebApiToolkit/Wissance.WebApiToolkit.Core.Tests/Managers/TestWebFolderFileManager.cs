@@ -50,6 +50,23 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             result.Data.Close();
         }
 
+        
+        [Theory]
+        [InlineData("source1", ".", "newDir")]
+        public async Task TestCreateDirectoryTreeSuccessfully(string source, string path, string dirName)
+        {
+            OperationResultDto<string> result = await _manager.CreateDirAsync(source, path, dirName);
+            Assert.True(result.Success);
+            string expectedPath = Path.GetFullPath(Path.Combine(_webFolderTestSources[source], path, dirName));
+            Assert.Equal(expectedPath, result.Data);
+            
+            string subDirectory = "subDir2";
+            result = await _manager.CreateDirAsync(source, dirName, subDirectory);
+            Assert.True(result.Success);
+            expectedPath = Path.GetFullPath(Path.Combine(_webFolderTestSources[source], dirName, subDirectory));
+            Assert.Equal(expectedPath, result.Data);
+        }
+
         private void CreateTestWebFolders()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);
