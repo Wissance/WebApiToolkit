@@ -233,7 +233,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                         ResponseMessageBuilder.GetConflictErrorMessage(MessageCatalog.FileResourceType, PathProperty, fullFileName), null);
                 }
 
-                await File.WriteAllBytesAsync(fullFileName, fileContent.GetBuffer());
+                await File.WriteAllBytesAsync(fullFileName, fileContent.ToArray());
                 OnFileCreated?.Invoke(this, new FileSuccessfullyCreatedEventArgs(source, fullFileName));
 
                 return new OperationResultDto<string>(true, (int) HttpStatusCode.Created, String.Empty, fullFileName);

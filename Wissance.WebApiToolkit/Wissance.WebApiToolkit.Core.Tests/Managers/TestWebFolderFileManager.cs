@@ -89,6 +89,13 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
         [Fact]
         public async Task TestCreateFile()
         {
+            string source = "source1";
+            string newFile = "newFile.txt";
+            OperationResultDto<string> result = await _manager.CreateFileAsync(source, ".", newFile, 
+                new MemoryStream(new byte[] {0, 1, 2, 4, 8, 16, 32, 64, 128}));
+            Assert.True(result.Success);
+            OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.Equal(1, filesResult.Data.Count(f => f.Name.Contains(newFile)));
         }
         
         [Fact]
