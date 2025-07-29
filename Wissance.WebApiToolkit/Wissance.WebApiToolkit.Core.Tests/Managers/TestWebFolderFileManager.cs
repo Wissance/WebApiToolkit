@@ -71,6 +71,36 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
             Assert.Equal(1, filesResult.Data.Count(f => f.IsDirectory));
         }
 
+        [Fact]
+        public async Task TestDeleteDirectory()
+        {
+            string source = "source1";
+            string dirName = "newDir";
+            OperationResultDto<string> result = await _manager.CreateDirAsync(source, ".", dirName);
+            Assert.True(result.Success);
+            OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.Equal(1, filesResult.Data.Count(f => f.IsDirectory));
+            OperationResultDto<bool> rmResult = await _manager.DeleteDirAsync(source, dirName);
+            Assert.True(rmResult.Success);
+            filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.Equal(0, filesResult.Data.Count(f => f.IsDirectory));
+        }
+
+        [Fact]
+        public async Task TestCreateFile()
+        {
+        }
+        
+        [Fact]
+        public async Task TestUpdateFile()
+        {
+        }
+        
+        [Fact]
+        public async Task TestDeleteFile()
+        {
+        }
+
         private void CreateTestWebFolders()
         {
             Random rnd = new Random(DateTime.Now.Millisecond);

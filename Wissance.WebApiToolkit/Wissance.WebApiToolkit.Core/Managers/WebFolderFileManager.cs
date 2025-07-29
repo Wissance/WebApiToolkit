@@ -195,7 +195,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                         ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), false);
                 }
 
-                Directory.Delete(dirPath, true);
+                Directory.Delete(fullDirPath, true);
                 OnDirectoryDeleted?.Invoke(this, new DirectorySuccessfullyDeletedEventArgs());
                 return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent,
                     ResponseMessageBuilder.GetResourceNotFoundMessage("Directory", fullDirPath), true);
