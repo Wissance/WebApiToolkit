@@ -1,3 +1,4 @@
+using System;
 using Wissance.WebApiToolkit.Core.Globals;
 
 namespace Wissance.WebApiToolkit.Core.Managers.Helpers
@@ -68,6 +69,40 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         public static string GetUnknownErrorMessage(string operation, string resource)
         {
             return string.Format(MessageCatalog.UnknownErrorMessageTemplate, operation, resource);
+        }
+
+        /// <summary>
+        /// Method for getting bad source error message
+        /// </summary>
+        /// <param name="source">source identifier</param>
+        /// <returns></returns>
+        public static string GetBadSourceErrorMessage(string source)
+        {
+            return string.Format(MessageCatalog.BadSourceProvidedTemplate, source);
+        }
+
+        /// <summary>
+        /// Method for getting Conflict Error Message
+        /// </summary>
+        /// <param name="resource">resource type</param>
+        /// <param name="property">name of a property that has conflicting value, i.e. index value</param>
+        /// <param name="value">conflicting value</param>
+        /// <returns></returns>
+        public static string GetConflictErrorMessage(string resource, string property, string value)
+        {
+            return string.Format(MessageCatalog.ResourceConflictTemplate, resource, property, value);
+        }
+
+        /// <summary>
+        /// Method for getting Bad Error Message
+        /// </summary>
+        /// <param name="resource">resource type</param>
+        /// <param name="property">name of a property that has conflicting value, i.e. index value</param>
+        /// <param name="value">conflicting value</param>
+        /// <returns></returns>
+        public static string GetBadRequestErrorMessage(string resource, string property, string value)
+        {
+            return string.Format(MessageCatalog.BadRequestErrorTemplate, resource, property, value);
         }
     }
 }
