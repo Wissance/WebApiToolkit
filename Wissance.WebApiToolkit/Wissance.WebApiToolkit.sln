@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Core.Tests", "Wissance.WebApiToolkit.Core.Tests\Wissance.WebApiToolkit.Core.Tests.csproj", "{A830DB2A-5662-4D82-AEAE-1B383B0077E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.AWS.S3", "Wissance.WebApiToolkit.AWS.S3\Wissance.WebApiToolkit.AWS.S3.csproj", "{52972620-C6F8-492A-9CAA-80A6CDC993C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
