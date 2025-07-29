@@ -101,11 +101,25 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
         [Fact]
         public async Task TestUpdateFile()
         {
+            /*string source = "source1";
+            OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.True(filesResult.Success);
+            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(source, filesResult.Data[0].Name);
+            Assert.True(rmResult.Success);
+            OperationResultDto<IList<TinyFileInfo>> filesResultAfterRm = await _manager.GetFilesAsync(source, ".");
+            Assert.Equal(filesResultAfterRm.Data.Count + 1, filesResult.Data.Count);*/
         }
         
         [Fact]
         public async Task TestDeleteFile()
         {
+            string source = "source1";
+            OperationResultDto<IList<TinyFileInfo>> filesResult = await _manager.GetFilesAsync(source, ".");
+            Assert.True(filesResult.Success);
+            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(source, filesResult.Data[0].Name);
+            Assert.True(rmResult.Success);
+            OperationResultDto<IList<TinyFileInfo>> filesResultAfterRm = await _manager.GetFilesAsync(source, ".");
+            Assert.Equal(filesResultAfterRm.Data.Count + 1, filesResult.Data.Count);
         }
 
         private void CreateTestWebFolders()
