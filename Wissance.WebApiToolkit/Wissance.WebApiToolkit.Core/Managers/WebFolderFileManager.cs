@@ -38,19 +38,17 @@ namespace Wissance.WebApiToolkit.Core.Managers
         ///     list of sources contains string key and string path to web folder.
         ///     i.e. : {"tmp", "./files/share"}
         /// </param>
-        /// <param name="defaultSource"> Sources using by default (key for sources) </param>
         /// <param name="loggerFactory"> Logger factory </param>
-        public WebFolderFileManager(IDictionary<string, string> sources, string defaultSource, ILoggerFactory loggerFactory)
+        public WebFolderFileManager(IDictionary<string, string> sources, ILoggerFactory loggerFactory)
         {
             _sources = sources;
-            _defaultSource = defaultSource;
             _logger = loggerFactory.CreateLogger<WebFolderFileManager>();
         }
 
         /// <summary>
         ///    This method returns Keys of _sources (Dictionary)
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns list of sources</returns>
         public OperationResultDto<IList<string>> GetSources()
         {
             if (_sources == null)
@@ -67,8 +65,10 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// </summary>
         /// <param name="source">source identifier</param>
         /// <param name="path">directory in the source to get list of a files and dirs</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns>List of FileInfo with a tiny info about items (name, file or dir, and size if file) </returns>
-        public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = "")
+        public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = "",
+            IDictionary<string, string>additionalParams = null)
         {
             try
             {
@@ -108,8 +108,10 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// </summary>
         /// <param name="source">source identifier</param>
         /// <param name="filePath">path to file</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns>File binary content as a MemoryStream</returns>
-        public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath)
+        public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath,
+            IDictionary<string, string>additionalParams = null)
         {
             try
             {
@@ -145,8 +147,10 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <param name="source">source identifier</param>
         /// <param name="path">folder relative to source</param>
         /// <param name="dirName">name of creating directory</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns>Path to created directory wrapped in a OperationResultDto</returns>
-        public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName)
+        public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName,
+            IDictionary<string, string>additionalParams = null)
         {
             string dirPath = "";
             try
@@ -180,8 +184,10 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// </summary>
         /// <param name="source">source identifier</param>
         /// <param name="dirPath">path of removing directory</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns> bool as a result of directory delete</returns>
-        public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath)
+        public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath,
+            IDictionary<string, string>additionalParams = null)
         {
             try
             {
@@ -216,9 +222,10 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <param name="path">path where file should be created</param>
         /// <param name="fileName">name of a newly creating file</param>
         /// <param name="fileContent">binary file content</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns>Path to a newly created file wrapped in OperationResultDto</returns>
         public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, 
-            MemoryStream fileContent)
+            MemoryStream fileContent, IDictionary<string, string>additionalParams = null)
         {
             string fullFileName = "";
             try
@@ -250,10 +257,12 @@ namespace Wissance.WebApiToolkit.Core.Managers
         /// <summary>
         ///     Removes file in source. Returns error if file does not exists (NotFound). 
         /// </summary>
-        /// <param name="source"> source identifier </param>
+        /// <param name="source">source identifier</param>
         /// <param name="filePath">path to file</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
         /// <returns>bool as a result of file delete operation</returns>
-        public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath)
+        public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath,
+            IDictionary<string, string>additionalParams = null)
         {
             string fullFileName = "";
             try
@@ -280,7 +289,16 @@ namespace Wissance.WebApiToolkit.Core.Managers
             }
         }
 
-        public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent)
+        /// <summary>
+        ///     Updates file content
+        /// </summary>
+        /// <param name="source">source identifier</param>
+        /// <param name="filePath">path to file</param>
+        /// <param name="fileContent">file content</param>
+        /// <param name="additionalParams">additional non regular params, could be used for extending behaviour</param>
+        /// <returns>bool as a result of file update operation</returns>
+        public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent,
+            IDictionary<string, string>additionalParams = null)
         {
             string fullFileName = "";
             try
@@ -314,7 +332,6 @@ namespace Wissance.WebApiToolkit.Core.Managers
         private const string PathProperty = "path";
 
         private readonly IDictionary<string, string> _sources;
-        private readonly string _defaultSource;
         private readonly ILogger<WebFolderFileManager> _logger;
     }
 }
