@@ -26,7 +26,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
     ///       starting from . or ./ or /, therefore all path here unlike of WebFolderFileManager MUST not contain these
     ///       symbols at start. However for this case we make path clean via Trim. ROOT dir could be passes as empty string
     /// </summary>
-    public class AWSCompatibleCloudFileStorageManager : IAWSCompatibleFileStorageManager, IDisposable
+    public class AWSCompatibleCloudFileStorageManager : IAWSCompatibleFileStorageManager
     {
         public AWSCompatibleCloudFileStorageManager(IDictionary<string, S3StorageSettings> sources, ILoggerFactory loggerFactory)
         {
@@ -170,7 +170,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                     ? additionalParams[BucketParam]
                     : "";
                 // Root means . or / or ./
-                bool isRoot = path.Length <= 2 && (path[0] == '.' || path[0] == '/');
+                bool isRoot = path.Length == 0 || (path.Length <= 2 && (path[0] == '.' || path[0] == '/'));
                 string realPath = !isRoot ? path.TrimStart(new []{'.'}).Trim(new []{'/'}) : path;
 
                 IAmazonS3 s3Client = _s3Clients[source];
@@ -185,18 +185,18 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
 
                     foreach (S3Object s3Object in response.S3Objects)
                     {
-                        // Console.WriteLine($"Object Key: {s3Object.Key}, Size: {s3Object.Size}");
+                        string objKey = s3Object.Key.TrimEnd(new[]{'/'});
                         // 1. Filter by path, Key is a file name with path to file
                         if (!isRoot)
                         {
-                            if (s3Object.Key.StartsWith(realPath))
+                            if (s3Object.Key.StartsWith(realPath) && objKey != realPath)
                             {
                                 // here we should clarify one thing
                                 string[] partsOfPath = realPath.Split("/");
-                                string[] parts = s3Object.Key.Split("/");
+                                string[] parts = objKey.Split("/");
                                 if (parts.Length - partsOfPath.Length <= 1)
                                 {
-                                    objs.Add(new TinyFileInfo(parts.Last(),
+                                    objs.Add(new TinyFileInfo(parts.Last(), objKey,
                                         !s3Object.Size.HasValue || s3Object.Size == 0,
                                         s3Object.Size ?? 0));
                                 }
@@ -204,9 +204,9 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                         }
                         else
                         {
-                            if (!s3Object.Key.Contains("/"))
+                            if (!objKey.Contains("/"))
                             {
-                                objs.Add(new TinyFileInfo(s3Object.Key, !s3Object.Size.HasValue || s3Object.Size == 0, 
+                                objs.Add(new TinyFileInfo(objKey, objKey, !s3Object.Size.HasValue || s3Object.Size == 0, 
                                     s3Object.Size ?? 0));
                             }
                         }
