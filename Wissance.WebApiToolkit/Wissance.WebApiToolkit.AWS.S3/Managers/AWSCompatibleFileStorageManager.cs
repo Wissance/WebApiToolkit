@@ -165,7 +165,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                     : "";
                 // Root means . or / or ./
                 bool isRoot = path.Length <= 2 && (path[0] == '.' || path[0] == '/');
-                string realPath = !isRoot ? path.Trim(new []{'.'}).Trim(new []{'/'}) : path;
+                string realPath = !isRoot ? path.TrimStart(new []{'.'}).Trim(new []{'/'}) : path;
 
                 IAmazonS3 s3Client = _s3Clients[source];
                 ListObjectsV2Request request = new ListObjectsV2Request
@@ -230,7 +230,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
         /// </summary>
         /// <param name="source">Cloud S3 service identifier</param>
         /// <param name="filePath">Path to file in bucket (should not start from / ./ )</param>
-        /// <param name="additionalParams"></param>
+        /// <param name="additionalParams">Additional params contains Bucket as a param</param>
         /// <returns></returns>
         public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath,
             IDictionary<string, string>additionalParams)
@@ -246,7 +246,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                     Key = filePath,
                 };
                 GetObjectResponse response = await s3Client.GetObjectAsync(request);
-                byte[] bytes = new byte[0];
+                byte[] bytes;
                 using (BinaryReader binaryReader = new BinaryReader(response.ResponseStream))
                 {
                     bytes = binaryReader.ReadBytes((int)response.ResponseStream.Length);
@@ -260,7 +260,101 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                 string msg = $"An error occurred during getting file content from bucket with name \"{bucket}\", error: \"{e.Message}\"";
                 _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
-                throw;
+                return new OperationResultDto<MemoryStream>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
+        }
+
+        /// <summary>
+        ///     Creates directory in S3 cloud storage
+        /// </summary>
+        /// <param name="source">Cloud S3 service identifier</param>
+        /// <param name="path">Path to directory if dir should be created in root left blank, shouldn't started from ./ or / </param>
+        /// <param name="dirName">Name of creating directory</param>
+        /// <param name="additionalParams">Additional params contains Bucket as a param</param>
+        /// <returns></returns>
+        public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName,
+            IDictionary<string, string>additionalParams)
+        {
+            string bucket = "";
+            try
+            {
+                IAmazonS3 s3Client = _s3Clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = Path.Combine(path, dirName);
+                key = key.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                Tuple<bool, string> result = await CreateObjectImpl(s3Client, bucket, key, null);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+                string outputKey = result.Item1 ? key : String.Empty;
+                return new OperationResultDto<string>(result.Item1, statusCode, result.Item2, outputKey);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during directory create in bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError, msg, String.Empty);
+            }
+        }
+
+        /// <summary>
+        ///     Delete directory from S3 Cloud storage
+        /// </summary>
+        /// <param name="source">Cloud S3 service identifier</param>
+        /// <param name="dirPath">path (key) of directory</param>
+        /// <param name="additionalParams">Additional params contains Bucket as a param</param>
+        /// <returns></returns>
+        public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath, 
+            IDictionary<string, string>additionalParams)
+        {
+            string bucket = "";
+            try
+            {
+                IAmazonS3 s3Client = _s3Clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = dirPath.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                Tuple<bool, string> result = await DeleteObjectImpl(s3Client, bucket, key);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+                return new OperationResultDto<bool>(result.Item1, statusCode, String.Empty, result.Item1);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during directory delete from bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
+        }
+
+        /// <summary>
+        ///     Creates file in S3 Cloud storage
+        /// </summary>
+        /// <param name="source">Cloud S3 service identifier</param>
+        /// <param name="path">Path to directory if dir should be created in root left blank, shouldn't started from ./ or /</param>
+        /// <param name="fileName"></param>
+        /// <param name="fileContent"></param>
+        /// <param name="additionalParams"></param>
+        /// <returns></returns>
+        public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent,
+            IDictionary<string, string>additionalParams)
+        {
+            string bucket = "";
+            try
+            {
+                IAmazonS3 s3Client = _s3Clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = Path.Combine(path, fileName);
+                key = key.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                Tuple<bool, string> result = await CreateObjectImpl(s3Client, bucket, key, fileContent);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+                string outputKey = result.Item1 ? key : String.Empty;
+                return new OperationResultDto<string>(result.Item1, statusCode, result.Item2, outputKey);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file create in bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError, msg, String.Empty);
             }
         }
 
@@ -268,54 +362,28 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
         /// 
         /// </summary>
         /// <param name="source">Cloud S3 service identifier</param>
-        /// <param name="path"></param>
-        /// <param name="dirName"></param>
-        /// <param name="additionalParams"></param>
-        /// <returns></returns>
-        public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName,
-            IDictionary<string, string>additionalParams)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source">Cloud S3 service identifier</param>
-        /// <param name="dirPath"></param>
-        /// <param name="additionalParams"></param>
-        /// <returns></returns>
-        public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath, 
-            IDictionary<string, string>additionalParams)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source">Cloud S3 service identifier</param>
-        /// <param name="path"></param>
-        /// <param name="fileName"></param>
-        /// <param name="fileContent"></param>
-        /// <param name="additionalParams"></param>
-        /// <returns></returns>
-        public Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent,
-            IDictionary<string, string>additionalParams)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="source">Cloud S3 service identifier</param>
         /// <param name="filePath"></param>
         /// <param name="additionalParams"></param>
         /// <returns></returns>
-        public Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath, IDictionary<string, string>additionalParams)
+        public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath, IDictionary<string, string>additionalParams)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IAmazonS3 s3Client = _s3Clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = filePath.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                Tuple<bool, string> result = await DeleteObjectImpl(s3Client, bucket, key);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+                return new OperationResultDto<bool>(result.Item1, statusCode, String.Empty, result.Item1);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file delete from bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
         /// <summary>
@@ -326,10 +394,32 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
         /// <param name="fileContent"></param>
         /// <param name="additionalParams"></param>
         /// <returns></returns>
-        public Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent, 
+        public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent, 
             IDictionary<string, string>additionalParams)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IAmazonS3 s3Client = _s3Clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = filePath.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                Tuple<bool,string> rmResult = await DeleteObjectImpl(s3Client, bucket, key);
+                if (!rmResult.Item1)
+                {
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, rmResult.Item2, false);
+                }
+
+                Tuple<bool, string> crResult = await CreateObjectImpl(s3Client, bucket, key, fileContent);
+                int statusCode = crResult.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+                return new OperationResultDto<bool>(crResult.Item1, statusCode, crResult.Item2, crResult.Item1);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file update: \"{filePath}\" from bucket: \"{bucket}\", error:\"{e.Message}\""
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
         
         private async Task<bool> CheckBucketExistsAsync(string source, string bucketName)
@@ -342,6 +432,57 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             catch (Exception e)
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        ///     This method using either for creating files and folders, the oly difference is that File has some
+        ///     data, therefore objData is not null, for Folder is Null 
+        /// </summary>
+        /// <param name="s3Client"></param>
+        /// <param name="bucket"></param>
+        /// <param name="key"></param>
+        /// <param name="objData"></param>
+        /// <returns></returns>
+        private async Task<Tuple<bool, string>> CreateObjectImpl(IAmazonS3 s3Client, string bucket, string key, MemoryStream objData)
+        {
+            try
+            {
+                PutObjectRequest request = new PutObjectRequest
+                {
+                    InputStream = objData,
+                    BucketName = bucket,
+                    Key = key,
+                    DisablePayloadSigning = true
+                };
+
+                PutObjectResponse response = await s3Client.PutObjectAsync(request);
+                bool result = response.HttpStatusCode == HttpStatusCode.OK;
+                return new Tuple<bool, string>(result, string.Empty);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during object creation with key: \"{key}\" to bucket: \"{bucket}\", error:\"{e.Message}\""
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new Tuple<bool, string>(false, msg);
+            }
+        }
+
+        private async Task<Tuple<bool, string>> DeleteObjectImpl(IAmazonS3 s3Client, string bucket, string key)
+        {
+            try
+            {
+                DeleteObjectResponse response = await s3Client.DeleteObjectAsync(bucket, key);
+                bool result = response.HttpStatusCode == HttpStatusCode.NoContent;
+                return new Tuple<bool, string>(result, String.Empty);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during object delete with key: \"{key}\" from bucket: \"{bucket}\", error:\"{e.Message}\""
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new Tuple<bool, string>(false, msg);
             }
         }
 
