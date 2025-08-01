@@ -18,14 +18,20 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
 {
     /// <summary>
     ///    This is a S3 Cloud file manager that are compatible with AWS. This interface was not designed
-    ///    to be working with a heavy files (hundreads of megabytes or even gigabytes)
+    ///    to be working with a heavy files (hundreds of megabytes or even gigabytes)
+    ///    Things that MUST BE noted:
+    ///    1. IFileManager in all methods contains last parameter IDictionary<string, string> with additional parameters
+    ///       this implementation expects to pass at least bucket (with key in const BucketParam)
+    ///    2. All object in S3 storage identified by key which is actually path, however, this path does not
+    ///       starting from . or ./ or /, therefore all path here unlike of WebFolderFileManager MUST not contain these
+    ///       symbols at start. However for this case we make path clean via Trim. ROOT dir could be passes as empty string
     /// </summary>
-    public class AWSCompatibleFileStorageManager : IAWSCompatibleFileStorageManager, IDisposable
+    public class AWSCompatibleCloudFileStorageManager : IAWSCompatibleFileStorageManager, IDisposable
     {
-        public AWSCompatibleFileStorageManager(IDictionary<string, S3StorageSettings> sources, ILoggerFactory loggerFactory)
+        public AWSCompatibleCloudFileStorageManager(IDictionary<string, S3StorageSettings> sources, ILoggerFactory loggerFactory)
         {
             _sources = sources;
-            _logger = loggerFactory.CreateLogger<AWSCompatibleFileStorageManager>();
+            _logger = loggerFactory.CreateLogger<AWSCompatibleCloudFileStorageManager>();
             foreach (KeyValuePair<string, S3StorageSettings> source in _sources)
             {
                 try
@@ -41,8 +47,8 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                 }
                 catch (AmazonClientException e)
                 {
-                    _logger.LogError(
-                        $"Incorrect S3 Storage configuration: {e.Message} , ensure S3Storage section has correct values");
+                    _logger.LogError( $"Incorrect S3 Storage configuration: {e.Message} , ensure S3Storage section has correct values");
+                    _logger.LogDebug(e.ToString());
                 }
             }
         }
@@ -415,7 +421,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             }
             catch (Exception e)
             {
-                string msg = $"An error occurred during file update: \"{filePath}\" from bucket: \"{bucket}\", error:\"{e.Message}\""
+                string msg = $"An error occurred during file update: \"{filePath}\" from bucket: \"{bucket}\", error:\"{e.Message}\"";
                 _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
@@ -462,7 +468,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             }
             catch (Exception e)
             {
-                string msg = $"An error occurred during object creation with key: \"{key}\" to bucket: \"{bucket}\", error:\"{e.Message}\""
+                string msg = $"An error occurred during object creation with key: \"{key}\" to bucket: \"{bucket}\", error:\"{e.Message}\"";
                 _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
                 return new Tuple<bool, string>(false, msg);
@@ -479,7 +485,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             }
             catch (Exception e)
             {
-                string msg = $"An error occurred during object delete with key: \"{key}\" from bucket: \"{bucket}\", error:\"{e.Message}\""
+                string msg = $"An error occurred during object delete with key: \"{key}\" from bucket: \"{bucket}\", error:\"{e.Message}\"";
                 _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
                 return new Tuple<bool, string>(false, msg);
@@ -495,6 +501,6 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
 
         private readonly IDictionary<string, S3StorageSettings> _sources = new Dictionary<string, S3StorageSettings>();
         private readonly IDictionary<string, IAmazonS3> _s3Clients = new ConcurrentDictionary<string, IAmazonS3>();
-        private readonly ILogger<AWSCompatibleFileStorageManager> _logger;
+        private readonly ILogger<AWSCompatibleCloudFileStorageManager> _logger;
     }
 }
