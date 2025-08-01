@@ -1,3 +1,6 @@
+using System.Buffers.Text;
+using System.Text;
+using System.Text.Unicode;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.AWS.S3.Managers;
@@ -46,6 +49,20 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             });
             Assert.True(result.Success);
             Assert.Equal(expectedItems, result.Data.Count);
+        }
+
+        [Theory]
+        [InlineData(WissanceYandexTestBucket, "artifacts/txt/test_data2.txt", "01234567890987654321")]
+        public async Task TestGetFileContent(string bucket, string path, string expectedContent)
+        {
+            OperationResultDto<MemoryStream> result = await _manager.GetFileContentAsync(WissanceYandexTestSource, path, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(result.Success);
+            byte[] buffer = result.Data.ToArray();
+            string actualContent = UTF8Encoding.UTF8.GetString(buffer);
+            Assert.Equal(expectedContent, actualContent);
         }
 
         private const string WissanceYandexTestSource = "wissance";
