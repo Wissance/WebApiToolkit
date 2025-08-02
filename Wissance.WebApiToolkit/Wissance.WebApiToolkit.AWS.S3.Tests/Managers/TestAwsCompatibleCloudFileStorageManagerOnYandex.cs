@@ -65,6 +65,24 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             Assert.Equal(expectedContent, actualContent);
         }
 
+        [Theory]
+        [InlineData(WissanceYandexTestBucket, "src", "cli/")]
+        public async Task CreateDirectorySuccessfully(string bucket, string path, string dirName)
+        {
+            OperationResultDto<string> result = await _manager.CreateDirAsync(WissanceYandexTestSource, path, dirName, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(result.Success);
+            // todo(UMV) : check result path
+            string dirPath = $"{path}/{dirName}";
+            OperationResultDto<bool> rmResult = await _manager.DeleteDirAsync(WissanceYandexTestSource, dirPath, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(rmResult.Success);
+        }
+
         private const string WissanceYandexTestSource = "wissance";
         private const string WissanceYandexTestBucket = "y-s3-test-bucket";
         

@@ -287,7 +287,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                 IAmazonS3 s3Client = _s3Clients[source];
                 bucket = additionalParams[BucketParam];
                 string key = Path.Combine(path, dirName);
-                key = key.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                key = key.Replace('\\', '/').TrimStart(new[] {'.'}).Trim(new[] {'/'});
                 Tuple<bool, string> result = await CreateObjectImpl(s3Client, bucket, key, null);
                 int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
                 string outputKey = result.Item1 ? key : String.Empty;
@@ -408,7 +408,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             {
                 IAmazonS3 s3Client = _s3Clients[source];
                 bucket = additionalParams[BucketParam];
-                string key = filePath.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                string key = filePath.TrimStart(new[] {'.'}).TrimStart(new[] {'/'});
                 Tuple<bool,string> rmResult = await DeleteObjectImpl(s3Client, bucket, key);
                 if (!rmResult.Item1)
                 {
