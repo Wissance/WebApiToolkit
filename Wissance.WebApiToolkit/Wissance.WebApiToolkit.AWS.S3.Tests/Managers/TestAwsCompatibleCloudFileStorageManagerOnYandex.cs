@@ -83,6 +83,26 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             Assert.True(rmResult.Success);
         }
 
+        [Theory]
+        [InlineData(WissanceYandexTestBucket, "src", "go.mod")]
+        public async Task CreateFile(string bucket, string path, string fileName)
+        {
+            MemoryStream fileContent = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
+            OperationResultDto<string> result = await _manager.CreateFileAsync(WissanceYandexTestSource, path, fileName, fileContent,
+                new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(result.Success);
+            // todo(UMV) : check result path
+            string filePath = $"{path}/{fileName}";
+            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(WissanceYandexTestSource, filePath, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(rmResult.Success);
+        }
+
         private const string WissanceYandexTestSource = "wissance";
         private const string WissanceYandexTestBucket = "y-s3-test-bucket";
         
