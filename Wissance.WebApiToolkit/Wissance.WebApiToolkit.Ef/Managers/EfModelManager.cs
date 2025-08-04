@@ -34,16 +34,19 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         ///    Constructor of default model manager requires that Model Context derives from EfDbContext
         /// </summary>
         /// <param name="dbContext">Ef Database context</param>
-        /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="createResFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="createObjFunc">Delegate (factory func) for creating Model from DTO</param>
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc,
+        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
+                              Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
-            _defaultCreateFunc = createFunc;
+            _defaultCreateResFunc = createResFunc;
+            _defaultCreateObjFunc = createObjFunc;
             _filterFunc = filterFunc;
         }
 
@@ -112,7 +115,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 }
                 
                 return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.OK, null,
-                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
+                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateResFunc(e)).ToList(), totalItems));
             }
             catch (Exception e)
             {
@@ -139,7 +142,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
                                                         ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
                 return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
-                    createFunc != null?createFunc(entity): _defaultCreateFunc(entity));
+                    createFunc != null?createFunc(entity): _defaultCreateResFunc(entity));
             }
             catch (Exception e)
             {
@@ -187,13 +190,35 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
         
         /// <summary>
-        /// Method for create new object in database using Ef, in this class still have not a default impl, but will be
+        /// Method for create new object in database using Ef, using _create
         /// </summary>
         /// <param name="data">DTO with Model representation</param>
         /// <returns>DTO of newly created object</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes>> CreateAsync(TRes data)
+        public virtual async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
+            try
+            {
+                if (_defaultCreateObjFunc == null)
+                {
+                    // return NotImplemented
+                }
+
+                TObj entity = _defaultCreateObjFunc(data);
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                await dbSet.AddAsync(entity);
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    // return failure
+                }
+                // return success
+            }
+            catch (Exception e)
+            {
+                // log && return failure
+                throw;
+            }
             throw new NotImplementedException();
         }
 
@@ -268,7 +293,8 @@ namespace Wissance.WebApiToolkit.Ef.Managers
 
         private readonly ILogger<EfModelManager<TRes, TObj, TId>> _logger;
         private readonly DbContext _dbContext;
-        private readonly Func<TObj, TRes> _defaultCreateFunc;
+        private readonly Func<TObj, TRes> _defaultCreateResFunc;
+        private readonly Func<TRes, TObj> _defaultCreateObjFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }
