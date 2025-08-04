@@ -287,7 +287,12 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                 IAmazonS3 s3Client = _s3Clients[source];
                 bucket = additionalParams[BucketParam];
                 string key = Path.Combine(path, dirName);
-                key = key.Replace('\\', '/').TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                key = key.Replace('\\', '/').TrimStart(new[] {'.'}).TrimStart(new[] {'/'});
+                if (!key.EndsWith("/"))
+                {
+                    key += "/";
+                }
+
                 Tuple<bool, string> result = await CreateObjectImpl(s3Client, bucket, key, null);
                 int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
                 string outputKey = result.Item1 ? key : String.Empty;
@@ -459,7 +464,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                     InputStream = objData,
                     BucketName = bucket,
                     Key = key,
-                    DisablePayloadSigning = true
+                    DisablePayloadSigning = true,
                 };
 
                 PutObjectResponse response = await s3Client.PutObjectAsync(request);

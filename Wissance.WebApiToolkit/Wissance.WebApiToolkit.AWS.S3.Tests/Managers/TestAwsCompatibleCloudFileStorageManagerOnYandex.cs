@@ -66,7 +66,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
         }
 
         [Theory]
-        [InlineData(WissanceYandexTestBucket, "src", "cli/")]
+        [InlineData(WissanceYandexTestBucket, "src", "cli")]
         public async Task CreateDirectorySuccessfully(string bucket, string path, string dirName)
         {
             OperationResultDto<string> result = await _manager.CreateDirAsync(WissanceYandexTestSource, path, dirName, new Dictionary<string, string>()
@@ -76,11 +76,26 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             Assert.True(result.Success);
             // todo(UMV) : check result path
             string dirPath = $"{path}/{dirName}";
+            // get list
+            OperationResultDto<IList<TinyFileInfo>> files = await _manager.GetFilesAsync(WissanceYandexTestSource, path,
+                new Dictionary<string, string>()
+                {
+                    {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+                });
+            Assert.True(files.Success);
+            Assert.True(files.Data.Any(f => f.Name == dirName));
             OperationResultDto<bool> rmResult = await _manager.DeleteDirAsync(WissanceYandexTestSource, dirPath, new Dictionary<string, string>()
             {
                 {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
             });
             Assert.True(rmResult.Success);
+            files = await _manager.GetFilesAsync(WissanceYandexTestSource, path,
+                new Dictionary<string, string>()
+                {
+                    {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+                });
+            Assert.True(files.Success);
+            Assert.False(files.Data.Any(f => f.Name == dirName));
         }
 
         [Theory]
@@ -104,7 +119,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
         }
 
         private const string WissanceYandexTestSource = "wissance";
-        private const string WissanceYandexTestBucket = "y-s3-test-bucket";
+        private const string WissanceYandexTestBucket = "y-s3-test-bucket-2";
         
         private readonly IAWSCompatibleFileStorageManager _manager;
     }
