@@ -70,6 +70,32 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
         }
 
         [Theory]
+        [InlineData("y-new-bucket-000")]
+        public async Task TestCreateAndDeleteBucket(string newBucket)
+        {
+            OperationResultDto<bool> createResult = await _manager.CreateBucketAsync(WissanceYandexTestSource, newBucket);
+            Assert.True(createResult.Success);
+            MemoryStream fileContent = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
+            string path = "";
+            string fileName = "go.mod";
+            OperationResultDto<string> result = await _manager.CreateFileAsync(WissanceYandexTestSource, path, fileName, fileContent,
+                new Dictionary<string, string>()
+                {
+                    {AWSCompatibleCloudFileStorageManager.BucketParam, newBucket}
+                });
+            Assert.True(result.Success);
+            Assert.Equal(fileName, result.Data);
+            // non empty bucket can't be deleted
+            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(WissanceYandexTestSource, fileName, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, newBucket}
+            });
+            Assert.True(rmResult.Success);
+            OperationResultDto<bool> deleteResult = await _manager.DeleteBucketAsync(WissanceYandexTestSource, newBucket);
+            Assert.True(deleteResult.Success);
+        }
+
+        [Theory]
         [InlineData(WissanceYandexTestBucket, "", 4)]
         [InlineData(WissanceYandexTestBucket, "artifacts", 2)]
         [InlineData(WissanceYandexTestBucket, "artifacts/txt", 2)]
