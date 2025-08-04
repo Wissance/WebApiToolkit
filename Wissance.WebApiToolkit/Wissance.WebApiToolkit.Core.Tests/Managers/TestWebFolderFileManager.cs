@@ -9,7 +9,7 @@ namespace Wissance.WebApiToolkit.Core.Tests.Managers
     {
         public TestWebFolderFileManager()
         {
-            _manager = new WebFolderFileManager(_webFolderTestSources, "source1", new LoggerFactory());
+            _manager = new WebFolderFileManager(_webFolderTestSources, new LoggerFactory());
             RemoveTestWebFolders();
             CreateTestWebFolders();
         }
