@@ -126,6 +126,54 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             Assert.True(rmResult.Success);
         }
 
+        [Theory]
+        [InlineData(WissanceYandexTestBucket, "src", "go.mod")]
+        public async Task TestUpdateFileSuccessfully(string bucket, string path, string fileName)
+        {
+            byte[] expectedContent = new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+            MemoryStream fileContent = new MemoryStream(expectedContent);
+            OperationResultDto<string> result = await _manager.CreateFileAsync(WissanceYandexTestSource, path, fileName, fileContent,
+                new Dictionary<string, string>()
+                {
+                    {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+                });
+            Assert.True(result.Success);
+            // todo(UMV) : check result path
+            string filePath = $"{path}/{fileName}";
+            Assert.Equal(filePath, result.Data);
+            OperationResultDto<MemoryStream> contentResult = await _manager.GetFileContentAsync(WissanceYandexTestSource, filePath, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(result.Success);
+            byte[] buffer = contentResult.Data.ToArray();
+            string actualContent = UTF8Encoding.UTF8.GetString(buffer);
+            Assert.Equal(UTF8Encoding.UTF8.GetString(expectedContent), actualContent);
+
+            expectedContent = new byte[] {2, 4, 8, 16, 32, 64, 128, 255};
+            fileContent = new MemoryStream(expectedContent);
+            OperationResultDto<bool> updateResult = await _manager.UpdateFileAsync(WissanceYandexTestSource, filePath, fileContent, 
+                new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(updateResult.Success);
+            contentResult = await _manager.GetFileContentAsync(WissanceYandexTestSource, filePath, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(result.Success);
+            buffer = contentResult.Data.ToArray();
+            actualContent = UTF8Encoding.UTF8.GetString(buffer);
+            Assert.Equal(UTF8Encoding.UTF8.GetString(expectedContent), actualContent);
+
+            OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(WissanceYandexTestSource, filePath, new Dictionary<string, string>()
+            {
+                {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+            });
+            Assert.True(rmResult.Success);
+        }
+
         private const string WissanceYandexTestSource = "wissance";
         private const string WissanceYandexTestBucket = "y-s3-test-bucket-2";
         
