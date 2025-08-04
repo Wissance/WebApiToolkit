@@ -74,8 +74,8 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
                 {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
             });
             Assert.True(result.Success);
-            // todo(UMV) : check result path
             string dirPath = $"{path}/{dirName}";
+            Assert.Equal($"{dirPath}/", result.Data);
             // get list
             OperationResultDto<IList<TinyFileInfo>> files = await _manager.GetFilesAsync(WissanceYandexTestSource, path,
                 new Dictionary<string, string>()
@@ -111,6 +111,14 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
             Assert.True(result.Success);
             // todo(UMV) : check result path
             string filePath = $"{path}/{fileName}";
+            Assert.Equal(filePath, result.Data);
+            OperationResultDto<IList<TinyFileInfo>> files = await _manager.GetFilesAsync(WissanceYandexTestSource, path,
+                new Dictionary<string, string>()
+                {
+                    {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}
+                });
+            Assert.True(files.Success);
+            Assert.True(files.Data.Any(f => f.Name == fileName));
             OperationResultDto<bool> rmResult = await _manager.DeleteFileAsync(WissanceYandexTestSource, filePath, new Dictionary<string, string>()
             {
                 {AWSCompatibleCloudFileStorageManager.BucketParam, bucket}

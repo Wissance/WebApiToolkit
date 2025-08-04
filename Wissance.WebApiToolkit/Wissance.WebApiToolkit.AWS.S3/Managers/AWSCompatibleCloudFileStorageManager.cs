@@ -358,7 +358,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
                 IAmazonS3 s3Client = _s3Clients[source];
                 bucket = additionalParams[BucketParam];
                 string key = Path.Combine(path, fileName);
-                key = key.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                key = key.TrimStart(new[] {'.'}).TrimStart(new[] {'/'}).Replace("\\", "/");
                 Tuple<bool, string> result = await CreateObjectImpl(s3Client, bucket, key, fileContent);
                 int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
                 string outputKey = result.Item1 ? key : String.Empty;
