@@ -12,6 +12,31 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
 {
     public class TestAwsCompatibleCloudFileStorageManagerOnYandex : IDisposable
     {
+        /// <summary>
+        ///     These tests were written for testing IAWSCompatibleFileStorageManager operation
+        ///     with Yandex Object Storage
+        ///     1. It is required to have service account with role storage.editor
+        ///        Don't forget to save key and secret to file settings.json in this project root dir and set them to copy to output
+        ///        path, this file has a following content (values changed):
+        ///        {
+        ///            "AccessKey": "YassEZBPassMGzTelzassigfQ",
+        ///            "SecretAccessKey": "YCMeYuWMassSWPBAasselV7assQ0assDNUassdkS"
+        ///        }
+        ///     2. Prior to tests you have to create following buckets:
+        ///         - y-s3-test-bucket
+        ///         - y-s3-test-bucket-2
+        ///     These tests depends on S3 predefined structure, bucket "y-s3-test-bucket-2" must have the following
+        ///     structure:
+        ///     /
+        ///     --/artifacts
+        ///       --/archives
+        ///       --/txt
+        ///         --/test_data.txt  (content: test_data:1234567890 qwertyuiopasdfghjklzxcvbnm)
+        ///         --/test_data2.txt (content: 01234567890987654321)
+        ///     --/bin
+        ///     --/docs
+        ///     --/src
+        /// </summary>
         public TestAwsCompatibleCloudFileStorageManagerOnYandex()
         {
             // todo(UMV): take keys from env vars 
@@ -34,6 +59,14 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
         public void Dispose()
         {
             _manager.Dispose();
+        }
+
+        [Fact]
+        public async Task TestGetBuckets()
+        {
+            OperationResultDto<IList<string>> result = await _manager.GetBucketsAsync(WissanceYandexTestSource);
+            Assert.True(result.Success);
+            Assert.Contains(result.Data, b => b == WissanceYandexTestBucket);
         }
 
         [Theory]
