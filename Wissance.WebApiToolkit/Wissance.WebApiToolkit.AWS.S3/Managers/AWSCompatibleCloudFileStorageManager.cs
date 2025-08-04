@@ -322,7 +322,11 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             {
                 IAmazonS3 s3Client = _s3Clients[source];
                 bucket = additionalParams[BucketParam];
-                string key = dirPath.TrimStart(new[] {'.'}).Trim(new[] {'/'});
+                string key = dirPath.TrimStart(new[] {'.'}).TrimStart(new[] {'/'});
+                if (!key.EndsWith("/"))
+                {
+                    key += "/";
+                }
                 Tuple<bool, string> result = await DeleteObjectImpl(s3Client, bucket, key);
                 int statusCode = result.Item1 ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
                 return new OperationResultDto<bool>(result.Item1, statusCode, String.Empty, result.Item1);

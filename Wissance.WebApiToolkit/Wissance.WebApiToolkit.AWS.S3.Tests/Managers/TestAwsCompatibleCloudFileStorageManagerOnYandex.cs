@@ -100,7 +100,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Tests.Managers
 
         [Theory]
         [InlineData(WissanceYandexTestBucket, "src", "go.mod")]
-        public async Task CreateFile(string bucket, string path, string fileName)
+        public async Task CreateFileSuccessfully(string bucket, string path, string fileName)
         {
             MemoryStream fileContent = new MemoryStream(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
             OperationResultDto<string> result = await _manager.CreateFileAsync(WissanceYandexTestSource, path, fileName, fileContent,
