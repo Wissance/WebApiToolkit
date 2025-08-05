@@ -104,5 +104,10 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         {
             return string.Format(MessageCatalog.BadRequestErrorTemplate, resource, property, value);
         }
+
+        public static string GetNotImplementedErrorMessage(string resource, string operation)
+        {
+            return string.Format(MessageCatalog.OperationNotImplementedTemplate, operation, resource);
+        }
     }
 }

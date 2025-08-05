@@ -16,5 +16,6 @@ namespace Wissance.WebApiToolkit.Core.Globals
         public const string DirectoryResourceType = "Directory";
         public const string ResourceConflictTemplate = "Resource of type\"{0}\" with \"{1}\" property with value - \"{2}\" already exists";
         public const string BadRequestErrorTemplate = "Resource of type\"{0}\" with \"{1}\" property with value - \"{2}\" is not supported";
+        public const string OperationNotImplementedTemplate = "Operation \"{0}\" was not implemented for resource of type\"{1}\"";
     }
 }

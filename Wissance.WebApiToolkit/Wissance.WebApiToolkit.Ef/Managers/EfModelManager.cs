@@ -203,7 +203,8 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             {
                 if (_defaultCreateObjFunc == null)
                 {
-                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, "", null);
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Create"), null);
                 }
 
                 TObj entity = _defaultCreateObjFunc(data);
@@ -232,10 +233,35 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a newly created objects</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
+        public virtual async Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultCreateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "BulkCreate"), null);
+                }
+                IList<TObj> entities = data.Select(item => _defaultCreateObjFunc(item)).ToList();
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                await dbSet.AddRangeAsync(entities);
+                
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage("BulkCreate", typeof(TObj).ToString()), null);
+                }
+
+                return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.Created, String.Empty,
+                    entities.Select(item => _defaultCreateResFunc(item)).ToArray());
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetCreateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
@@ -251,7 +277,8 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             {
                 if (_defaultCreateObjFunc == null)
                 {
-                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, "", null);
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Update"), null);
                 }
                 
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
