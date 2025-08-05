@@ -38,18 +38,29 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         {
             return string.Format(MessageCatalog.UpdateFailureMessageTemplate, entity, id, exceptionMessage);
         }
-        
+
+        /// <summary>
+        /// Method for getting Bulk Update Failure reason message
+        /// </summary>
+        /// <param name="entity">Entity type/table</param>
+        /// <param name="exceptionMessage">Exception method</param>
+        /// <returns></returns>
+        public static string GetBulkUpdateFailureMessage(string entity, string exceptionMessage)
+        {
+            return string.Format(MessageCatalog.BulkUpdateFailureMessageTemplate, entity, exceptionMessage);
+        }
+
         /// <summary>
         /// Method for getting Resource Not Found Message (Update Method)
         /// </summary>
         /// <param name="entity">Entity type/table</param>
         /// <param name="id">Item identifier</param>
         /// <returns></returns>
-        public static string GetUpdateNotFoundMessage(string entity, int id)
+        public static string GetUpdateNotFoundMessage(string entity, string id)
         {
             return string.Format(MessageCatalog.UpdateFailureNotFoundMessageTemplate, entity, id);
         }
-        
+
         /// <summary>
         /// Method for getting User Has No Access to Resource Message
         /// </summary>
@@ -105,6 +116,12 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
             return string.Format(MessageCatalog.BadRequestErrorTemplate, resource, property, value);
         }
 
+        /// <summary>
+        /// Method for getting Not Implemented Error Message
+        /// </summary>
+        /// <param name="resource">resource type</param>
+        /// <param name="operation">string representation of operation</param>
+        /// <returns></returns>
         public static string GetNotImplementedErrorMessage(string resource, string operation)
         {
             return string.Format(MessageCatalog.OperationNotImplementedTemplate, operation, resource);

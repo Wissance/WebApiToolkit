@@ -270,12 +270,11 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="id">item identifier</param>
         /// <param name="data">>DTO with Model representation</param>
         /// <returns>DTO of updated object</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public virtual async Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
         {
             try
             {
-                if (_defaultCreateObjFunc == null)
+                if (_defaultUpdateObjFunc == null)
                 {
                     return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, 
                         ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Update"), null);
@@ -287,7 +286,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (dbEntity == null)
                 {
                     return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotFound,
-                        ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                        ResponseMessageBuilder.GetUpdateNotFoundMessage(typeof(TObj).ToString(), id.ToString()), null);
                 }
 
                 _defaultUpdateObjFunc(data, id, dbEntity);
@@ -315,10 +314,27 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a updated objects</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
+        public virtual async Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultUpdateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "BulkUpdate"), null);
+                }
+                
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                // todo(UMV): get entities async
+                // List<TRes> entities = data.Select(item => )
+                throw new NotImplementedException();
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetBulkUpdateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
