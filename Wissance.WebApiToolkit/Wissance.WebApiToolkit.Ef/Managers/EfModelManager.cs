@@ -35,18 +35,21 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="dbContext">Ef Database context</param>
         /// <param name="createResFunc">Delegate (factory func) for creating DTO from Model</param>
-        /// <param name="createObjFunc">Delegate (factory func) for creating Model from DTO</param>
+        /// <param name="createObjFunc">Delegate (factory func) for creating Entity from DTO</param>
+        /// <param name="updateObjFunc">Delegate (factory func) for updating Entity from DTO</param>
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="System.ArgumentNullException"></exception>
         public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
                               Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
+                              Action<TRes, TId, TObj> updateObjFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
             _defaultCreateResFunc = createResFunc;
             _defaultCreateObjFunc = createObjFunc;
+            _defaultUpdateObjFunc = updateObjFunc;
             _filterFunc = filterFunc;
         }
 
@@ -190,10 +193,10 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
         
         /// <summary>
-        /// Method for create new object in database using Ef, using _create
+        ///     Method for create new object in database using Ef, using _create
         /// </summary>
-        /// <param name="data">DTO with Model representation</param>
-        /// <returns>DTO of newly created object</returns>
+        /// <param name="data">DTO with a Model representation</param>
+        /// <returns>DTO of a newly created object</returns>
         public virtual async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
             try
@@ -236,15 +239,48 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
 
         /// <summary>
-        /// Method for update existing objects using EF, still have not default impl, but will be
+        ///     Method for update existing objects using EF, still have not default impl, but will be
         /// </summary>
         /// <param name="id">item identifier</param>
         /// <param name="data">>DTO with Model representation</param>
         /// <returns>DTO of updated object</returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
+        public virtual async Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultCreateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, "", null);
+                }
+                
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                TObj dbEntity = await dbSet.FirstOrDefaultAsync(item => item.Id.Equals(id));
+
+                if (dbEntity == null)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotFound,
+                        ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                }
+
+                _defaultUpdateObjFunc(data, id, dbEntity);
+
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage("Update", typeof(TObj).ToString()), null);
+                }
+
+                return new OperationResultDto<TRes>(true, (int) HttpStatusCode.OK, String.Empty,
+                    _defaultCreateResFunc(dbEntity));
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetUpdateFailureMessage(typeof(TObj).ToString(), id.ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
@@ -297,6 +333,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         private readonly DbContext _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateResFunc;
         private readonly Func<TRes, TObj> _defaultCreateObjFunc;
+        private readonly Action<TRes, TId, TObj> _defaultUpdateObjFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }

@@ -34,7 +34,7 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// <param name="id">Item identifier</param>
         /// <param name="exceptionMessage">Exception method</param>
         /// <returns></returns>
-        public static string GetUpdateFailureMessage(string entity, int id, string exceptionMessage)
+        public static string GetUpdateFailureMessage(string entity, string id, string exceptionMessage)
         {
             return string.Format(MessageCatalog.UpdateFailureMessageTemplate, entity, id, exceptionMessage);
         }
