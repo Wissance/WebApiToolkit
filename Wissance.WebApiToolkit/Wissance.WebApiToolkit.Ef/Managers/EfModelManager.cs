@@ -194,14 +194,13 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="data">DTO with Model representation</param>
         /// <returns>DTO of newly created object</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
         public virtual async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
             try
             {
                 if (_defaultCreateObjFunc == null)
                 {
-                    // return NotImplemented
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, "", null);
                 }
 
                 TObj entity = _defaultCreateObjFunc(data);
@@ -210,16 +209,19 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 int saveResult = await _dbContext.SaveChangesAsync();
                 if (saveResult <= 0)
                 {
-                    // return failure
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage("Create", typeof(TObj).ToString()), null);
                 }
-                // return success
+
+                return new OperationResultDto<TRes>(true, (int) HttpStatusCode.Created, String.Empty,
+                    _defaultCreateResFunc(entity));
             }
             catch (Exception e)
             {
-                // log && return failure
-                throw;
+                string msg = ResponseMessageBuilder.GetCreateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError, msg, null);
             }
-            throw new NotImplementedException();
         }
 
         /// <summary>
