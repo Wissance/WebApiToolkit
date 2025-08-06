@@ -17,7 +17,7 @@ namespace Wissance.WebApiToolkit.TestApp.Managers
     public class OrganizationManager : EfModelManager<OrganizationDto, OrganizationEntity, int>
     {
         public OrganizationManager(ModelContext dbContext, Func<OrganizationEntity, IDictionary<string, string>, bool> filterFunc, Func<OrganizationEntity, OrganizationDto> createFunc, ILoggerFactory loggerFactory) 
-            : base(dbContext, filterFunc, createFunc, loggerFactory)
+            : base(dbContext, filterFunc, createFunc, null, null, loggerFactory)
         {
             _dbContext = dbContext;
         }

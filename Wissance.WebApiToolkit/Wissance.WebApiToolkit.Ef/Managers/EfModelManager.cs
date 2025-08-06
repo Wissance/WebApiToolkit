@@ -321,13 +321,44 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (_defaultUpdateObjFunc == null)
                 {
                     return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
-                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "BulkUpdate"), null);
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), 
+                            "BulkUpdate"), null);
                 }
                 
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
-                // todo(UMV): get entities async
-                // List<TRes> entities = data.Select(item => )
-                throw new NotImplementedException();
+                IList<Tuple<TRes, TObj>> updatingObjects = new List<Tuple<TRes, TObj>>();
+                // 1. construct Entity object from Resource due to Entity have a restriction - identifier
+                foreach (TRes itemData in data)
+                {
+                    Tuple<TRes, TObj> item = new Tuple<TRes, TObj>(itemData, _defaultCreateObjFunc(itemData));
+                    // 2. add only those objects that we build as Entities
+                    if (item.Item2 != null)
+                    {
+                        updatingObjects.Add(item);
+                    }
+                }
+
+                IList<TId> identifiers = updatingObjects.Select(item =>item.Item2.Id).ToList();
+                IList<TObj> dbObjects = await dbSet.Where(item => identifiers.Contains(item.Id)).ToListAsync();
+
+                // Important issue that we could not have an object in db but seems that we should update objects that were 
+                // discovered
+                foreach (TObj dbObject in dbObjects)
+                {
+                    Tuple<TRes, TObj> actualData = updatingObjects.First(o => o.Item2.Id.Equals(dbObject.Id));
+                    _defaultUpdateObjFunc(actualData.Item1, dbObject.Id, dbObject);
+                }
+                
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage("BulkUpdate", typeof(TObj).ToString()), null);
+                }
+
+                return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.OK, string.Empty,
+                    dbObjects.Select(i => _defaultCreateResFunc(i)).ToArray());
+
             }
             catch (Exception e)
             {
