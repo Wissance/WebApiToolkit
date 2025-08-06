@@ -32,7 +32,7 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// </summary>
         /// <param name="entity">Entity type/table</param>
         /// <param name="id">Item identifier</param>
-        /// <param name="exceptionMessage">Exception method</param>
+        /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
         public static string GetUpdateFailureMessage(string entity, string id, string exceptionMessage)
         {
@@ -43,7 +43,7 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// Method for getting Bulk Update Failure reason message
         /// </summary>
         /// <param name="entity">Entity type/table</param>
-        /// <param name="exceptionMessage">Exception method</param>
+        /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
         public static string GetBulkUpdateFailureMessage(string entity, string exceptionMessage)
         {
@@ -125,6 +125,29 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         public static string GetNotImplementedErrorMessage(string resource, string operation)
         {
             return string.Format(MessageCatalog.OperationNotImplementedTemplate, operation, resource);
+        }
+        
+        /// <summary>
+        /// Method for getting Delete Failure reason message using entity and reason
+        /// </summary>
+        /// <param name="entity">>Entity type/table</param>
+        /// <param name="id">Item identifier</param>
+        /// <param name="exceptionMessage">Exception message</param>
+        /// <returns></returns>
+        public static string GetDeleteFailureMessage(string entity, string id, string exceptionMessage)
+        {
+            return string.Format(MessageCatalog.DeleteFailureMessageTemplate, entity, id, exceptionMessage);
+        }
+        
+        /// <summary>
+        /// Method for getting Bulk Delete Failure reason message
+        /// </summary>
+        /// <param name="entity">Entity type/table</param>
+        /// <param name="exceptionMessage">Exception message</param>
+        /// <returns></returns>
+        public static string GetBulkDeleteFailureMessage(string entity, string exceptionMessage)
+        {
+            return string.Format(MessageCatalog.BulkDeleteFailureMessageTemplate, entity, exceptionMessage);
         }
     }
 }

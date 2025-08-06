@@ -388,8 +388,9 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during object of type: {nameof(TObj)} with id: {id} remove: {e.Message}");
-                return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, "Error occurred during object delete, contact system maintainer", false);
+                string msg = ResponseMessageBuilder.GetDeleteFailureMessage(typeof(TObj).ToString(), id.ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, msg, false);
             }
         }
         
@@ -398,9 +399,24 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="objectsIds">item identifiers</param>
         /// <returns>true if removal was successful, otherwise false</returns>
-        public virtual Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
+        public virtual async Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
         {
-            throw new NotImplementedException();
+            try
+            {
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                IList<TObj> items = await dbSet.Where(t => objectsIds.Contains(t.Id)).ToListAsync();
+
+                if (items == null || !items.Any())
+                    return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Items are not exists", false);
+                dbSet.RemoveRange(items);
+                await _dbContext.SaveChangesAsync();
+                return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetBulkDeleteFailureMessage(typeof(TObj).ToString(), e.Message);
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
         private readonly ILogger<EfModelManager<TRes, TObj, TId>> _logger;
