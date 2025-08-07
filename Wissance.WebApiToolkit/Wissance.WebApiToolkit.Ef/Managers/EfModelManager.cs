@@ -151,7 +151,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             {
                 _logger.LogError($"An error: {e.Message} occurred during object of type: {typeof(TObj)} with id: {id} retrieve and convert to object of type: {typeof(TRes)}");
                 return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound,
-                                                    ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                                                    ResponseMessageBuilder.GetOperationErrorMessage(typeof(TObj).ToString(), "GetOne", e.Message), null);
             }
         }
 
@@ -214,7 +214,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (saveResult <= 0)
                 {
                     return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
-                        ResponseMessageBuilder.GetUnknownErrorMessage("Create", typeof(TObj).ToString()), null);
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "Create"), null);
                 }
 
                 return new OperationResultDto<TRes>(true, (int) HttpStatusCode.Created, String.Empty,
@@ -250,7 +250,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (saveResult <= 0)
                 {
                     return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
-                        ResponseMessageBuilder.GetUnknownErrorMessage("BulkCreate", typeof(TObj).ToString()), null);
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "BulkCreate"), null);
                 }
 
                 return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.Created, String.Empty,
@@ -295,7 +295,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (saveResult <= 0)
                 {
                     return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
-                        ResponseMessageBuilder.GetUnknownErrorMessage("Update", typeof(TObj).ToString()), null);
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "Update"), null);
                 }
 
                 return new OperationResultDto<TRes>(true, (int) HttpStatusCode.OK, String.Empty,
@@ -353,7 +353,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (saveResult <= 0)
                 {
                     return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
-                        ResponseMessageBuilder.GetUnknownErrorMessage("BulkUpdate", typeof(TObj).ToString()), null);
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "BulkUpdate"), null);
                 }
 
                 return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.OK, string.Empty,
@@ -383,6 +383,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (item == null)
                     return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Item does not exists", false);
                 dbSet.Remove(item);
+                // todo(UMV): test and add result check as in Create && Update
                 await _dbContext.SaveChangesAsync();
                 return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
             }
@@ -409,6 +410,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (items == null || !items.Any())
                     return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Items are not exists", false);
                 dbSet.RemoveRange(items);
+                // todo(UMV): test and add result check as in Create && Update
                 await _dbContext.SaveChangesAsync();
                 return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
             }

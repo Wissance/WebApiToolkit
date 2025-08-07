@@ -10,8 +10,9 @@ namespace Wissance.WebApiToolkit.Core.Globals
         public const string UpdateFailureNotFoundMessageTemplate = "{0} with id: {1} was not found";
         public const string DeleteFailureMessageTemplate = "An error occurred during \"{0}\" delete with id: \"{1}\", error: {2}";
         public const string BulkDeleteFailureMessageTemplate = "An error occurred during \"{0}\" bulk delete, error: {1}";
+        public const string OperationErrorMessageTemplate = "An error occurred during \"{0}\" \"{1}\" operation, error: {2}";
 
-        public const string UnknownErrorMessageTemplate = "An error occurred during {0} \"{1}\", contact system maintainer";
+        public const string UnknownErrorMessageTemplate = "An error occurred during \"{0}\" \"{1}\"";
         public const string UserNotAuthenticatedMessage = "User is not authenticated";
 
         public const string BadSourceProvidedTemplate = "Source: \"{0}\" does not exist or was not provided";

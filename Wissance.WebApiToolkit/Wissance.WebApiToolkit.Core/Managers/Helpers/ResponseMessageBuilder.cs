@@ -74,12 +74,24 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// <summary>
         /// Method for getting Unknown Error Message
         /// </summary>
-        /// <param name="operation">Operation type = Create, Update, Read or Delete</param>
         /// <param name="resource">Resource = entity/table</param>
+        /// <param name="operation">Operation type = Create, Update, Read or Delete</param>
         /// <returns></returns>
-        public static string GetUnknownErrorMessage(string operation, string resource)
+        public static string GetUnknownErrorMessage(string resource, string operation)
         {
-            return string.Format(MessageCatalog.UnknownErrorMessageTemplate, operation, resource);
+            return string.Format(MessageCatalog.UnknownErrorMessageTemplate, resource, operation);
+        }
+        
+        /// <summary>
+        /// Method for getting Generic error during some operation
+        /// </summary>
+        /// <param name="resource">Resource = entity/table or file or something else</param>
+        /// <param name="operation">>Operation type = Create, Update, Read or Delete</param>
+        /// <param name="error">exception message</param>
+        /// <returns></returns>
+        public static string GetOperationErrorMessage(string resource, string operation, string error)
+        {
+            return string.Format(MessageCatalog.OperationErrorMessageTemplate, resource, operation, error);
         }
 
         /// <summary>
