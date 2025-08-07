@@ -373,7 +373,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="id">item identifier</param>
         /// <returns>true if removal was successful, otherwise false</returns>
-        public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
+        public virtual async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
             try
             {
