@@ -8,12 +8,12 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// <summary>
         /// Method for getting Create Failure reason message using entity and reason
         /// </summary>
-        /// <param name="entity">Entity type/table</param>
+        /// <param name="resource">Entity type/table</param>
         /// <param name="exceptionMessage">Exception message</param>
         /// <returns>Formatted text with object creation error</returns>
-        public static string GetCreateFailureMessage(string entity, string exceptionMessage)
+        public static string GetCreateFailureMessage(string resource, string exceptionMessage)
         {
-            return string.Format(MessageCatalog.CreateFailureMessageTemplate, entity, exceptionMessage);
+            return string.Format(MessageCatalog.CreateFailureMessageTemplate, resource, exceptionMessage);
         }
         
         /// <summary>
@@ -30,35 +30,35 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// <summary>
         /// Method for getting Update Failure reason message using entity and reason
         /// </summary>
-        /// <param name="entity">Entity type/table</param>
+        /// <param name="resource">Entity type/table</param>
         /// <param name="id">Item identifier</param>
         /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
-        public static string GetUpdateFailureMessage(string entity, string id, string exceptionMessage)
+        public static string GetUpdateFailureMessage(string resource, string id, string exceptionMessage)
         {
-            return string.Format(MessageCatalog.UpdateFailureMessageTemplate, entity, id, exceptionMessage);
+            return string.Format(MessageCatalog.UpdateFailureMessageTemplate, resource, id, exceptionMessage);
         }
 
         /// <summary>
         /// Method for getting Bulk Update Failure reason message
         /// </summary>
-        /// <param name="entity">Entity type/table</param>
+        /// <param name="resource">Entity type/table</param>
         /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
-        public static string GetBulkUpdateFailureMessage(string entity, string exceptionMessage)
+        public static string GetBulkUpdateFailureMessage(string resource, string exceptionMessage)
         {
-            return string.Format(MessageCatalog.BulkUpdateFailureMessageTemplate, entity, exceptionMessage);
+            return string.Format(MessageCatalog.BulkUpdateFailureMessageTemplate, resource, exceptionMessage);
         }
 
         /// <summary>
         /// Method for getting Resource Not Found Message (Update Method)
         /// </summary>
-        /// <param name="entity">Entity type/table</param>
+        /// <param name="resource">Entity type/table</param>
         /// <param name="id">Item identifier</param>
         /// <returns></returns>
-        public static string GetUpdateNotFoundMessage(string entity, string id)
+        public static string GetUpdateNotFoundMessage(string resource, string id)
         {
-            return string.Format(MessageCatalog.UpdateFailureNotFoundMessageTemplate, entity, id);
+            return string.Format(MessageCatalog.UpdateFailureNotFoundMessageTemplate, resource, id);
         }
 
         /// <summary>
@@ -130,24 +130,24 @@ namespace Wissance.WebApiToolkit.Core.Managers.Helpers
         /// <summary>
         /// Method for getting Delete Failure reason message using entity and reason
         /// </summary>
-        /// <param name="entity">>Entity type/table</param>
+        /// <param name="resource">>Entity type/table</param>
         /// <param name="id">Item identifier</param>
         /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
-        public static string GetDeleteFailureMessage(string entity, string id, string exceptionMessage)
+        public static string GetDeleteFailureMessage(string resource, string id, string exceptionMessage)
         {
-            return string.Format(MessageCatalog.DeleteFailureMessageTemplate, entity, id, exceptionMessage);
+            return string.Format(MessageCatalog.DeleteFailureMessageTemplate, resource, id, exceptionMessage);
         }
         
         /// <summary>
         /// Method for getting Bulk Delete Failure reason message
         /// </summary>
-        /// <param name="entity">Entity type/table</param>
+        /// <param name="resource">Entity type/table</param>
         /// <param name="exceptionMessage">Exception message</param>
         /// <returns></returns>
-        public static string GetBulkDeleteFailureMessage(string entity, string exceptionMessage)
+        public static string GetBulkDeleteFailureMessage(string resource, string exceptionMessage)
         {
-            return string.Format(MessageCatalog.BulkDeleteFailureMessageTemplate, entity, exceptionMessage);
+            return string.Format(MessageCatalog.BulkDeleteFailureMessageTemplate, resource, exceptionMessage);
         }
     }
 }
