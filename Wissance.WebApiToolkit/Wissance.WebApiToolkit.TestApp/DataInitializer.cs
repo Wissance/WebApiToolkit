@@ -70,7 +70,21 @@ namespace Wissance.WebApiToolkit.TestApp
         
         private static void InitUsers(ModelContext context)
         {
-            
+            IList<OrganizationEntity> organizations = context.Organizations.ToList();
+            foreach (OrganizationEntity organization in organizations)
+            {
+                int oId = 1;
+                UserEntity user = new UserEntity()
+                {
+                    Login = $"sa_{oId}",
+                    OrganizationId = organization.Id,
+                    FullName = $"Demo Demo {oId}"
+                };
+                oId++;
+                context.Users.Add(user);
+            }
+
+            context.SaveChanges();
         }
     }
 }
