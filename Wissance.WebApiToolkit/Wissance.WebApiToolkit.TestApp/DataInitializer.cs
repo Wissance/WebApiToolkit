@@ -73,14 +73,12 @@ namespace Wissance.WebApiToolkit.TestApp
             IList<OrganizationEntity> organizations = context.Organizations.ToList();
             foreach (OrganizationEntity organization in organizations)
             {
-                int oId = 1;
                 UserEntity user = new UserEntity()
                 {
-                    Login = $"sa_{oId}",
+                    Login = $"sa_{organization.Id}",
                     OrganizationId = organization.Id,
-                    FullName = $"Demo Demo {oId}"
+                    FullName = $"Demo Demo {organization.Id}"
                 };
-                oId++;
                 context.Users.Add(user);
             }
 
