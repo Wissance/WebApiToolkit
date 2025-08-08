@@ -52,5 +52,17 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 UserChecker.Check(newUser, result.Data);
             }
         }
+
+        [Fact]
+        public async Task TestUpdate()
+        {
+            // todo(UMV):implement ...
+        }
+        
+        [Fact]
+        public async Task TestDelete()
+        {
+            // todo(UMV):implement ...
+        }
     }
 } 
