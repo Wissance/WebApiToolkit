@@ -56,7 +56,37 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestUpdate()
         {
-            // todo(UMV):implement ...
+            using (HttpClient client = Application.CreateClient())
+            {
+                UserEntity newUser = new UserEntity()
+                {
+                    Id = 100,
+                    Login = "ass",
+                    FullName = "Ivan Ivanov",
+                    OrganizationId = 4
+                };
+                JsonContent content = JsonContent.Create(newUser);
+                HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
+                Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
+                string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
+                Assert.True(userCreateDataStr.Length > 0);
+                OperationResultDto<UserEntity> result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                UserChecker.Check(newUser, result.Data);
+                newUser.Login = "paa";
+                newUser.OrganizationId = 8;
+                newUser.FullName = "Petr Petrov";
+                content = JsonContent.Create(newUser);
+                HttpResponseMessage updateUserResponse = await client.PutAsync($"api/User/{newUser.Id}", content);
+                Assert.Equal(HttpStatusCode.OK, updateUserResponse.StatusCode);
+                string userUpdateDataStr = await createUserResponse.Content.ReadAsStringAsync();
+                Assert.True(userUpdateDataStr.Length > 0);
+                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                UserChecker.Check(newUser, result.Data);
+            }
         }
         
         [Fact]
