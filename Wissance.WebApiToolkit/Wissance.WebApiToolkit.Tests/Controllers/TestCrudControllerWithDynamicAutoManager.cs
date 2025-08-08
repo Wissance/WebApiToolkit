@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.Tests.Utils;
+using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
 namespace Wissance.WebApiToolkit.Tests.Controllers
 {
@@ -37,11 +38,18 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 {
                     Id = 100,
                     Login = "ass",
+                    FullName = "Ivan Ivanov",
                     OrganizationId = 4
                 };
                 JsonContent content = JsonContent.Create(newUser);
                 HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
                 Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
+                string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
+                Assert.True(userCreateDataStr.Length > 0);
+                OperationResultDto<UserEntity> result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                UserChecker.Check(newUser, result.Data);
             }
         }
     }
