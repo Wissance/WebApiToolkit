@@ -80,9 +80,18 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 content = JsonContent.Create(newUser);
                 HttpResponseMessage updateUserResponse = await client.PutAsync($"api/User/{newUser.Id}", content);
                 Assert.Equal(HttpStatusCode.OK, updateUserResponse.StatusCode);
-                string userUpdateDataStr = await createUserResponse.Content.ReadAsStringAsync();
+                string userUpdateDataStr = await updateUserResponse.Content.ReadAsStringAsync();
                 Assert.True(userUpdateDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userUpdateDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                UserChecker.Check(newUser, result.Data);
+                
+                HttpResponseMessage getUserResponse = await client.GetAsync($"api/User/{newUser.Id}");
+                Assert.Equal(HttpStatusCode.OK, getUserResponse.StatusCode);
+                string getUserDataStr = await getUserResponse.Content.ReadAsStringAsync();
+                Assert.True(getUserDataStr.Length > 0);
+                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(getUserDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);
@@ -92,7 +101,11 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestDelete()
         {
-            // todo(UMV):implement ...
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage deleteUserResponse = await client.DeleteAsync($"api/User/1");
+                Assert.Equal(HttpStatusCode.NoContent, deleteUserResponse.StatusCode);
+            }
         }
     }
 } 
