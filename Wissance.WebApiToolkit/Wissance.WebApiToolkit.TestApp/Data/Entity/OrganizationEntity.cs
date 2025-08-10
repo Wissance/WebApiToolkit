@@ -5,6 +5,12 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity
 {
     public class OrganizationEntity : IModelIdentifiable<int>
     {
+        public OrganizationEntity()
+        {
+            Users = new List<UserEntity>();
+            Codes = new List<CodeEntity>();
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
