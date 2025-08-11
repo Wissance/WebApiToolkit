@@ -99,7 +99,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"GetFiles\" method call for source: \"{source}\" for path: \"{path}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<IList<TinyFileInfo>>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("GetFiles", e.Message), null);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "GetFiles", e.Message), null);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"GetFileContent\" method call for source: \"{source}\" for file: \"{filePath}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<MemoryStream>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("GetFileContent", e.Message), null);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "GetFileContent", e.Message), null);
             }
         }
 
@@ -174,7 +174,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"CreateDir\" method call for source: \"{source}\" for directory: \"{dirPath}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("CreateDir", e.Message), null);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "CreateDir", e.Message), null);
             }
         }
 
@@ -211,7 +211,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"DeleteDir\" method call for source: \"{source}\" for directory: \"{dirPath}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("DeleteDir", e.Message), false);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "DeleteDir", e.Message), false);
             }
         }
 
@@ -250,7 +250,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogDebug(e.ToString());
                 _logger.LogError($"An error occurred during \"CreateFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
                 return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("CreateFile", e.Message), null);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "CreateFile", e.Message), null);
             }
         }
 
@@ -285,7 +285,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"DeleteFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("DeleteFile", e.Message), false);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "DeleteFile", e.Message), false);
             }
         }
 
@@ -320,7 +320,7 @@ namespace Wissance.WebApiToolkit.Core.Managers
                 _logger.LogError($"An error occurred during \"UpdateFile\" method call for source: \"{source}\" for file: \"{fullFileName}\", error: {e.Message}");
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError,
-                    ResponseMessageBuilder.GetUnknownErrorMessage("UpdateFile", e.Message), false);
+                    ResponseMessageBuilder.GetOperationErrorMessage("files", "UpdateFile", e.Message), false);
             }
         }
 

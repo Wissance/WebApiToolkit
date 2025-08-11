@@ -6,7 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wissance.WebApiToolkit.Core.Data;
+using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Core.Services;
+using Wissance.WebApiToolkit.Ef.Factories;
 using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
@@ -58,6 +60,7 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureManagers(IServiceCollection services)
         {
+            // 1. CodeManager && OrganizationManager were created manually
             services.AddScoped<CodeManager>(sp =>
             {
                 // filter function was not written here yet
@@ -69,6 +72,19 @@ namespace Wissance.WebApiToolkit.TestApp
             {
                 return new OrganizationManager(sp.GetRequiredService<ModelContext>(),
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
+            });
+            
+            // 2. Managers creating from dynamic code (without declaring a class)
+            services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
+            {
+                return SimplifiedEfBasedManagerFactory.Create<UserEntity, int>(sp.GetRequiredService<ModelContext>(),
+                    null, sp.GetRequiredService<ILoggerFactory>());
+            });
+
+            services.AddScoped<IModelManager<RoleEntity, RoleEntity, int>>(sp =>
+            {
+                return SimplifiedEfBasedManagerFactory.Create<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
+                    null, sp.GetRequiredService<ILoggerFactory>());
             });
         }
 

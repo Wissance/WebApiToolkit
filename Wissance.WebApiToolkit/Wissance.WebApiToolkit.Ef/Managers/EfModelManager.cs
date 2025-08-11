@@ -34,16 +34,22 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         ///    Constructor of default model manager requires that Model Context derives from EfDbContext
         /// </summary>
         /// <param name="dbContext">Ef Database context</param>
-        /// <param name="createFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="createResFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="createObjFunc">Delegate (factory func) for creating Entity from DTO</param>
+        /// <param name="updateObjFunc">Delegate (factory func) for updating Entity from DTO</param>
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, Func<TObj, TRes> createFunc,
+        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
+                              Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
+                              Action<TRes, TId, TObj> updateObjFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
             _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
-            _defaultCreateFunc = createFunc;
+            _defaultCreateResFunc = createResFunc;
+            _defaultCreateObjFunc = createObjFunc;
+            _defaultUpdateObjFunc = updateObjFunc;
             _filterFunc = filterFunc;
         }
 
@@ -112,7 +118,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 }
                 
                 return new OperationResultDto<Tuple<IList<TRes>, long>>(true, (int)HttpStatusCode.OK, null,
-                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateFunc(e)).ToList(), totalItems));
+                    new Tuple<IList<TRes>, long>(entities.Select(e => createFunc!=null ? createFunc(e) : _defaultCreateResFunc(e)).ToList(), totalItems));
             }
             catch (Exception e)
             {
@@ -139,13 +145,13 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                     return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound, 
                                                         ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
                 return new OperationResultDto<TRes>(true, (int)HttpStatusCode.OK, null, 
-                    createFunc != null?createFunc(entity): _defaultCreateFunc(entity));
+                    createFunc != null?createFunc(entity): _defaultCreateResFunc(entity));
             }
             catch (Exception e)
             {
                 _logger.LogError($"An error: {e.Message} occurred during object of type: {typeof(TObj)} with id: {id} retrieve and convert to object of type: {typeof(TRes)}");
                 return new OperationResultDto<TRes>(false, (int)HttpStatusCode.NotFound,
-                                                    ResponseMessageBuilder.GetResourceNotFoundMessage(typeof(TObj).ToString(), id), null);
+                                                    ResponseMessageBuilder.GetOperationErrorMessage(typeof(TObj).ToString(), "GetOne", e.Message), null);
             }
         }
 
@@ -187,14 +193,39 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
         
         /// <summary>
-        /// Method for create new object in database using Ef, in this class still have not a default impl, but will be
+        ///     Method for create new object in database using Ef, using _create
         /// </summary>
-        /// <param name="data">DTO with Model representation</param>
-        /// <returns>DTO of newly created object</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes>> CreateAsync(TRes data)
+        /// <param name="data">DTO with a Model representation</param>
+        /// <returns>DTO of a newly created object</returns>
+        public virtual async Task<OperationResultDto<TRes>> CreateAsync(TRes data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultCreateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Create"), null);
+                }
+
+                TObj entity = _defaultCreateObjFunc(data);
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                await dbSet.AddAsync(entity);
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "Create"), null);
+                }
+
+                return new OperationResultDto<TRes>(true, (int) HttpStatusCode.Created, String.Empty,
+                    _defaultCreateResFunc(entity));
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetCreateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
@@ -202,22 +233,80 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a newly created objects</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
+        public virtual async Task<OperationResultDto<TRes[]>> BulkCreateAsync(TRes[] data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultCreateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "BulkCreate"), null);
+                }
+                IList<TObj> entities = data.Select(item => _defaultCreateObjFunc(item)).ToList();
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                await dbSet.AddRangeAsync(entities);
+                
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "BulkCreate"), null);
+                }
+
+                return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.Created, String.Empty,
+                    entities.Select(item => _defaultCreateResFunc(item)).ToArray());
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetCreateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
-        /// Method for update existing objects using EF, still have not default impl, but will be
+        ///     Method for update existing objects using EF, still have not default impl, but will be
         /// </summary>
         /// <param name="id">item identifier</param>
         /// <param name="data">>DTO with Model representation</param>
         /// <returns>DTO of updated object</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
+        public virtual async Task<OperationResultDto<TRes>> UpdateAsync(TId id, TRes data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultUpdateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Update"), null);
+                }
+                
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                TObj dbEntity = await dbSet.FirstOrDefaultAsync(item => item.Id.Equals(id));
+
+                if (dbEntity == null)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.NotFound,
+                        ResponseMessageBuilder.GetUpdateNotFoundMessage(typeof(TObj).ToString(), id.ToString()), null);
+                }
+
+                _defaultUpdateObjFunc(data, id, dbEntity);
+
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "Update"), null);
+                }
+
+                return new OperationResultDto<TRes>(true, (int) HttpStatusCode.OK, String.Empty,
+                    _defaultCreateResFunc(dbEntity));
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetUpdateFailureMessage(typeof(TObj).ToString(), id.ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
@@ -225,10 +314,58 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="data">Array of DTO with Model representation</param>
         /// <returns>Array of DTO of a updated objects</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
-        public virtual Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
+        public virtual async Task<OperationResultDto<TRes[]>> BulkUpdateAsync(TRes[] data)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (_defaultUpdateObjFunc == null)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
+                        ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), 
+                            "BulkUpdate"), null);
+                }
+                
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                IList<Tuple<TRes, TObj>> updatingObjects = new List<Tuple<TRes, TObj>>();
+                // 1. construct Entity object from Resource due to Entity have a restriction - identifier
+                foreach (TRes itemData in data)
+                {
+                    Tuple<TRes, TObj> item = new Tuple<TRes, TObj>(itemData, _defaultCreateObjFunc(itemData));
+                    // 2. add only those objects that we build as Entities
+                    if (item.Item2 != null)
+                    {
+                        updatingObjects.Add(item);
+                    }
+                }
+
+                IList<TId> identifiers = updatingObjects.Select(item =>item.Item2.Id).ToList();
+                IList<TObj> dbObjects = await dbSet.Where(item => identifiers.Contains(item.Id)).ToListAsync();
+
+                // Important issue that we could not have an object in db but seems that we should update objects that were 
+                // discovered
+                foreach (TObj dbObject in dbObjects)
+                {
+                    Tuple<TRes, TObj> actualData = updatingObjects.First(o => o.Item2.Id.Equals(dbObject.Id));
+                    _defaultUpdateObjFunc(actualData.Item1, dbObject.Id, dbObject);
+                }
+                
+                int saveResult = await _dbContext.SaveChangesAsync();
+                if (saveResult <= 0)
+                {
+                    return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError,
+                        ResponseMessageBuilder.GetUnknownErrorMessage(typeof(TObj).ToString(), "BulkUpdate"), null);
+                }
+
+                return new OperationResultDto<TRes[]>(true, (int) HttpStatusCode.OK, string.Empty,
+                    dbObjects.Select(i => _defaultCreateResFunc(i)).ToArray());
+
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetBulkUpdateFailureMessage(typeof(TObj).ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         /// <summary>
@@ -236,7 +373,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="id">item identifier</param>
         /// <returns>true if removal was successful, otherwise false</returns>
-        public async Task<OperationResultDto<bool>> DeleteAsync(TId id)
+        public virtual async Task<OperationResultDto<bool>> DeleteAsync(TId id)
         {
             try
             {
@@ -246,13 +383,15 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 if (item == null)
                     return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Item does not exists", false);
                 dbSet.Remove(item);
+                // todo(UMV): test and add result check as in Create && Update
                 await _dbContext.SaveChangesAsync();
                 return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during object of type: {nameof(TObj)} with id: {id} remove: {e.Message}");
-                return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, "Error occurred during object delete, contact system maintainer", false);
+                string msg = ResponseMessageBuilder.GetDeleteFailureMessage(typeof(TObj).ToString(), id.ToString(), e.Message);
+                _logger.LogError(msg);
+                return new OperationResultDto<bool>(false, (int)HttpStatusCode.InternalServerError, msg, false);
             }
         }
         
@@ -261,14 +400,32 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// </summary>
         /// <param name="objectsIds">item identifiers</param>
         /// <returns>true if removal was successful, otherwise false</returns>
-        public virtual Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
+        public virtual async Task<OperationResultDto<bool>> BulkDeleteAsync(TId[] objectsIds)
         {
-            throw new NotImplementedException();
+            try
+            {
+                DbSet<TObj> dbSet = _dbContext.Set<TObj>();
+                IList<TObj> items = await dbSet.Where(t => objectsIds.Contains(t.Id)).ToListAsync();
+
+                if (items == null || !items.Any())
+                    return new OperationResultDto<bool>(false, (int)HttpStatusCode.NotFound, "Items are not exists", false);
+                dbSet.RemoveRange(items);
+                // todo(UMV): test and add result check as in Create && Update
+                await _dbContext.SaveChangesAsync();
+                return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, null, true);
+            }
+            catch (Exception e)
+            {
+                string msg = ResponseMessageBuilder.GetBulkDeleteFailureMessage(typeof(TObj).ToString(), e.Message);
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
         private readonly ILogger<EfModelManager<TRes, TObj, TId>> _logger;
         private readonly DbContext _dbContext;
-        private readonly Func<TObj, TRes> _defaultCreateFunc;
+        private readonly Func<TObj, TRes> _defaultCreateResFunc;
+        private readonly Func<TRes, TObj> _defaultCreateObjFunc;
+        private readonly Action<TRes, TId, TObj> _defaultUpdateObjFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }

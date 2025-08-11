@@ -12,8 +12,8 @@ namespace Wissance.WebApiToolkit.TestApp.Managers
     {
         public CodeManager(ModelContext dbContext, Func<CodeEntity, IDictionary<string, string>, bool> filterFunc, Func<CodeEntity, CodeDto> createFunc, 
                            ILoggerFactory loggerFactory) 
-            : base(dbContext, filterFunc, createFunc, loggerFactory)
+            : base(dbContext, filterFunc, createFunc, null, null, loggerFactory)
         {
-        }
+        } 
     }
 }
