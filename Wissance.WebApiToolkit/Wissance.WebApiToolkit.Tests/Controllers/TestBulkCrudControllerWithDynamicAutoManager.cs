@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
@@ -107,6 +110,45 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestBulkDelete()
         {
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage resp = await client.GetAsync("api/bulk/Role");
+                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+                string pagedDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(pagedDataStr.Length > 0);
+                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                int itemsBeforeBulkDelete = result.Data.Data.Count;
+                int itemToRemove = (int)Math.Ceiling(result.Data.Data.Count / 2.0);
+                StringBuilder sb = new StringBuilder("");
+                for (int i = 0; i < itemToRemove; i++)
+                {
+                    if (sb.Length == 0)
+                        sb.Append($"?id={result.Data.Data[i].Id}");
+                    else
+                    {
+                        sb.Append($"&id={result.Data.Data[i].Id}");
+                    }
+                }
+
+                string bulkDeleteUrl = $"api/bulk/Role/{sb}";
+                HttpResponseMessage deleteUserResponse = await client.DeleteAsync(bulkDeleteUrl);
+                Assert.Equal(HttpStatusCode.NoContent, deleteUserResponse.StatusCode);
+                
+                resp = await client.GetAsync("api/bulk/Role");
+                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+                pagedDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(pagedDataStr.Length > 0);
+                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                int itemsAfterBulkDelete = result.Data.Data.Count;
+                
+                Assert.Equal(itemsBeforeBulkDelete - itemToRemove, itemsAfterBulkDelete);
+            }
         }
     }
 }
