@@ -78,11 +78,11 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 };
                 
                 JsonContent content = JsonContent.Create(roles);
-                HttpResponseMessage createUserResponse = await client.PostAsync("api/bulk/Role", content);
-                Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
-                string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
-                Assert.True(userCreateDataStr.Length > 0);
-                OperationResultDto<RoleEntity[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(userCreateDataStr);
+                HttpResponseMessage createRoleResponse = await client.PostAsync("api/bulk/Role", content);
+                Assert.Equal(HttpStatusCode.Created, createRoleResponse.StatusCode);
+                string RoleCreateDataStr = await createRoleResponse.Content.ReadAsStringAsync();
+                Assert.True(RoleCreateDataStr.Length > 0);
+                OperationResultDto<RoleEntity[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(RoleCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 Assert.Equal(roles.Length, bulkCreateResult.Data.Length);
@@ -105,6 +105,39 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestBulkUpdate()
         {
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage resp = await client.GetAsync("api/bulk/Role");
+                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+                string pagedDataStr = await resp.Content.ReadAsStringAsync();
+                Assert.True(pagedDataStr.Length > 0);
+                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+
+                RoleEntity[] updatingRoles = new RoleEntity[result.Data.Data.Count];
+                result.Data.Data.CopyTo(updatingRoles, 0);
+                string newRoleName = "advanced manager";
+                foreach (RoleEntity role in updatingRoles)
+                {
+                    role.Name = newRoleName;
+                }
+                
+                JsonContent content = JsonContent.Create(updatingRoles);
+                HttpResponseMessage updateRoleResponse = await client.PutAsync("api/bulk/Role", content);
+                Assert.Equal(HttpStatusCode.OK, updateRoleResponse.StatusCode);
+                string roleUpdateDataStr = await updateRoleResponse.Content.ReadAsStringAsync();
+                Assert.True(roleUpdateDataStr.Length > 0);
+                OperationResultDto<RoleEntity[]> bulkUpdateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(roleUpdateDataStr);
+                Assert.NotNull(result);
+                Assert.True(result.Success);
+                Assert.Equal(updatingRoles.Length, bulkUpdateResult.Data.Length);
+                foreach (RoleEntity role in bulkUpdateResult.Data)
+                {
+                    Assert.Equal(newRoleName, role.Name);
+                }
+            }
         }
         
         [Fact]
@@ -134,8 +167,8 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 }
 
                 string bulkDeleteUrl = $"api/bulk/Role/{sb}";
-                HttpResponseMessage deleteUserResponse = await client.DeleteAsync(bulkDeleteUrl);
-                Assert.Equal(HttpStatusCode.NoContent, deleteUserResponse.StatusCode);
+                HttpResponseMessage deleteRoleResponse = await client.DeleteAsync(bulkDeleteUrl);
+                Assert.Equal(HttpStatusCode.NoContent, deleteRoleResponse.StatusCode);
                 
                 resp = await client.GetAsync("api/bulk/Role");
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
