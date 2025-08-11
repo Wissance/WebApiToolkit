@@ -74,13 +74,18 @@ namespace Wissance.WebApiToolkit.TestApp
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
             
-            // 2. User manager creates from dynamic code (without declaring a class)
+            // 2. Managers creating from dynamic code (without declaring a class)
             services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
             {
                 return SimplifiedEfBasedManagerFactory.Create<UserEntity, int>(sp.GetRequiredService<ModelContext>(),
                     null, sp.GetRequiredService<ILoggerFactory>());
             });
 
+            services.AddScoped<IModelManager<RoleEntity, RoleEntity, int>>(sp =>
+            {
+                return SimplifiedEfBasedManagerFactory.Create<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
+                    null, sp.GetRequiredService<ILoggerFactory>());
+            });
         }
 
         private void ConfigureWebServices(IServiceCollection services)

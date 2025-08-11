@@ -10,6 +10,7 @@ namespace Wissance.WebApiToolkit.TestApp
             InitCodes(context);
             InitOrganizations(context);
             InitUsers(context);
+            InitRoles(context);
         }
 
         private static void InitCodes(ModelContext context)
@@ -80,6 +81,25 @@ namespace Wissance.WebApiToolkit.TestApp
                     FullName = $"Demo Demo {organization.Id}"
                 };
                 context.Users.Add(user);
+            }
+
+            context.SaveChanges();
+        }
+
+        private static void InitRoles(ModelContext context)
+        {
+            IList<UserEntity> users = context.Users.ToList();
+            foreach (UserEntity user in users)
+            {
+                if (user.Id % 2 == 0)
+                {
+                    RoleEntity role = new RoleEntity()
+                    {
+                        Name = "manager",
+                        UserId = user.Id
+                    };
+                    context.Roles.Add(role);
+                }
             }
 
             context.SaveChanges();

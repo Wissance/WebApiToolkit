@@ -46,5 +46,6 @@ namespace Wissance.WebApiToolkit.TestApp.Data
         public DbSet<CodeEntity> Codes { get; set; }
         public DbSet<OrganizationEntity> Organizations { get; set; }
         public DbSet<UserEntity> Users { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
     }
 }
