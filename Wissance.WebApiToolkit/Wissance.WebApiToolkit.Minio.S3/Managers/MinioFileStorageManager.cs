@@ -86,9 +86,28 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             }
         }
 
-        public Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                MemoryStream memoryStream = new MemoryStream();
+                await client.GetObjectAsync(new GetObjectArgs()
+                    .WithBucket(bucket)
+                    .WithObject(filePath)
+                    .WithCallbackStream(async stream => await stream.CopyToAsync(memoryStream))
+                );
+                return new OperationResultDto<MemoryStream>(true, (int) HttpStatusCode.OK, String.Empty, memoryStream);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during getting file content from bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<MemoryStream>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         public Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName, IDictionary<string, string> additionalParams = null)
