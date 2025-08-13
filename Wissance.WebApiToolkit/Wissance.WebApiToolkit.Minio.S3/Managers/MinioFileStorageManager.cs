@@ -2,10 +2,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Minio;
+using Minio.DataModel;
+using Minio.DataModel.Args;
 using Wissance.WebApiToolkit.Core.Data.Files;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Dto;
@@ -17,7 +21,7 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
     {
         public MinioFileStorageManager(IDictionary<string, MinioSettings> sources, ILoggerFactory loggerFactory)
         {
-            //_sources = sources;
+            _sources = sources;
             _logger = loggerFactory.CreateLogger<MinioFileStorageManager>();
             foreach (KeyValuePair<string, MinioSettings> source in sources)
             {
@@ -46,12 +50,40 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
         
         public OperationResultDto<IList<string>> GetSources()
         {
-            throw new System.NotImplementedException();
+            return new OperationResultDto<IList<string>>(true, (int)HttpStatusCode.OK, String.Empty, 
+                _sources.Keys.ToList());
         }
 
-        public Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = ".", IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = ".", IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                ListObjectsArgs listObjects = new ListObjectsArgs();
+                IList<TinyFileInfo> objects = new List<TinyFileInfo>();
+                await foreach (Item obj in client.ListObjectsEnumAsync(listObjects.WithPrefix(path).WithBucket(bucket)))
+                {
+                    // get file name from obj.Key
+                    string[] parts = obj.Key.Split(new[] {'/'});
+                    // if file is Directory therefore it has name ending with a slash i.e. tmp -> tmp/
+                    int index = parts.Length >= 2 ? parts.Length - 2 : 0;
+                    string name = obj.IsDir ? parts.Last() : parts[index];
+                    TinyFileInfo info = new TinyFileInfo(name, obj.Key, obj.IsDir, (long)obj.Size);
+                    objects.Add(info);
+                }
+
+                return new OperationResultDto<IList<TinyFileInfo>>(true, (int) HttpStatusCode.OK, String.Empty,
+                    objects);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during getting object list for bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<IList<TinyFileInfo>>(false, (int) HttpStatusCode.InternalServerError, msg, null);
+            }
         }
 
         public Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
@@ -104,9 +136,12 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
         public event DirectorySuccessfullyDeletedHandler OnDirectoryDeleted;
         public event FileSuccessfullyCreatedHandler OnFileCreated;
         public event FileSuccessfullyDeletedHandler OnFileDeleted;
+        
+        public const string BucketParam = "bucket";
 
-        // private IDictionary<string, MinioSettings> _sources = new Dictionary<string, MinioSettings>();
+        private readonly IDictionary<string, MinioSettings> _sources = new Dictionary<string, MinioSettings>();
         private readonly IDictionary<string, IMinioClient> _clients = new ConcurrentDictionary<string, IMinioClient>();
+        
         private readonly ILogger<MinioFileStorageManager> _logger;
     }
 }

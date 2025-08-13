@@ -30,6 +30,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
     {
         public AWSCompatibleCloudFileStorageManager(IDictionary<string, S3StorageSettings> sources, ILoggerFactory loggerFactory)
         {
+            // todo(UMV): add && use TokenCancellationSource
             _sources = sources;
             _logger = loggerFactory.CreateLogger<AWSCompatibleCloudFileStorageManager>();
             foreach (KeyValuePair<string, S3StorageSettings> source in _sources)
