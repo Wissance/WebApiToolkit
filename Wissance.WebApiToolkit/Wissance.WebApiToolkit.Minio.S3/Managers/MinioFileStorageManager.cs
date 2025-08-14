@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
+using Minio.DataModel.Response;
 using Wissance.WebApiToolkit.Core.Data.Files;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Dto;
@@ -17,8 +18,16 @@ using Wissance.WebApiToolkit.Minio.S3.Settings;
 
 namespace Wissance.WebApiToolkit.Minio.S3.Managers
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MinioFileStorageManager : IMinioFileStorageManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <param name="loggerFactory"></param>
         public MinioFileStorageManager(IDictionary<string, MinioSettings> sources, ILoggerFactory loggerFactory)
         {
             _sources = sources;
@@ -40,6 +49,9 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             foreach (KeyValuePair<string,IMinioClient> client in _clients)
@@ -48,12 +60,23 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             }
         }
         
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public OperationResultDto<IList<string>> GetSources()
         {
             return new OperationResultDto<IList<string>>(true, (int)HttpStatusCode.OK, String.Empty, 
                 _sources.Keys.ToList());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="path"></param>
+        /// <param name="additionalParams"></param>
+        /// <returns></returns>
         public async Task<OperationResultDto<IList<TinyFileInfo>>> GetFilesAsync(string source, string path = ".", IDictionary<string, string> additionalParams = null)
         {
             string bucket = "";
@@ -86,6 +109,13 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="filePath"></param>
+        /// <param name="additionalParams"></param>
+        /// <returns></returns>
         public async Task<OperationResultDto<MemoryStream>> GetFileContentAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
         {
             string bucket = "";
@@ -110,45 +140,90 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             }
         }
 
-        public Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName, IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<string>> CreateDirAsync(string source, string path, string dirName, 
+            IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = Path.Combine(path, dirName);
+                key = PrepareS3CompatibleKey(key, true);
+                PutObjectResponse response = await client.PutObjectAsync(new PutObjectArgs()
+                    .WithBucket(bucket)
+                    .WithObject(key)
+                    .WithStreamData(null)
+                    .WithObjectSize(0));
+                bool success = response.ResponseStatusCode == HttpStatusCode.Created;
+                return new OperationResultDto<string>(success, (int)response.ResponseStatusCode, String.Empty, response.ObjectName);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during directory create in bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError, msg, String.Empty);
+            }
         }
 
-        public Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath, IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<bool>> DeleteDirAsync(string source, string dirPath, IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = PrepareS3CompatibleKey(dirPath, true);
+                await client.RemoveObjectAsync(new RemoveObjectArgs().WithObject(key).WithBucket(bucket));
+                return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, String.Empty, true);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during directory delete from bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
-        public Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent,
+        public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent,
             IDictionary<string, string> additionalParams = null)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent, IDictionary<string, string> additionalParams = null)
+        public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent, IDictionary<string, string> additionalParams = null)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<OperationResultDto<IList<string>>> GetBucketsAsync(string source)
+        public async Task<OperationResultDto<IList<string>>> GetBucketsAsync(string source)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<OperationResultDto<bool>> CreateBucketAsync(string source, string bucketName)
+        public async Task<OperationResultDto<bool>> CreateBucketAsync(string source, string bucketName)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<OperationResultDto<bool>> DeleteBucketAsync(string source, string bucketName)
+        public async Task<OperationResultDto<bool>> DeleteBucketAsync(string source, string bucketName)
         {
             throw new System.NotImplementedException();
+        }
+        
+        private string PrepareS3CompatibleKey(string path, bool isDirectory)
+        {
+            string key = path.TrimStart(new[] {'.'}).TrimStart(new[] {'/'}).Replace("\\", "/");;
+            if (isDirectory && !key.EndsWith("/"))
+                key += "/";
+            return key;
         }
         
         public event DirectorySuccessfullyCreatedHandler OnDirectoryCreated;
