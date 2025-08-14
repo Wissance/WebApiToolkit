@@ -150,13 +150,7 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
                 bucket = additionalParams[BucketParam];
                 string key = Path.Combine(path, dirName);
                 key = PrepareS3CompatibleKey(key, true);
-                PutObjectResponse response = await client.PutObjectAsync(new PutObjectArgs()
-                    .WithBucket(bucket)
-                    .WithObject(key)
-                    .WithStreamData(null)
-                    .WithObjectSize(0));
-                bool success = response.ResponseStatusCode == HttpStatusCode.Created;
-                return new OperationResultDto<string>(success, (int)response.ResponseStatusCode, String.Empty, response.ObjectName);
+                return await CreateObjectImpl(client, bucket, key, null);
             }
             catch (Exception e)
             {
@@ -175,8 +169,9 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
                 IMinioClient client = _clients[source];
                 bucket = additionalParams[BucketParam];
                 string key = PrepareS3CompatibleKey(dirPath, true);
-                await client.RemoveObjectAsync(new RemoveObjectArgs().WithObject(key).WithBucket(bucket));
-                return new OperationResultDto<bool>(true, (int)HttpStatusCode.NoContent, String.Empty, true);
+                Tuple<bool, string> result = await DeleteObjectImpl(client, bucket, key);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.NoContent : (int) HttpStatusCode.InternalServerError;
+                return new OperationResultDto<bool>(result.Item1, statusCode, result.Item2,result.Item1);
             }
             catch (Exception e)
             {
@@ -190,17 +185,69 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
         public async Task<OperationResultDto<string>> CreateFileAsync(string source, string path, string fileName, MemoryStream fileContent,
             IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = Path.Combine(path, fileName);
+                key = PrepareS3CompatibleKey(key, false);
+                return await CreateObjectImpl(client, bucket, key, fileContent);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file create in bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError, msg, String.Empty);
+            }
         }
 
         public async Task<OperationResultDto<bool>> DeleteFileAsync(string source, string filePath, IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = PrepareS3CompatibleKey(filePath, false);
+                Tuple<bool, string> result = await DeleteObjectImpl(client, bucket, key);
+                int statusCode = result.Item1 ? (int) HttpStatusCode.NoContent : (int) HttpStatusCode.InternalServerError;
+                return new OperationResultDto<bool>(result.Item1, statusCode, result.Item2,result.Item1);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file delete from bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
         public async Task<OperationResultDto<bool>> UpdateFileAsync(string source, string filePath, MemoryStream fileContent, IDictionary<string, string> additionalParams = null)
         {
-            throw new System.NotImplementedException();
+            string bucket = "";
+            try
+            {
+                IMinioClient client = _clients[source];
+                bucket = additionalParams[BucketParam];
+                string key = PrepareS3CompatibleKey(filePath, false);
+                Tuple<bool,string> rmResult = await DeleteObjectImpl(client, bucket, key);
+                if (!rmResult.Item1)
+                {
+                    return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, rmResult.Item2, false);
+                }
+
+                OperationResultDto<string> crResult = await CreateObjectImpl(client, bucket, key, fileContent);
+                return new OperationResultDto<bool>(crResult.Success, crResult.Status, crResult.Message, crResult.Success);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during file update: \"{filePath}\" from bucket: \"{bucket}\", error:\"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
         }
 
         public async Task<OperationResultDto<IList<string>>> GetBucketsAsync(string source)
@@ -217,7 +264,46 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
         {
             throw new System.NotImplementedException();
         }
-        
+
+        private async Task<OperationResultDto<string>> CreateObjectImpl(IMinioClient client, string bucket, string key,
+            MemoryStream objData)
+        {
+            try
+            {
+                long len = objData?.Length ?? 0;
+                PutObjectResponse response = await client.PutObjectAsync(new PutObjectArgs()
+                    .WithBucket(bucket)
+                    .WithObject(key)
+                    .WithStreamData(objData)
+                    .WithObjectSize(len));
+                bool success = response.ResponseStatusCode == HttpStatusCode.Created;
+                return new OperationResultDto<string>(success, (int)response.ResponseStatusCode, String.Empty, response.ObjectName);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during object create in bucket with name \"{bucket}\", error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<string>(false, (int) HttpStatusCode.InternalServerError, msg, String.Empty);
+            }
+        }
+
+        private async Task<Tuple<bool, string>> DeleteObjectImpl(IMinioClient client, string bucket, string key)
+        {
+            try
+            {
+                await client.RemoveObjectAsync(new RemoveObjectArgs().WithObject(key).WithBucket(bucket));
+                return new Tuple<bool, string>(true, String.Empty);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during object delete with key: \"{key}\" from bucket: \"{bucket}\", error:\"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new Tuple<bool, string>(false, msg);
+            }
+        }
+
         private string PrepareS3CompatibleKey(string path, bool isDirectory)
         {
             string key = path.TrimStart(new[] {'.'}).TrimStart(new[] {'/'}).Replace("\\", "/");;
