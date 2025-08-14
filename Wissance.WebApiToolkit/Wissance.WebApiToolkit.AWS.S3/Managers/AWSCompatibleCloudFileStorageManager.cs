@@ -30,6 +30,7 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
     {
         public AWSCompatibleCloudFileStorageManager(IDictionary<string, S3StorageSettings> sources, ILoggerFactory loggerFactory)
         {
+            // todo(UMV): add && use TokenCancellationSource
             _sources = sources;
             _logger = loggerFactory.CreateLogger<AWSCompatibleCloudFileStorageManager>();
             foreach (KeyValuePair<string, S3StorageSettings> source in _sources)
@@ -87,9 +88,10 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during getting buckets list: {e.Message}");
+                string msg = $"An error occurred during getting buckets list: {e.Message}";
+                _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
-                return null;
+                return new OperationResultDto<IList<string>>(false, (int)HttpStatusCode.InternalServerError, msg, null);
             }
         }
 
