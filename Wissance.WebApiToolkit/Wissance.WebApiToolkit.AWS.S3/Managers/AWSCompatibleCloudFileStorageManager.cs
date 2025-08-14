@@ -88,9 +88,10 @@ namespace Wissance.WebApiToolkit.AWS.S3.Managers
             }
             catch (Exception e)
             {
-                _logger.LogError($"An error occurred during getting buckets list: {e.Message}");
+                string msg = $"An error occurred during getting buckets list: {e.Message}";
+                _logger.LogError(msg);
                 _logger.LogDebug(e.ToString());
-                return null;
+                return new OperationResultDto<IList<string>>(false, (int)HttpStatusCode.InternalServerError, msg, null);
             }
         }
 

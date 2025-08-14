@@ -11,6 +11,7 @@ using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
 using Minio.DataModel.Response;
+using Minio.DataModel.Result;
 using Wissance.WebApiToolkit.Core.Data.Files;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Dto;
@@ -57,6 +58,77 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
             foreach (KeyValuePair<string,IMinioClient> client in _clients)
             {
                 client.Value.Dispose();
+            }
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public async Task<OperationResultDto<IList<string>>> GetBucketsAsync(string source)
+        {
+            try
+            {
+                IMinioClient client = _clients[source];
+                ListAllMyBucketsResult result = await client.ListBucketsAsync();
+                return new OperationResultDto<IList<string>>(true, (int) HttpStatusCode.OK, String.Empty,
+                    result.Buckets.Select(b => b.Name).ToList());
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during getting buckets list: {e.Message}";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<IList<string>>(false, (int)HttpStatusCode.InternalServerError, msg, null);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="bucketName"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<OperationResultDto<bool>> CreateBucketAsync(string source, string bucketName)
+        {
+            try
+            {
+                IMinioClient client = _clients[source];
+                await client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
+                return new OperationResultDto<bool>(true, (int) HttpStatusCode.OK, String.Empty, true);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during bucket with name \"{bucketName}\" creation, error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="bucketName"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<OperationResultDto<bool>> DeleteBucketAsync(string source, string bucketName)
+        {
+            try
+            {
+                IMinioClient client = _clients[source];
+                await client.RemoveBucketAsync(new RemoveBucketArgs().WithBucket(bucketName));
+                return new OperationResultDto<bool>(true, (int) HttpStatusCode.NoContent, String.Empty, true);
+            }
+            catch (Exception e)
+            {
+                string msg = $"An error occurred during bucket with name \"{bucketName}\" remove, error: \"{e.Message}\"";
+                _logger.LogError(msg);
+                _logger.LogDebug(e.ToString());
+                return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
             }
         }
         
@@ -248,21 +320,6 @@ namespace Wissance.WebApiToolkit.Minio.S3.Managers
                 _logger.LogDebug(e.ToString());
                 return new OperationResultDto<bool>(false, (int) HttpStatusCode.InternalServerError, msg, false);
             }
-        }
-
-        public async Task<OperationResultDto<IList<string>>> GetBucketsAsync(string source)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task<OperationResultDto<bool>> CreateBucketAsync(string source, string bucketName)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task<OperationResultDto<bool>> DeleteBucketAsync(string source, string bucketName)
-        {
-            throw new System.NotImplementedException();
         }
 
         private async Task<OperationResultDto<string>> CreateObjectImpl(IMinioClient client, string bucket, string key,
