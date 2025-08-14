@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.AWS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Minio.S3", "Wissance.WebApiToolkit.Minio.S3\Wissance.WebApiToolkit.Minio.S3.csproj", "{1A024970-C44C-4A70-AB88-F89907527600}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Minio.S3.Tests", "Wissance.WebApiToolkit.Minio.S3.Tests\Wissance.WebApiToolkit.Minio.S3.Tests.csproj", "{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{1A024970-C44C-4A70-AB88-F89907527600}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A024970-C44C-4A70-AB88-F89907527600}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A024970-C44C-4A70-AB88-F89907527600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
