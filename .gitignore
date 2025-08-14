@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 Wissance.WebApiToolkit/.idea/
+/Wissance.WebApiToolkit/Wissance.WebApiToolkit.AWS.S3.Tests/settings.json

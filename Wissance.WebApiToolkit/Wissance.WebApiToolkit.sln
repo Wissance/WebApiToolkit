@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit", "Wissance.WebApiToolkit\Wissance.WebApiToolkit.csproj", "{8FB88DB6-B241-4B50-B6C9-385615183E0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Core", "Wissance.WebApiToolkit.Core\Wissance.WebApiToolkit.Core.csproj", "{8FB88DB6-B241-4B50-B6C9-385615183E0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Dto", "Wissance.WebApiToolkit.Dto\Wissance.WebApiToolkit.Dto.csproj", "{2E1C637A-A6A8-45A6-A568-24DDCCF9558C}"
 EndProject
@@ -12,6 +12,20 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Tests", "Wissance.WebApiToolkit.Tests\Wissance.WebApiToolkit.Tests.csproj", "{94BB07CF-9B3F-4562-9A44-65A397DA6AAC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.TestApp", "Wissance.WebApiToolkit.TestApp\Wissance.WebApiToolkit.TestApp.csproj", "{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Ef", "Wissance.WebApiToolkit.Ef\Wissance.WebApiToolkit.Ef.csproj", "{96F355D5-13E4-4FB8-99C3-64B60001550A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Data.Ef", "Wissance.WebApiToolkit.Data.Ef\Wissance.WebApiToolkit.Data.Ef.csproj", "{7EBD8B94-EB11-40A4-9085-4BF5C3B7B739}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Core.Tests", "Wissance.WebApiToolkit.Core.Tests\Wissance.WebApiToolkit.Core.Tests.csproj", "{A830DB2A-5662-4D82-AEAE-1B383B0077E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.AWS.S3", "Wissance.WebApiToolkit.AWS.S3\Wissance.WebApiToolkit.AWS.S3.csproj", "{52972620-C6F8-492A-9CAA-80A6CDC993C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.AWS.S3.Tests", "Wissance.WebApiToolkit.AWS.S3.Tests\Wissance.WebApiToolkit.AWS.S3.Tests.csproj", "{67468AC2-E9CB-4B0B-8A58-CC52D1FD207E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Minio.S3", "Wissance.WebApiToolkit.Minio.S3\Wissance.WebApiToolkit.Minio.S3.csproj", "{1A024970-C44C-4A70-AB88-F89907527600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wissance.WebApiToolkit.Minio.S3.Tests", "Wissance.WebApiToolkit.Minio.S3.Tests\Wissance.WebApiToolkit.Minio.S3.Tests.csproj", "{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +53,34 @@ Global
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0897B59F-D6F8-4AC5-ACE6-CCD7A1026B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96F355D5-13E4-4FB8-99C3-64B60001550A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EBD8B94-EB11-40A4-9085-4BF5C3B7B739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EBD8B94-EB11-40A4-9085-4BF5C3B7B739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EBD8B94-EB11-40A4-9085-4BF5C3B7B739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EBD8B94-EB11-40A4-9085-4BF5C3B7B739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A830DB2A-5662-4D82-AEAE-1B383B0077E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52972620-C6F8-492A-9CAA-80A6CDC993C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67468AC2-E9CB-4B0B-8A58-CC52D1FD207E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67468AC2-E9CB-4B0B-8A58-CC52D1FD207E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67468AC2-E9CB-4B0B-8A58-CC52D1FD207E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67468AC2-E9CB-4B0B-8A58-CC52D1FD207E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A024970-C44C-4A70-AB88-F89907527600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A024970-C44C-4A70-AB88-F89907527600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A024970-C44C-4A70-AB88-F89907527600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A024970-C44C-4A70-AB88-F89907527600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0EBDBE-9D72-421C-A1A3-3DC60E20A966}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

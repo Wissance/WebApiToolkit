@@ -1,5 +1,5 @@
-using Wissance.WebApiToolkit.Controllers;
-using Wissance.WebApiToolkit.Data;
+using Wissance.WebApiToolkit.Core.Controllers;
+using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.TestApp.Managers;
