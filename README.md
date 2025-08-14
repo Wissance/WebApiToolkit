@@ -5,7 +5,14 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v2.0.0/total?style=plastic)
 
-#### This lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build consistent API (with same `REST` routes scheme) with minimal amount of code: minimal REST controller contains 10 lines of code.
+## 10 Lines of code = Full CRUD and even BULK with swagger docs
+
+This ultimate lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build a consistent API (with the same `REST` routes approach for different controllers) with minimal amount of code: the minimal REST controller contains **10 lines of code** with full *auto* support for all `CRUD` and `BULK` operations. 
+
+For the easiest way you only need:
+1. EntityFramework `Entities`
+2. DbContext with `DbSets`
+3. Inject from DI Manager Class on startup level.
 
 ![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
 
@@ -85,7 +92,30 @@ If this toolkit should be used with `EntityFramework` you should derive you reso
 
 ### 4. Toolkit usage algorithm with EntityFramework
 
-#### 4.1 REST Services
+#### 4.1.0 Minimal REST service
+
+What do we need Entity classes and `DbContext` and init am appropriate Manager class:
+```csharp
+services.AddScoped(sp =>
+{
+     return SimplifiedEfBasedManagerFactory.Create<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
+          null, sp.GetRequiredService<ILoggerFactory>());
+   
+});
+```
+
+and controller class:
+```csharp
+public class RoleController : BasicBulkCrudController<RoleEntity, RoleEntity, int, EmptyAdditionalFilters>
+    {
+        public RoleController(IModelManager<RoleEntity, RoleEntity, int> manager)
+        {
+            Manager = manager;
+        }
+    }
+```
+
+#### 4.1.1 REST Services with full Declaration
 
 Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
 `API` you should do following:
@@ -224,7 +254,7 @@ public class CodeGrpcService : CodeService.CodeServiceBase
 Unfortunately GRPC generates all types Request and therefore we should implement additional mapping to convert `DTO` to Response, see full example in this solution in the `Wissance.WebApiToolkit.TestApp` project 
     
 ### 5. Nuget package
-You could find nuget-package [here](https://www.nuget.org/packages/Wissance.WebApiToolkit)
+* [Actual for version <= `3.x.y`, obsolete since `4.0.0`](https://www.nuget.org/packages/Wissance.WebApiToolkit)
     
 ### 6. Examples
 Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found [here]( https://github.com/Wissance/WeatherControl)
