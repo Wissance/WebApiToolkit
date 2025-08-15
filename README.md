@@ -3,7 +3,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v2.0.0/total?style=plastic)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v4.0.1/total?style=plastic)
 
 ## 10 Lines of code = Full CRUD and even BULK with swagger docs
 
@@ -41,6 +41,9 @@ For the easiest way you only need:
   - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
   - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`
 * support writing `GRPC` services with examples (see `Wissance.WebApiToolkit.TestApp` and `Wissance.WebApiToolkit.Tests`)
+* Manager classes that support file operation over:
+  - web folders (folders from mounted devices or just local folders)
+  - `S3 AWS-compatible` (tested with `Yandex Object Storage` and previously with `Cloudflare R2` and `Amazon S3`)
   
 Key concepts:
 1. `Controller` is a class that handles `HTTP-requests` to `REST Resource`.
@@ -254,7 +257,11 @@ public class CodeGrpcService : CodeService.CodeServiceBase
 Unfortunately GRPC generates all types Request and therefore we should implement additional mapping to convert `DTO` to Response, see full example in this solution in the `Wissance.WebApiToolkit.TestApp` project 
     
 ### 5. Nuget package
-* [Actual for version <= `3.x.y`, obsolete since `4.0.0`](https://www.nuget.org/packages/Wissance.WebApiToolkit)
+* [Obsolete version (no bug fixes, no support) <= `3.x.y`, obsolete since `4.0.0`](https://www.nuget.org/packages/Wissance.WebApiToolkit)
+* [Core interfaces package](https://www.nuget.org/packages/Wissance.WebApiToolkit.Core)
+* [Ef-related implementation of Core](https://www.nuget.org/packages/Wissance.WebApiToolkit.Ef)
+* [Cloud AWS S3 Compatible](https://www.nuget.org/packages/Wissance.WebApiToolkit.AWS.S3)
+
     
 ### 6. Examples
 Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found [here]( https://github.com/Wissance/WeatherControl)
