@@ -56,7 +56,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="sortFunc">>Function that describes how to sort data prior to get a portion</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns>OperationResult with data portion</returns>
-        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
+        public override async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetManyAsync<TF>(int page, int size, IDictionary<string, string> parameters, SortOption sorting,
                                                                                                  Func<TObj, IDictionary<string, string>, bool> filterFunc = null, 
                                                                                                  Func<TObj, TF> sortFunc = null, Func<TObj, TRes> createFunc = null)
         {
@@ -125,7 +125,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="id">item identifier</param>
         /// <param name="createFunc">Function that describes how to construct DTO from Model, if null passes here then uses _defaultCreateFunc</param>
         /// <returns></returns>
-        public virtual async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
+        public override async Task<OperationResultDto<TRes>> GetOneAsync(TId id, Func<TObj, TRes> createFunc = null)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="sorting">sorting params (Sort - Field name, Order - Sort direction (ASC, DESC))</param>
         /// <param name="parameters">raw query parameters</param>
         /// <returns>OperationResult with data portion</returns>
-        public virtual async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
+        public override async Task<OperationResultDto<Tuple<IList<TRes>, long>>> GetAsync(int page, int size, SortOption sorting = null, 
                                                                                          IDictionary<string, string> parameters = null)
         {
             // this method is using default sorting and order, if specific order or sorting is required please specify it using another GetAsync method
@@ -171,17 +171,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             
             return await GetManyAsync(page, size, parameters, sorting, _filterFunc, sortingFunc);
         }
-        
-        /// <summary>
-        /// GetByIdAsync returns one item by id, IModelManager default implementation
-        /// </summary>
-        /// <param name="id">item identifier</param>
-        /// <returns>OperationResult with one item</returns>
-        public async Task<OperationResultDto<TRes>> GetByIdAsync(TId id)
-        {
-            return await GetOneAsync(id);
-        }
-        
+
         /// <summary>
         /// DeleteAsync method for remove object from Database using Ef
         /// </summary>
