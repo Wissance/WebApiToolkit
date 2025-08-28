@@ -4,7 +4,7 @@ using Wissance.WebApiToolkit.Core.Managers;
 
 namespace Wissance.WebApiToolkit.Ef.Controllers
 {
-    internal class GenericBulkController<TRes, TData, TId, TFilter>: BasicBulkCrudController<TRes, TData, TId, TFilter>
+    public class GenericBulkController<TRes, TData, TId, TFilter>: BasicBulkCrudController<TRes, TData, TId, TFilter>
         where TRes : class
         where TFilter: class, IReadFilterable
     {
