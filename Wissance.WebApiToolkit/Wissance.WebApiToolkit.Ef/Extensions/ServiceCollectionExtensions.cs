@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ namespace Wissance.WebApiToolkit.Ef.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddSimplifiedAutoController<TObj, TId, TFilter>(this ServiceCollection services,
+        public static Assembly AddSimplifiedAutoController<TObj, TId, TFilter>(this IServiceCollection services,
             DbContext context, string resourceName, ControllerType controllerType, 
             Func<TObj, IDictionary<string, string>, bool> filterFunc,
             ILoggerFactory loggerFactory)
@@ -26,7 +27,9 @@ namespace Wissance.WebApiToolkit.Ef.Extensions
                 return SimplifiedEfBasedManagerFactory.Create<TObj, TId>(context, filterFunc, loggerFactory);
             });
             
-            OnTheFlyServicesGenerator.GenerateController<TObj, TId, TFilter>(assemblyName, resourceName, false, controllerType);
+            Tuple<Assembly, string> controllerAssembly = OnTheFlyServicesGenerator.GenerateController<TObj, TId, TFilter>(assemblyName, resourceName, false, controllerType);
+            
+            return controllerAssembly.Item1;
         }
     }
 }
