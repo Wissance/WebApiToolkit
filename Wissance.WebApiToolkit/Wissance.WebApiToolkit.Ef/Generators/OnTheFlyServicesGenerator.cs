@@ -62,7 +62,7 @@ namespace Wissance.WebApiToolkit.Ef.Generators
                 case ControllerType.FullCrud:
                     return typeof(GenericCrudController<TObj, TObj, TId, TFilter>);
                 case ControllerType.Bulk:
-                    return typeof(GenericCrudController<TObj, TObj, TId, TFilter>);
+                    return typeof(GenericBulkController<TObj, TObj, TId, TFilter>);
                 default:
                     return typeof(GenericCrudController<TObj, TObj, TId, TFilter>);
             }
