@@ -13,4 +13,8 @@
       <ProjectReference Include="..\Wissance.WebApiToolkit.Core\Wissance.WebApiToolkit.Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Extensions\" />
+    </ItemGroup>
+
 </Project>
