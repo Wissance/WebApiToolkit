@@ -11,7 +11,7 @@ namespace Wissance.WebApiToolkit.Ef.Generators
     internal static class OnTheFlyServicesGenerator
     {
         public static Tuple<Assembly, string> GenerateController<TObj, TId, TFilter>(string assemblyName, string controllerName, 
-            bool saveOnDisk,  TObj entity, TId entityId, ControllerType controllerType, TFilter filter)
+            bool saveOnDisk, ControllerType controllerType)
             where TObj: class, IModelIdentifiable<TId>
             where TId: IComparable
             where TFilter: class, IReadFilterable
