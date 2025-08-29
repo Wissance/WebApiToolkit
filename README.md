@@ -11,6 +11,18 @@
 
 ![1 line to add controller](./img/1lineadd.gif)
 
+to add in one line, for example i break it to `Assembly` get and add Controller, i.e.:
+1. Generate assembly:
+```csharp
+Assembly stationControllerAssembly = services.AddSimplifiedAutoController<StationEntity, Guid, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "Station",
+                ControllerType.FullCrud, null, provider.GetRequiredService<ILoggerFactory>());
+```
+2. Add Controller from assembly:
+```csharp
+services.AddControllers().AddApplicationPart(stationControllerAssembly).AddControllersAsServices();
+```
+
 ## 10 Lines of code to create fully manageable Full CRUD and even BULK with swagger docs
 
 This ultimate lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build a consistent API (with the same `REST` routes approach for different controllers) with minimal amount of code: the minimal REST controller contains **10 lines of code** with full *auto* support for all `CRUD` and `BULK` operations. 
