@@ -5,7 +5,13 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v5.0.0/total?style=plastic)
 
-## 10 Lines of code = Full CRUD and even BULK with swagger docs
+![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
+
+## Simplified mode : One Line of code for Full CRUD Controller with swagger 
+
+![1 line to add controller](./img/1lineadd.gif)
+
+## 10 Lines of code to create fully manageable Full CRUD and even BULK with swagger docs
 
 This ultimate lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build a consistent API (with the same `REST` routes approach for different controllers) with minimal amount of code: the minimal REST controller contains **10 lines of code** with full *auto* support for all `CRUD` and `BULK` operations. 
 
@@ -13,8 +19,6 @@ For the easiest way you only need:
 1. EntityFramework `Entities`
 2. DbContext with `DbSets`
 3. Inject from DI Manager Class on startup level.
-
-![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
 
  * [1. Key Features](#1-key-features)
   * [2. API Contract](#2-api-contract)
@@ -58,8 +62,7 @@ Key concepts:
     - basic read controller (`BasicReadController`) contains 2 methods:
         - `GET /api/[controller]/?[page={page}&size={size}&sort={sort}&order={order}]` to get `PagedDataDto<T>`
           now we also have possibility to send **ANY number of query params**, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). We also pass sort (column name) && order (`asc` or `desc`) to manager classes,
-          `EfModelManager` allows to sort **by any column**. 
-          <strike> Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** </strike> Starting from `1.6.0` it is possible to see all parameters in `Swagger` and use them.
+          `EfModelManager` allows to sort **by any column**. Starting from `1.6.0` it is possible to see all query parameters in `Swagger` and use them (`IReadFilterable`).
         - `GET /api/[controller]/{id}` to get one object by `id`
     - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
         - `POST   /api/[controller]` - for new object creation
