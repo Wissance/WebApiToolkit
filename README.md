@@ -3,11 +3,10 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v5.1.0/total?style=plastic)
 
-* Core package ![Core package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Core)
-* Ef based extensions and classes package ![Ef-based package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Ef)
-* Cloud AWS-compatible S3 files manager and utils package ![S3 Cloud package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.AWS.S3)
+* Core package ![Core package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Core) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Core)
+* Ef based extensions and classes package ![Ef-based package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Ef)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Ef)
+* Cloud AWS-compatible S3 files manager and utils package ![S3 Cloud package](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.AWS.S3)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.AWS.S3)
 
 ![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
 
