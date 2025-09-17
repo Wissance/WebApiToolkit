@@ -13,7 +13,7 @@
 
 ##  One Line of code for Fully functional CRUD Controller with Swagger doc
 
-![1 line to add controller](./img/1lineadd.gif)
+![1 line to add controller](./img/1lineadd-2.gif)
 
 to add in one line, for example i break it to `Assembly` get and add Controller, i.e.:
 1. Generate assembly:
