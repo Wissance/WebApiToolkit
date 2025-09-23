@@ -29,7 +29,7 @@
 
 ## Minimal example
 
-For the full doc see the [project wiki](https://github.com/Wissance/WebApiToolkit/wiki), to add in one line, for example i break it to `Assembly` get and add `Controller`, i.e.:
+For the full doc see the [ :books: project wiki](https://github.com/Wissance/WebApiToolkit/wiki), to add in one line, for example i break it to `Assembly` get and add `Controller`, i.e.:
 1. Generate assembly:
 ```csharp
 Assembly stationControllerAssembly = services.AddSimplifiedAutoController<StationEntity, Guid, EmptyAdditionalFilters>(
@@ -55,11 +55,11 @@ services.AddControllers().AddApplicationPart(stationControllerAssembly).AddContr
 :cool: `Bulk` vs :no_good_man: Non-Bulk, `Wissance.WebApiToolkit` has Bulk out of the box:
 
 ![Bulk vs Non Bulk](./img/bulk_performance.png)
-```
-Elapsed time in Non-Bulk REST API with EF is 0.9759984016418457 secs.
-Elapsed time in Bulk API with EF is 0.004002094268798828 secs.
-```
-:sparkles: Result : Bulk is almost ~`250 x` faster `API`.
+
+* :scream: Elapsed time in Non-Bulk REST API with EF is <span style="color:red">0.9759984016418457 secs.</span>
+* :fire: Elapsed time in Bulk API with EF is <span style="color:green">**0.004002094268798828 secs**.</span>
+
+:sparkles: Result : Bulk `API` is almost <span style="color:green">**~250 x faster**</span>!
 
 ### Additional materials (Post, articles, video)
 
