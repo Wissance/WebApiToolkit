@@ -25,7 +25,7 @@
 | :no_entry: Requires to rewrite controllers to add a new<br/> technology  | :white_check_mark:  Requires only a new Manager class          |
 | :no_entry: Not supporting bulk operation by default       | :white_check_mark: Up to one line of code for fully functional `BULK` `API` |
 | :no_entry: Controller logic can't be easily used for<br/>`gRPC` or `SignalR`    | :white_check_mark: You could have the same Manager to<br/> handle `REST`, `gRPC`,and a `SignalR` simultaneously                         |
-| :no_entry: Paging and Sorting should be written for<br/>every controller separately       | :white_check_mark: Paging and sorting are implemented out of the box in<br/>the uniform manner     |
+| :no_entry: Paging and Sorting should be written for<br/>every controller separately       | :white_check_mark: Paging and sorting are implemented<br/> out of the box in the uniform manner     |
 
 ## Minimal example
 
@@ -56,8 +56,8 @@ services.AddControllers().AddApplicationPart(stationControllerAssembly).AddContr
 
 ![Bulk vs Non Bulk](./img/bulk_performance.png)
 
-* :scream: Elapsed time in Non-Bulk REST API with EF is <span style="color:red">0.9759984016418457 secs.</span>
-* :fire: Elapsed time in Bulk API with EF is <span style="color:green">**0.004002094268798828 secs**.</span>
+* :scream: Elapsed time in Non-Bulk REST API with EF is <span style="color:red">~976 ms.</span>
+* :fire: Elapsed time in Bulk API with EF is <span style="color:green">**~4 ms**.</span>
 
 :sparkles: Result : Bulk `API` is almost <span style="color:green">**~250 x faster**</span>!
 
