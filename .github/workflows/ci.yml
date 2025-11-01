@@ -7,11 +7,11 @@ on:
     branches: [develop, master]
     
 env:
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '6.0.x'
 
 jobs:
   build-and-test:
-    name: Build Wissance.WebApiToolkit on Linux
+    name: Building Wissance.WebApiToolkit and running Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -24,8 +24,8 @@ jobs:
       - name: Build Solution
         run: dotnet build --configuration Release ./Wissance.WebApiToolkit
       - name: Run Wissance.WebApiToolkit.Core.Tests
-        run: dotnet test -c Release ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Core.Tests
+        run: dotnet test -c Release ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Core.Tests/Wissance.WebApiToolkit.Core.Tests.csproj
       - name: Run Wissance.WebApiToolkit.Ef.Tests
-        run: ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Ef.Tests
+        run: dotnet test -c Release ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Ef.Tests/Wissance.WebApiToolkit.Ef.Tests.csproj
       - name: Run Wissance.WebApiToolkit.Tests
-        run: ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Tests
+        run: dotnet test -c Release ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Tests/Wissance.WebApiToolkit.Tests.csproj
