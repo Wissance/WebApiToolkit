@@ -1,0 +1,31 @@
+name: Wissance.WebApiToolkit CI
+
+on:
+  pull_request:
+    branches: [develop, master]
+  push:
+    branches: [develop, master]
+    
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  build-and-test:
+    name: Build Wissance.WebApiToolkit on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .Net
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install dependencies 
+        run: dotnet restore ./Wissance.WebApiToolkit
+      - name: Build Solution
+        run: dotnet build --configuration Release ./Wissance.WebApiToolkit
+      - name: Run Wissance.WebApiToolkit.Core.Tests
+        run: dotnet test -c Release ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Core.Tests
+      - name: Run Wissance.WebApiToolkit.Ef.Tests
+        run: ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Ef.Tests
+      - name: Run Wissance.WebApiToolkit.Tests
+        run: ./Wissance.WebApiToolkit/Wissance.WebApiToolkit.Tests
