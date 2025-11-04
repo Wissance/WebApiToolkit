@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Data.Entity;
 
 namespace Wissance.WebApiToolkit.Ef.Managers
@@ -11,10 +12,9 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         where TObj : class, IModelIdentifiable<TId>
         where TId : IComparable
     {
-        public FullEfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc,
-            Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc, Action<TRes, TId, TObj> updateObjFunc,
+        public FullEfModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
             ILoggerFactory loggerFactory)
-            : base(dbContext, filterFunc, createResFunc, createObjFunc, updateObjFunc, loggerFactory)
+            : base(dbContext, configuration, loggerFactory)
         {
         }
     }
