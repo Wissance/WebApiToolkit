@@ -54,6 +54,13 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             _filterFunc = filterFunc;
         }
 
+        /// <summary>
+        ///     TODO(umv): Write
+        /// </summary>
+        /// <param name="dbContext"></param>
+        /// <param name="configuration"></param>
+        /// <param name="loggerFactory"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public EfModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
             ILoggerFactory loggerFactory)
         {

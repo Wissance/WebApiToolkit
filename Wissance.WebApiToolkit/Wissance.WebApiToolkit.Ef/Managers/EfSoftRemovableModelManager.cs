@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
@@ -41,6 +42,27 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             _defaultCreateObjFunc = createObjFunc;
             _defaultUpdateObjFunc = updateObjFunc;
             _filterFunc = filterFunc;
+        }
+        
+        /// <summary>
+        ///     TODO(umv): Write
+        /// </summary>
+        /// <param name="dbContext"></param>
+        /// <param name="configuration"></param>
+        /// <param name="loggerFactory"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public EfSoftRemovableModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
+            ILoggerFactory loggerFactory)
+            :base(dbContext, configuration, loggerFactory)
+        {
+            _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
+            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TRes, TObj, TId>>();
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+            _defaultCreateResFunc = configuration.CreateResFunc;
+            _defaultCreateObjFunc = configuration.CreateObjFunc;
+            _defaultUpdateObjFunc = configuration.UpdateObjFunc;
+            _filterFunc = configuration.FilterFunc;
         }
 
         /// <summary>
