@@ -29,7 +29,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="updateObjFunc">Delegate (factory func) for updating Entity from DTO</param>
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
-        /// <exception cref="System.ArgumentNullException"></exception>
+        /// <exception cref="System.ArgumentNullException">Throws if dbContext is null</exception>
         public EfSoftRemovableModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
                                            Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
                                            Action<TRes, TId, TObj> updateObjFunc,
@@ -45,12 +45,12 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
         
         /// <summary>
-        ///     TODO(umv): Write
+        ///     Constructor of default model manager requires that Model Context derives from EfDbContext
         /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="configuration"></param>
-        /// <param name="loggerFactory"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="dbContext">Ef Database context</param>
+        /// <param name="configuration">A set of delegates with different factory, filters function, e.t.c.</param>
+        /// <param name="loggerFactory">Logger factory</param>
+        /// <exception cref="ArgumentNullException">Throws if dbContext or configuration is null</exception>
         public EfSoftRemovableModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
             ILoggerFactory loggerFactory)
             :base(dbContext, configuration, loggerFactory)

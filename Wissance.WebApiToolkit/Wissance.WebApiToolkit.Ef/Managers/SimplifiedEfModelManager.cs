@@ -33,11 +33,13 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         }
         
         /// <summary>
-        /// 
+        ///     Simplified model manager operates and returns as a Result (DTO) same objects. Thus, we don't need
+        ///     a factory between TRes and TObj, but there are some issues with proxy objects (virtual). There is
+        ///     a PassFactory class to make pseudo manipulation with object constructing
         /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="configuration"></param>
-        /// <param name="loggerFactory"></param>
+        /// <param name="dbContext">Database Context (Entity Framework)</param>
+        /// <param name="configuration">A set of different Delegates combined into one Configuration class</param>
+        /// <param name="loggerFactory">FLogger factory</param>
         public SimplifiedEfModelManager(DbContext dbContext, ManagerConfiguration<TObj, TObj, TId> configuration,
             ILoggerFactory loggerFactory) 
             : base(dbContext, configuration, loggerFactory)
