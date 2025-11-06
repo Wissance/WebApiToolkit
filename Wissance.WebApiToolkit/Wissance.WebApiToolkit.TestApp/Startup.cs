@@ -1,14 +1,18 @@
 using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Core.Services;
+using Wissance.WebApiToolkit.Ef.Extensions;
 using Wissance.WebApiToolkit.Ef.Factories;
+using Wissance.WebApiToolkit.Ef.Generators;
 using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
@@ -52,8 +56,8 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureWebApi(IServiceCollection services)
         {
-            services.AddControllers();
             ConfigureManagers(services);
+            ConfigureControllers(services);
             services.AddGrpc();
             ConfigureWebServices(services);
         }
@@ -75,7 +79,7 @@ namespace Wissance.WebApiToolkit.TestApp
             });
             
             // 2. Managers creating from dynamic code (without declaring a class)
-            services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
+            /*services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
             {
                 return EfBasedManagerFactory.CreateSimplifiedManager<UserEntity, int>(sp.GetRequiredService<ModelContext>(),
                     null, sp.GetRequiredService<ILoggerFactory>());
@@ -85,7 +89,7 @@ namespace Wissance.WebApiToolkit.TestApp
             {
                 return EfBasedManagerFactory.CreateSimplifiedManager<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
                     null, sp.GetRequiredService<ILoggerFactory>());
-            });
+            });*/
         }
 
         private void ConfigureWebServices(IServiceCollection services)
@@ -95,6 +99,29 @@ namespace Wissance.WebApiToolkit.TestApp
                 {
                     return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
                 });
+        }
+
+        private void ConfigureControllers(IServiceCollection services)
+        {
+            services.AddControllers();
+            ServiceProvider provider = services.BuildServiceProvider();
+            ManagerConfiguration<UserDto, UserEntity, int> userManagerConfig = new ManagerConfiguration<UserDto, UserEntity, int>()
+            {
+                    
+            };
+            ManagerConfiguration<RoleDto, RoleEntity, int> roleManagerConfig = new ManagerConfiguration<RoleDto, RoleEntity, int>()
+            {
+                    
+            };
+            Assembly userControllerAssembly = services.AddFullyConfiguredAutoController<UserDto, UserEntity, int, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "User",
+                ControllerType.FullCrud, userManagerConfig, provider.GetRequiredService<ILoggerFactory>());
+            Assembly roleControllerAssembly = services.AddFullyConfiguredAutoController<RoleDto, RoleEntity, int, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "Role",
+                ControllerType.Bulk, roleManagerConfig, provider.GetRequiredService<ILoggerFactory>());
+            
+            services.AddControllers().AddApplicationPart(userControllerAssembly).AddControllersAsServices();
+            services.AddControllers().AddApplicationPart(roleControllerAssembly).AddControllersAsServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
