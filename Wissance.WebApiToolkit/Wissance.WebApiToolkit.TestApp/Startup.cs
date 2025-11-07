@@ -77,19 +77,6 @@ namespace Wissance.WebApiToolkit.TestApp
                 return new OrganizationManager(sp.GetRequiredService<ModelContext>(),
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
-            
-            // 2. Managers creating from dynamic code (without declaring a class)
-            /*services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
-            {
-                return EfBasedManagerFactory.CreateSimplifiedManager<UserEntity, int>(sp.GetRequiredService<ModelContext>(),
-                    null, sp.GetRequiredService<ILoggerFactory>());
-            });
-
-            services.AddScoped<IModelManager<RoleEntity, RoleEntity, int>>(sp =>
-            {
-                return EfBasedManagerFactory.CreateSimplifiedManager<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
-                    null, sp.GetRequiredService<ILoggerFactory>());
-            });*/
         }
 
         private void ConfigureWebServices(IServiceCollection services)
@@ -107,7 +94,10 @@ namespace Wissance.WebApiToolkit.TestApp
             ServiceProvider provider = services.BuildServiceProvider();
             ManagerConfiguration<UserDto, UserEntity, int> userManagerConfig = new ManagerConfiguration<UserDto, UserEntity, int>()
             {
-                    
+                CreateResFunc = UserFactory.Create,
+                CreateObjFunc = UserFactory.Create,
+                UpdateObjFunc = UserFactory.Update,
+                FilterFunc = null
             };
             ManagerConfiguration<RoleDto, RoleEntity, int> roleManagerConfig = new ManagerConfiguration<RoleDto, RoleEntity, int>()
             {
