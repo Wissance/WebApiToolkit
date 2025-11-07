@@ -7,6 +7,6 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity
         public int Id { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
-        public virtual UserEntity User { get; set; }
+        public virtual IList<UserEntity> Users { get; set; }
     }
 }

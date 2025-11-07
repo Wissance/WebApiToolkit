@@ -101,7 +101,8 @@ namespace Wissance.WebApiToolkit.TestApp
             };
             ManagerConfiguration<RoleDto, RoleEntity, int> roleManagerConfig = new ManagerConfiguration<RoleDto, RoleEntity, int>()
             {
-                    
+                CreateResFunc = RoleFactory.Create,
+                FilterFunc = null
             };
             Assembly userControllerAssembly = services.AddFullyConfiguredAutoController<UserDto, UserEntity, int, EmptyAdditionalFilters>(
                 provider.GetRequiredService<ModelContext>(), "User",
