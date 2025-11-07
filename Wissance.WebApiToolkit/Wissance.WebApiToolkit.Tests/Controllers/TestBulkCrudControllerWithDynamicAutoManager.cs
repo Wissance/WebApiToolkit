@@ -53,27 +53,27 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     new RoleEntity()
                     {
                         Name = "admin",
-                        UserId = 3,
+                        //UserId = 3,
                     },
                     new RoleEntity()
                     {
                         Name = "tech",
-                        UserId = 3,
+                        //UserId = 3,
                     },
                     new RoleEntity()
                     {
                         Name = "devops",
-                        UserId = 3,
+                        //UserId = 3,
                     },
                     new RoleEntity()
                     {
                         Name = "admin",
-                        UserId = 5,
+                        //UserId = 5,
                     },
                     new RoleEntity()
                     {
                         Name = "sys",
-                        UserId = 5,
+                        //UserId = 5,
                     }
                 };
                 

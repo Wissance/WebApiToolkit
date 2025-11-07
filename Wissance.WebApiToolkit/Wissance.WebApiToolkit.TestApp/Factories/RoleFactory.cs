@@ -14,5 +14,19 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
                 Users = entity.Users != null ? entity.Users.Select(u => u.Id).ToList() : new List<int>()
             };
         }
+
+        public static RoleEntity Create(RoleDto dto)
+        {
+            return new RoleEntity()
+            {
+                Id = dto.Id,
+                Name = dto.Name
+            };
+        }
+
+        public static void Update(RoleDto dto, int id, RoleEntity entity)
+        {
+            entity.Name = dto.Name;
+        }
     }
 }

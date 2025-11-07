@@ -96,7 +96,7 @@ namespace Wissance.WebApiToolkit.TestApp
                     RoleEntity role = new RoleEntity()
                     {
                         Name = "manager",
-                        UserId = user.Id
+                        //UserId = user.Id
                     };
                     context.Roles.Add(role);
                 }
