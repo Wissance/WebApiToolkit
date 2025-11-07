@@ -18,8 +18,8 @@ namespace Wissance.WebApiToolkit.Ef.Factories
             where TE : class, IModelIdentifiable<TId>
             where TCtx: DbContext
         {
-            return new SimplifiedEfModelManager<TCtx, TE, TId>(dbContext, filterFunc, PassFactory.Create,
-                PassFactory.Create, PassFactory.UpdateAll, loggerFactory);
+            return new SimplifiedEfModelManager<TCtx, TE, TId>(dbContext, filterFunc, PassFactory.CreateRes,
+                PassFactory.CreateObj, PassFactory.UpdateAll, loggerFactory);
         }
 
         public static IModelManager<TR, TE, TId> CreateFullyDefinedManager<TCtx, TR, TE, TId>(TCtx dbContext,

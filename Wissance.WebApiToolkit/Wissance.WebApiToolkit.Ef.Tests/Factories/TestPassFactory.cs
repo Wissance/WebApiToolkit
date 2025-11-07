@@ -68,10 +68,10 @@ namespace Wissance.WebApiToolkit.Ef.Tests.Factories
             
             org.Users = new List<User>() {user1, user2};
 
-            User user1Repr = PassFactory.Create(user1);
+            User user1Repr = PassFactory.CreateRes(user1);
             Assert.Null(user1Repr.Profiles);
             Assert.Null(user1Repr.Organization);
-            User user2Repr = PassFactory.Create(user2);
+            User user2Repr = PassFactory.CreateRes(user2);
             Assert.Null(user2Repr.Profiles);
             Assert.Null(user2Repr.Organization);
         }
