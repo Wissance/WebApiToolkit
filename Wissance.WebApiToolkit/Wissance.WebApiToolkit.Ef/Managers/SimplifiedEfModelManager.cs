@@ -2,17 +2,19 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Data.Entity;
+using Wissance.WebApiToolkit.Ef.Configuration;
 
 namespace Wissance.WebApiToolkit.Ef.Managers
 {
     /// <summary>
     ///     TODO(umv): Write
     /// </summary>
-    /// <typeparam name="TObj"></typeparam>
-    /// <typeparam name="TId"></typeparam>
-    public class SimplifiedEfModelManager<TObj, TId> : EfModelManager<TObj, TObj, TId>
+    /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
+    /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
+    /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
+    public class SimplifiedEfModelManager<TCtx, TObj, TId> : EfModelManager<TCtx, TObj, TObj, TId>
+        where TCtx: DbContext
         where TObj: class, IModelIdentifiable<TId>
         where TId: IComparable
     {
@@ -25,8 +27,8 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="createObjFunc"></param>
         /// <param name="updateObjFunc"></param>
         /// <param name="loggerFactory"></param>
-        public SimplifiedEfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
-            Func<TObj, TObj> createResFunc, Func<TObj, TObj> createObjFunc, Action<TObj, TId, TObj> updateObjFunc, 
+        public SimplifiedEfModelManager(TCtx dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
+            Func<TObj, TObj> createResFunc, Func<TObj, TCtx, TObj> createObjFunc, Action<TObj, TId, TCtx, TObj> updateObjFunc, 
             ILoggerFactory loggerFactory) 
             : base(dbContext, filterFunc, createResFunc, createObjFunc, updateObjFunc, loggerFactory)
         {
@@ -40,7 +42,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="dbContext">Database Context (Entity Framework)</param>
         /// <param name="configuration">A set of different Delegates combined into one Configuration class</param>
         /// <param name="loggerFactory">FLogger factory</param>
-        public SimplifiedEfModelManager(DbContext dbContext, ManagerConfiguration<TObj, TObj, TId> configuration,
+        public SimplifiedEfModelManager(TCtx dbContext, ManagerConfiguration<TCtx, TObj, TObj, TId> configuration,
             ILoggerFactory loggerFactory) 
             : base(dbContext, configuration, loggerFactory)
         {

@@ -6,16 +6,23 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
-using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Core.Managers.Helpers;
+using Wissance.WebApiToolkit.Ef.Configuration;
 
 namespace Wissance.WebApiToolkit.Ef.Managers
 {
-    public abstract class EfSoftRemovableModelManager<TRes, TObj, TId> : EfModelManager<TRes, TObj, TId>
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
+    /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
+    /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
+    /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
+    public abstract class EfSoftRemovableModelManager<TCtx, TRes, TObj, TId> : EfModelManager<TCtx, TRes, TObj, TId>
+        where TCtx: DbContext
         where TObj: class, IModelIdentifiable<TId>, IModelSoftRemovable
         where TRes: class
         where TId: IComparable
@@ -30,14 +37,14 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="System.ArgumentNullException">Throws if dbContext is null</exception>
-        public EfSoftRemovableModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
-                                           Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
-                                           Action<TRes, TId, TObj> updateObjFunc,
+        public EfSoftRemovableModelManager(TCtx dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
+                                           Func<TObj, TRes> createResFunc, Func<TRes, DbContext, TObj> createObjFunc,
+                                           Action<TRes, TId, DbContext, TObj> updateObjFunc,
                                            ILoggerFactory loggerFactory)
             :base(dbContext, filterFunc, createResFunc, createObjFunc, updateObjFunc, loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TRes, TObj, TId>>();
+            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TCtx, TRes, TObj, TId>>();
             _defaultCreateResFunc = createResFunc;
             _defaultCreateObjFunc = createObjFunc;
             _defaultUpdateObjFunc = updateObjFunc;
@@ -51,12 +58,12 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="configuration">A set of delegates with different factory, filters function, e.t.c.</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException">Throws if dbContext or configuration is null</exception>
-        public EfSoftRemovableModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
+        public EfSoftRemovableModelManager(TCtx dbContext, ManagerConfiguration<TCtx, TRes, TObj, TId> configuration,
             ILoggerFactory loggerFactory)
             :base(dbContext, configuration, loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TRes, TObj, TId>>();
+            _logger = loggerFactory.CreateLogger<EfSoftRemovableModelManager<TCtx, TRes, TObj, TId>>();
             if (configuration == null)
                 throw new ArgumentNullException("configuration");
             _defaultCreateResFunc = configuration.CreateResFunc;
@@ -249,11 +256,11 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             }
         }
 
-        private readonly ILogger<EfSoftRemovableModelManager<TRes, TObj, TId>> _logger;
-        private readonly DbContext _dbContext;
+        private readonly ILogger<EfSoftRemovableModelManager<TCtx, TRes, TObj, TId>> _logger;
+        private readonly TCtx _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateResFunc;
-        private readonly Func<TRes, TObj> _defaultCreateObjFunc;
-        private readonly Action<TRes, TId, TObj> _defaultUpdateObjFunc;
+        private readonly Func<TRes, TCtx, TObj> _defaultCreateObjFunc;
+        private readonly Action<TRes, TId,TCtx, TObj> _defaultUpdateObjFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }

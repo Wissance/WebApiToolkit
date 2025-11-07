@@ -8,7 +8,8 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity.Mapping
         public static void Map(this EntityTypeBuilder<UserEntity> builder)
         {
             builder.HasKey(p => p.Id);
-            builder.HasMany(p => p.Roles).WithMany(p => p.Users);
+            builder.HasMany(p => p.Roles)
+                   .WithMany(p => p.Users);
         }
     }
 }

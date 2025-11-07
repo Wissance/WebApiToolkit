@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
 
@@ -15,7 +17,7 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
             };
         }
 
-        public static RoleEntity Create(RoleDto dto)
+        public static RoleEntity Create(RoleDto dto, ModelContext dbContext)
         {
             return new RoleEntity()
             {
@@ -24,7 +26,7 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
             };
         }
 
-        public static void Update(RoleDto dto, int id, RoleEntity entity)
+        public static void Update(RoleDto dto, int id, ModelContext dbContext, RoleEntity entity)
         {
             entity.Name = dto.Name;
         }

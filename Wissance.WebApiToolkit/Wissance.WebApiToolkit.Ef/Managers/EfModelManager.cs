@@ -6,12 +6,12 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Wissance.WebApiToolkit.Core.Configuration;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Data.Entity;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Core.Managers.Helpers;
+using Wissance.WebApiToolkit.Ef.Configuration;
 
 namespace Wissance.WebApiToolkit.Ef.Managers
 {
@@ -22,10 +22,12 @@ namespace Wissance.WebApiToolkit.Ef.Managers
     ///    * GetByIdAsync method for obtain one item by id
     ///    * Delete method 
     /// </summary>
+    /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>
     /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
     /// <typeparam name="TId">Identifier type that is using as database table PK</typeparam>
-    public abstract class EfModelManager <TRes, TObj, TId> : IModelManager<TRes, TObj, TId>
+    public abstract class EfModelManager <TCtx, TRes, TObj, TId> : IModelManager<TRes, TObj, TId>
+                                                where TCtx: DbContext
                                                 where TObj: class, IModelIdentifiable<TId>
                                                 where TRes: class
                                                 where TId: IComparable
@@ -41,13 +43,13 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="System.ArgumentNullException"></exception>
-        public EfModelManager(DbContext dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
-                              Func<TObj, TRes> createResFunc, Func<TRes, TObj> createObjFunc,
-                              Action<TRes, TId, TObj> updateObjFunc,
+        public EfModelManager(TCtx dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
+                              Func<TObj, TRes> createResFunc, Func<TRes, TCtx, TObj> createObjFunc,
+                              Action<TRes, TId, TCtx, TObj> updateObjFunc,
                               ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
+            _logger = loggerFactory.CreateLogger<EfModelManager<TCtx, TRes, TObj, TId>>();
             _defaultCreateResFunc = createResFunc;
             _defaultCreateObjFunc = createObjFunc;
             _defaultUpdateObjFunc = updateObjFunc;
@@ -61,11 +63,11 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         /// <param name="configuration">A set of delegates with different factory, filters function, e.t.c.</param>
         /// <param name="loggerFactory">Logger factory</param>
         /// <exception cref="ArgumentNullException">Throws if dbContext or configuration is null</exception>
-        public EfModelManager(DbContext dbContext, ManagerConfiguration<TRes, TObj, TId> configuration,
+        public EfModelManager(TCtx dbContext, ManagerConfiguration<TCtx, TRes, TObj, TId> configuration,
             ILoggerFactory loggerFactory)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException("dbContext");
-            _logger = loggerFactory.CreateLogger<EfModelManager<TRes, TObj, TId>>();
+            _logger = loggerFactory.CreateLogger<EfModelManager<TCtx, TRes, TObj, TId>>();
             if (configuration == null)
                 throw new ArgumentNullException("configuration");
             _defaultCreateResFunc = configuration.CreateResFunc;
@@ -228,7 +230,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                         ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "Create"), null);
                 }
 
-                TObj entity = _defaultCreateObjFunc(data);
+                TObj entity = _defaultCreateObjFunc(data, _dbContext);
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 await dbSet.AddAsync(entity);
                 int saveResult = await _dbContext.SaveChangesAsync();
@@ -263,7 +265,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                     return new OperationResultDto<TRes[]>(false, (int) HttpStatusCode.NotImplemented, 
                         ResponseMessageBuilder.GetNotImplementedErrorMessage(typeof(TObj).ToString(), "BulkCreate"), null);
                 }
-                IList<TObj> entities = data.Select(item => _defaultCreateObjFunc(item)).ToList();
+                IList<TObj> entities = data.Select(item => _defaultCreateObjFunc(item, _dbContext)).ToList();
                 DbSet<TObj> dbSet = _dbContext.Set<TObj>();
                 await dbSet.AddRangeAsync(entities);
                 
@@ -310,7 +312,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                         ResponseMessageBuilder.GetUpdateNotFoundMessage(typeof(TObj).ToString(), id.ToString()), null);
                 }
 
-                _defaultUpdateObjFunc(data, id, dbEntity);
+                _defaultUpdateObjFunc(data, id, _dbContext, dbEntity);
 
                 int saveResult = await _dbContext.SaveChangesAsync();
                 if (saveResult <= 0)
@@ -351,7 +353,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 // 1. construct Entity object from Resource due to Entity have a restriction - identifier
                 foreach (TRes itemData in data)
                 {
-                    Tuple<TRes, TObj> item = new Tuple<TRes, TObj>(itemData, _defaultCreateObjFunc(itemData));
+                    Tuple<TRes, TObj> item = new Tuple<TRes, TObj>(itemData, _defaultCreateObjFunc(itemData, _dbContext));
                     // 2. add only those objects that we build as Entities
                     if (item.Item2 != null)
                     {
@@ -367,7 +369,7 @@ namespace Wissance.WebApiToolkit.Ef.Managers
                 foreach (TObj dbObject in dbObjects)
                 {
                     Tuple<TRes, TObj> actualData = updatingObjects.First(o => o.Item2.Id.Equals(dbObject.Id));
-                    _defaultUpdateObjFunc(actualData.Item1, dbObject.Id, dbObject);
+                    _defaultUpdateObjFunc(actualData.Item1, dbObject.Id, _dbContext, dbObject);
                 }
                 
                 int saveResult = await _dbContext.SaveChangesAsync();
@@ -442,11 +444,11 @@ namespace Wissance.WebApiToolkit.Ef.Managers
             }
         }
 
-        private readonly ILogger<EfModelManager<TRes, TObj, TId>> _logger;
-        private readonly DbContext _dbContext;
+        private readonly ILogger<EfModelManager<TCtx, TRes, TObj, TId>> _logger;
+        private readonly TCtx _dbContext;
         private readonly Func<TObj, TRes> _defaultCreateResFunc;
-        private readonly Func<TRes, TObj> _defaultCreateObjFunc;
-        private readonly Action<TRes, TId, TObj> _defaultUpdateObjFunc;
+        private readonly Func<TRes, TCtx, TObj> _defaultCreateObjFunc;
+        private readonly Action<TRes, TId, TCtx, TObj> _defaultUpdateObjFunc;
         private readonly Func<TObj, IDictionary<string, string>, bool> _filterFunc;
     }
 }
