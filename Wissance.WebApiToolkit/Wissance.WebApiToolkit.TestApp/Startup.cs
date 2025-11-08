@@ -77,6 +77,7 @@ namespace Wissance.WebApiToolkit.TestApp
                 return new OrganizationManager(sp.GetRequiredService<ModelContext>(),
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
+            // 2. User and Role were created dynamically simultaneously with Controllers, see ConfigureControllers
         }
 
         private void ConfigureWebServices(IServiceCollection services)

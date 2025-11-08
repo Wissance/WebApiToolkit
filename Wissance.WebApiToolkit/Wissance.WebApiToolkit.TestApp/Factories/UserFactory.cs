@@ -27,22 +27,26 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
                 FullName = dto.FullName,
                 Login = dto.Login,
                 OrganizationId = dto.OrganizationId,
-                //Roles = dto.Roles != null ? dto.Roles.Select(r => new RoleEntity(){Id = r}).ToList(): new List<RoleEntity>()
             };
             
             if (dto.Roles != null)
             {
-                //entity.Roles.
+                entity.Roles = dbContext.Roles.Where(r => dto.Roles.Contains(r.Id)).ToList();
             }
 
             return entity;
         }
 
-        public static void Update(UserDto dto, int id, ModelContext context, UserEntity entity)
+        public static void Update(UserDto dto, int id, ModelContext dbContext, UserEntity entity)
         {
             entity.Login = dto.Login;
             entity.FullName = dto.FullName;
             entity.OrganizationId = dto.OrganizationId;
+            
+            if (dto.Roles != null)
+            {
+                entity.Roles = dbContext.Roles.Where(r => dto.Roles.Contains(r.Id)).ToList();
+            }
         }
     }
 }

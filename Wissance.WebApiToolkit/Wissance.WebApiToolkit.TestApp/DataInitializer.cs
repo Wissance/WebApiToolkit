@@ -9,8 +9,8 @@ namespace Wissance.WebApiToolkit.TestApp
         {
             InitCodes(context);
             InitOrganizations(context);
-            InitUsers(context);
             InitRoles(context);
+            InitUsers(context);
         }
 
         private static void InitCodes(ModelContext context)
@@ -72,15 +72,31 @@ namespace Wissance.WebApiToolkit.TestApp
         private static void InitUsers(ModelContext context)
         {
             IList<OrganizationEntity> organizations = context.Organizations.ToList();
+            int count = 1;
             foreach (OrganizationEntity organization in organizations)
             {
+                IList<int> roles = new List<int>();
+                if (count >= 4 && count < 6)
+                {
+                    roles.Add(AdminRoleId);
+                    roles.Add(ManagerRoleId);
+                }
+                else
+                {
+                    if (count % 2 == 0)
+                        roles.Add(ManagerRoleId);
+                    else roles.Add(CorporateSlaveRoleId);
+                }
+
                 UserEntity user = new UserEntity()
                 {
-                    Login = $"sa_{organization.Id}",
+                    Login = $"user_{organization.Id}",
                     OrganizationId = organization.Id,
-                    FullName = $"Demo Demo {organization.Id}"
+                    FullName = $"Demo Demo {organization.Id}",
+                    Roles = context.Roles.Where(r => roles.Contains(r.Id)).ToList()
                 };
                 context.Users.Add(user);
+                count++;
             }
 
             context.SaveChanges();
@@ -88,21 +104,27 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private static void InitRoles(ModelContext context)
         {
-            IList<UserEntity> users = context.Users.ToList();
-            foreach (UserEntity user in users)
+            context.Roles.Add(new RoleEntity()
             {
-                if (user.Id % 2 == 0)
-                {
-                    RoleEntity role = new RoleEntity()
-                    {
-                        Name = "manager",
-                        //UserId = user.Id
-                    };
-                    context.Roles.Add(role);
-                }
-            }
+                Id = AdminRoleId,
+                Name = "Administrator"
+            });
+            context.Roles.Add(new RoleEntity()
+            {
+                Id = ManagerRoleId,
+                Name = "Office manager"
+            });
+            context.Roles.Add(new RoleEntity()
+            {
+                Id = CorporateSlaveRoleId,
+                Name = "Corporation slave"
+            });
 
             context.SaveChanges();
         }
+
+        private const int AdminRoleId = 1;
+        private const int ManagerRoleId = 2;
+        private const int CorporateSlaveRoleId = 3;
     }
 }
