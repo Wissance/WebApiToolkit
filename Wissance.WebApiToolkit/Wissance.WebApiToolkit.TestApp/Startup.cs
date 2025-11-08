@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,10 @@ using Microsoft.Extensions.Logging;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Core.Managers;
 using Wissance.WebApiToolkit.Core.Services;
+using Wissance.WebApiToolkit.Ef.Configuration;
+using Wissance.WebApiToolkit.Ef.Extensions;
 using Wissance.WebApiToolkit.Ef.Factories;
+using Wissance.WebApiToolkit.Ef.Generators;
 using Wissance.WebApiToolkit.TestApp.Data;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
@@ -52,8 +56,8 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureWebApi(IServiceCollection services)
         {
-            services.AddControllers();
             ConfigureManagers(services);
+            ConfigureControllers(services);
             services.AddGrpc();
             ConfigureWebServices(services);
         }
@@ -73,19 +77,7 @@ namespace Wissance.WebApiToolkit.TestApp
                 return new OrganizationManager(sp.GetRequiredService<ModelContext>(),
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
-            
-            // 2. Managers creating from dynamic code (without declaring a class)
-            services.AddScoped<IModelManager<UserEntity, UserEntity, int>>(sp =>
-            {
-                return SimplifiedEfBasedManagerFactory.Create<UserEntity, int>(sp.GetRequiredService<ModelContext>(),
-                    null, sp.GetRequiredService<ILoggerFactory>());
-            });
-
-            services.AddScoped<IModelManager<RoleEntity, RoleEntity, int>>(sp =>
-            {
-                return SimplifiedEfBasedManagerFactory.Create<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
-                    null, sp.GetRequiredService<ILoggerFactory>());
-            });
+            // 2. User and Role were created dynamically simultaneously with Controllers, see ConfigureControllers
         }
 
         private void ConfigureWebServices(IServiceCollection services)
@@ -95,6 +87,35 @@ namespace Wissance.WebApiToolkit.TestApp
                 {
                     return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
                 });
+        }
+
+        private void ConfigureControllers(IServiceCollection services)
+        {
+            services.AddControllers();
+            ServiceProvider provider = services.BuildServiceProvider();
+            ManagerConfiguration<ModelContext, UserDto, UserEntity, int> userManagerConfig = new ManagerConfiguration<ModelContext, UserDto, UserEntity, int>()
+            {
+                CreateResFunc = UserFactory.Create,
+                CreateObjFunc = UserFactory.Create,
+                UpdateObjFunc = UserFactory.Update,
+                FilterFunc = null
+            };
+            ManagerConfiguration<ModelContext, RoleDto, RoleEntity, int> roleManagerConfig = new ManagerConfiguration<ModelContext, RoleDto, RoleEntity, int>()
+            {
+                CreateResFunc = RoleFactory.Create,
+                CreateObjFunc = RoleFactory.Create,
+                UpdateObjFunc = RoleFactory.Update,
+                FilterFunc = null
+            };
+            Assembly userControllerAssembly = services.AddFullyConfiguredAutoController<ModelContext, UserDto, UserEntity, int, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "User",
+                ControllerType.FullCrud, userManagerConfig, provider.GetRequiredService<ILoggerFactory>());
+            Assembly roleControllerAssembly = services.AddFullyConfiguredAutoController<ModelContext, RoleDto, RoleEntity, int, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "Role",
+                ControllerType.Bulk, roleManagerConfig, provider.GetRequiredService<ILoggerFactory>());
+            
+            services.AddControllers().AddApplicationPart(userControllerAssembly).AddControllersAsServices();
+            services.AddControllers().AddApplicationPart(roleControllerAssembly).AddControllersAsServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

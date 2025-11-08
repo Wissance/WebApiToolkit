@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
+using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
 using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
@@ -34,19 +36,20 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         {
             using (HttpClient client = Application.CreateClient())
             {
-                UserEntity newUser = new UserEntity()
+                UserDto newUser = new UserDto()
                 {
                     Id = 100,
                     Login = "ass",
                     FullName = "Ivan Ivanov",
-                    OrganizationId = 4
+                    OrganizationId = 4,
+                    Roles = new []{2, 3}
                 };
                 JsonContent content = JsonContent.Create(newUser);
                 HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
                 Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
                 string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
                 Assert.True(userCreateDataStr.Length > 0);
-                OperationResultDto<UserEntity> result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                OperationResultDto<UserDto> result = JsonConvert.DeserializeObject<OperationResultDto<UserDto>>(userCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);
@@ -58,31 +61,33 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         {
             using (HttpClient client = Application.CreateClient())
             {
-                UserEntity newUser = new UserEntity()
+                UserDto newUser = new UserDto()
                 {
                     Id = 100,
                     Login = "ass",
                     FullName = "Ivan Ivanov",
-                    OrganizationId = 4
+                    OrganizationId = 4,
+                    Roles = new []{2, 3}
                 };
                 JsonContent content = JsonContent.Create(newUser);
                 HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
                 Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
                 string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
                 Assert.True(userCreateDataStr.Length > 0);
-                OperationResultDto<UserEntity> result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userCreateDataStr);
+                OperationResultDto<UserDto> result = JsonConvert.DeserializeObject<OperationResultDto<UserDto>>(userCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);
                 newUser.Login = "paa";
                 newUser.OrganizationId = 8;
                 newUser.FullName = "Petr Petrov";
+                newUser.Roles = new[] {1, 3};
                 content = JsonContent.Create(newUser);
                 HttpResponseMessage updateUserResponse = await client.PutAsync($"api/User/{newUser.Id}", content);
                 Assert.Equal(HttpStatusCode.OK, updateUserResponse.StatusCode);
                 string userUpdateDataStr = await updateUserResponse.Content.ReadAsStringAsync();
                 Assert.True(userUpdateDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(userUpdateDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<UserDto>>(userUpdateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);
@@ -91,7 +96,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, getUserResponse.StatusCode);
                 string getUserDataStr = await getUserResponse.Content.ReadAsStringAsync();
                 Assert.True(getUserDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<UserEntity>>(getUserDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<UserDto>>(getUserDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);

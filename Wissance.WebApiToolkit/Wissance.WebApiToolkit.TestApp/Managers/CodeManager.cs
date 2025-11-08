@@ -8,7 +8,7 @@ using Wissance.WebApiToolkit.TestApp.Dto;
 
 namespace Wissance.WebApiToolkit.TestApp.Managers
 {
-    public class CodeManager : EfModelManager<CodeDto, CodeEntity, int>
+    public class CodeManager : EfModelManager<ModelContext, CodeDto, CodeEntity, int>
     {
         public CodeManager(ModelContext dbContext, Func<CodeEntity, IDictionary<string, string>, bool> filterFunc, Func<CodeEntity, CodeDto> createFunc, 
                            ILoggerFactory loggerFactory) 
