@@ -4,6 +4,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
+[![Wissance.WebApiToolkit CI](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml)
 
 * Core ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Core) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Core)
 * Ef extensions ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Ef)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Ef)
