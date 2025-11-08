@@ -20,7 +20,12 @@ namespace Wissance.WebApiToolkit.Ef.Managers
     ///    It has a default implementation of the following method of IModelManager:
     ///    * GetAsync method for obtain many items
     ///    * GetByIdAsync method for obtain one item by id
-    ///    * Delete method 
+    ///    * Create method (if createObjFunc is not null)
+    ///    * Update method (if updateObjFunc is not null)
+    ///    * Bulk create method (if createObjFunc is not null)
+    ///    * Bulk update method (if updateObjFunc is not null)
+    ///    * Delete method
+    ///    * Bulk delete method
     /// </summary>
     /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>

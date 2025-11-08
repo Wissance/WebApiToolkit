@@ -15,7 +15,9 @@ using Wissance.WebApiToolkit.Ef.Configuration;
 namespace Wissance.WebApiToolkit.Ef.Managers
 {
     /// <summary>
-    /// 
+    ///     This is a persistent object manager like EfModelManager bases on EntityFramework but works with TObj
+    ///     that are implementing IModelSoftRemovable interface (has field IsDeleted, true value means that object was
+    ///     logically removed). Derives from an already mentioned EfModelManager
     /// </summary>
     /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
     /// <typeparam name="TRes">DTO class (representation of Model in other systems i.e. in frontend))</typeparam>

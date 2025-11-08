@@ -8,7 +8,7 @@ using Wissance.WebApiToolkit.Ef.Configuration;
 namespace Wissance.WebApiToolkit.Ef.Managers
 {
     /// <summary>
-    ///     TODO(umv): Write
+    ///     This manager is not an abstract, simplified due to TRes and TObj are the same TObj type.
     /// </summary>
     /// <typeparam name="TCtx">Entity framework Database Context derives from DbContext</typeparam>
     /// <typeparam name="TObj">Model class implements IModelIdentifiable</typeparam>
@@ -19,14 +19,14 @@ namespace Wissance.WebApiToolkit.Ef.Managers
         where TId: IComparable
     {
         /// <summary>
-        /// 
+        ///    Constructor of default model manager requires that Model Context derives from EfDbContext
         /// </summary>
-        /// <param name="dbContext"></param>
-        /// <param name="filterFunc"></param>
-        /// <param name="createResFunc"></param>
-        /// <param name="createObjFunc"></param>
-        /// <param name="updateObjFunc"></param>
-        /// <param name="loggerFactory"></param>
+        /// <param name="dbContext">Ef Database context</param>
+        /// <param name="createResFunc">Delegate (factory func) for creating DTO from Model</param>
+        /// <param name="createObjFunc">Delegate (factory func) for creating Entity from DTO</param>
+        /// <param name="updateObjFunc">Delegate (factory func) for updating Entity from DTO</param>
+        /// <param name="filterFunc">Function that use dictionary with query params to filter result set</param>
+        /// <param name="loggerFactory">Logger factory</param>
         public SimplifiedEfModelManager(TCtx dbContext, Func<TObj, IDictionary<string, string>, bool> filterFunc, 
             Func<TObj, TObj> createResFunc, Func<TObj, TCtx, TObj> createObjFunc, Action<TObj, TId, TCtx, TObj> updateObjFunc, 
             ILoggerFactory loggerFactory) 
