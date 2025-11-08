@@ -12,6 +12,7 @@ namespace Wissance.WebApiToolkit.Tests.Utils.Checkers
             Assert.Equal(expected.Login, actual.Login);
             Assert.Equal(expected.FullName, actual.FullName);
             Assert.Equal(expected.OrganizationId, actual.OrganizationId);
+            Assert.Equivalent(expected.Roles, actual.Roles);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     Login = "ass",
                     FullName = "Ivan Ivanov",
                     OrganizationId = 4,
-                    Roles = new []{1}
+                    Roles = new []{2, 3}
                 };
                 JsonContent content = JsonContent.Create(newUser);
                 HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
@@ -66,7 +66,8 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     Id = 100,
                     Login = "ass",
                     FullName = "Ivan Ivanov",
-                    OrganizationId = 4
+                    OrganizationId = 4,
+                    Roles = new []{2, 3}
                 };
                 JsonContent content = JsonContent.Create(newUser);
                 HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
@@ -80,6 +81,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 newUser.Login = "paa";
                 newUser.OrganizationId = 8;
                 newUser.FullName = "Petr Petrov";
+                newUser.Roles = new[] {1, 3};
                 content = JsonContent.Create(newUser);
                 HttpResponseMessage updateUserResponse = await client.PutAsync($"api/User/{newUser.Id}", content);
                 Assert.Equal(HttpStatusCode.OK, updateUserResponse.StatusCode);
