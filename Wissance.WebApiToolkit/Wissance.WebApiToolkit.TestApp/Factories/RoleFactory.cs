@@ -22,13 +22,17 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
             return new RoleEntity()
             {
                 Id = dto.Id,
-                Name = dto.Name
+                Name = dto.Name,
+                Users = dto.Users != null ? dbContext.Users.Where(u => dto.Users.Contains(u.Id)).ToList() : new List<UserEntity>()
             };
         }
 
         public static void Update(RoleDto dto, int id, ModelContext dbContext, RoleEntity entity)
         {
             entity.Name = dto.Name;
+            entity.Users = dto.Users != null
+                         ? dbContext.Users.Where(u => dto.Users.Contains(u.Id)).ToList()
+                         : new List<UserEntity>();
         }
     }
 }

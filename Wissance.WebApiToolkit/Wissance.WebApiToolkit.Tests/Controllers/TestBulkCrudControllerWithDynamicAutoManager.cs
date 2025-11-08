@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
+using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
 using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
@@ -24,7 +25,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -41,7 +42,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -52,28 +53,28 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 {
                     new RoleEntity()
                     {
-                        Name = "admin",
-                        //UserId = 3,
+                        Id = 10,
+                        Name = "pm",
                     },
                     new RoleEntity()
                     {
+                        Id = 11,
                         Name = "tech",
-                        //UserId = 3,
                     },
                     new RoleEntity()
                     {
+                        Id = 12,
                         Name = "devops",
-                        //UserId = 3,
                     },
                     new RoleEntity()
                     {
-                        Name = "admin",
-                        //UserId = 5,
+                        Id = 13,
+                        Name = "backend",
                     },
                     new RoleEntity()
                     {
+                        Id = 14,
                         Name = "sys",
-                        //UserId = 5,
                     }
                 };
                 
@@ -82,7 +83,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.Created, createRoleResponse.StatusCode);
                 string RoleCreateDataStr = await createRoleResponse.Content.ReadAsStringAsync();
                 Assert.True(RoleCreateDataStr.Length > 0);
-                OperationResultDto<RoleEntity[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(RoleCreateDataStr);
+                OperationResultDto<RoleDto[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(RoleCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 Assert.Equal(roles.Length, bulkCreateResult.Data.Length);
@@ -92,7 +93,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -111,15 +112,15 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
 
-                RoleEntity[] updatingRoles = new RoleEntity[result.Data.Data.Count];
+                RoleDto[] updatingRoles = new RoleDto[result.Data.Data.Count];
                 result.Data.Data.CopyTo(updatingRoles, 0);
                 string newRoleName = "advanced manager";
-                foreach (RoleEntity role in updatingRoles)
+                foreach (RoleDto role in updatingRoles)
                 {
                     role.Name = newRoleName;
                 }
@@ -129,11 +130,11 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, updateRoleResponse.StatusCode);
                 string roleUpdateDataStr = await updateRoleResponse.Content.ReadAsStringAsync();
                 Assert.True(roleUpdateDataStr.Length > 0);
-                OperationResultDto<RoleEntity[]> bulkUpdateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(roleUpdateDataStr);
+                OperationResultDto<RoleDto[]> bulkUpdateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(roleUpdateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 Assert.Equal(updatingRoles.Length, bulkUpdateResult.Data.Length);
-                foreach (RoleEntity role in bulkUpdateResult.Data)
+                foreach (RoleDto role in bulkUpdateResult.Data)
                 {
                     Assert.Equal(newRoleName, role.Name);
                 }
@@ -149,7 +150,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -174,7 +175,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
