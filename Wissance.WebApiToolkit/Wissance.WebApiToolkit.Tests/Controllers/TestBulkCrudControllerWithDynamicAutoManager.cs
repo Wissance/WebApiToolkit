@@ -26,9 +26,16 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
                 OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
-                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
+                // TODO(UMV): These test works with SQLite in memory db therefore Navigation property (virtual) does not contains related Users, but actually all Users have roles
+                IList<RoleDto> expected = new List<RoleDto>()
+                {
+                    new RoleDto() {Id = 1, Name = "Administrator", Users = new List<int>()},
+                    new RoleDto() {Id = 2, Name = "Office manager", Users = new List<int>()},
+                    new RoleDto() {Id = 3, Name = "Corporation slave", Users = new List<int>()}
+                };
+                RoleChecker.Check(expected, result.Data.Data);
             }
         }
         
