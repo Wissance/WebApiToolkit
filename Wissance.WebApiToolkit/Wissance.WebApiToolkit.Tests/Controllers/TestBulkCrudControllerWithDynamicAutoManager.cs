@@ -49,32 +49,37 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 int beforeBulkCreate = result.Data.Data.Count;
 
                 // 2. Call bulk create method
-                RoleEntity[] roles = new RoleEntity[]
+                RoleDto[] roles = new RoleDto[]
                 {
-                    new RoleEntity()
+                    new RoleDto()
                     {
                         Id = 10,
                         Name = "pm",
+                        Users = new List<int>(){1, 2}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
                         Id = 11,
                         Name = "tech",
+                        Users = new List<int>(){1, 2, 3, 4}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
                         Id = 12,
                         Name = "devops",
+                        Users = new List<int>(){3}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
                         Id = 13,
                         Name = "backend",
+                        Users = new List<int>(){4, 5}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
                         Id = 14,
                         Name = "sys",
+                        Users = new List<int>()
                     }
                 };
                 
@@ -86,7 +91,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 OperationResultDto<RoleDto[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(RoleCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
-                Assert.Equal(roles.Length, bulkCreateResult.Data.Length);
+                RoleChecker.Check(roles, bulkCreateResult.Data);
                 
                 // 3. Getting roles again and check quantity
                 resp = await client.GetAsync("api/bulk/Role");
