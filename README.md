@@ -6,6 +6,7 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
 [![Wissance.WebApiToolkit CI](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml)
 
+* Prev Version <= 3.0.0 ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit)
 * Core ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Core) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Core)
 * Ef extensions ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Ef)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Ef)
 * Cloud AWS S3 utils ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.AWS.S3)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.AWS.S3)
