@@ -1,472 +1,76 @@
 ## Wissance.WebApiToolkit
 
+[![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/quozd/awesome-dotnet#api) 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wissance/WebApiToolkit?style=plastic) 
 ![GitHub issues](https://img.shields.io/github/issues/wissance/WebApiToolkit?style=plastic)
 ![GitHub Release Date](https://img.shields.io/github/release-date/wissance/WebApiToolkit) 
-![GitHub release (latest by date)](https://img.shields.io/github/downloads/wissance/WebApiToolkit/v4.0.1/total?style=plastic)
+[![Wissance.WebApiToolkit CI](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Wissance/WebApiToolkit/actions/workflows/ci.yml)
 
-## 10 Lines of code = Full CRUD and even BULK with swagger docs
-
-This ultimate lib helps to build `REST API` with `C#` and `AspNet` easier than writing it from scratch over and over in different projects. It helps to build a consistent API (with the same `REST` routes approach for different controllers) with minimal amount of code: the minimal REST controller contains **10 lines of code** with full *auto* support for all `CRUD` and `BULK` operations. 
-
-For the easiest way you only need:
-1. EntityFramework `Entities`
-2. DbContext with `DbSets`
-3. Inject from DI Manager Class on startup level.
+* Prev Version <= 3.0.0 ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit)
+* Core ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Core) ![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Core)
+* Ef extensions ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.Ef)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.Ef)
+* Cloud AWS S3 utils ![Nuget](https://img.shields.io/nuget/v/Wissance.WebApiToolkit.AWS.S3)![Downloads](https://img.shields.io/nuget/dt/Wissance.WebApiToolkit.AWS.S3)
 
 ![WebApiToolkit helps to build application easily](./img/logo_v4.0.0_256x256.jpg)
 
- * [1. Key Features](#1-key-features)
-  * [2. API Contract](#2-api-contract)
-  * [3. Requirements](#3-requirements)
-  * [4. Toolkit usage algorithm with EntityFramework](#4-toolkit-usage-algorithm-with-entityframework)
-    + [4.1 REST Services](#41-rest-services)
-    + [4.2 GRPC Services](#42-grpc-services)
-  * [5. Nuget package](#5-nuget-package)
-  * [6. Examples](#6-examples)
-    + [6.1 REST Service example](#61-rest-service-example)
-    + [6.2 GRPC Service example](#62-grpc-service-example)
-  * [7. Extending API](#7-extending-api)
-    + [7.1 Add new methods to existing controller](#71-add-new-methods-to-existing-controller)
-    + [7.2 Add security to protect you API](#72-add-security-to-protect-you-api)
-  * [8. Additional materials](#8-additional-materials)
-  * [9. Contributors](#9-contributors)
+##  One Line of code for Fully functional CRUD Controller with Swagger doc
+![1 line to add controller](./img/1lineadd-2.gif)
 
-### 1. Key Features
-* `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
+
+## Why Wissance.WebApiToolkit
+
+|                    Without                     |                 With Wissance.WebApiToolkit              |
+| -----------------------------------------------| ---------------------------------------------------------|
+| :no_entry: Manual support for the `API` uniformity        | :white_check_mark: Output of all REST methods is standardize                |
+| :no_entry: Every Controller requires at least **20 min** to be written  | :white_check_mark: Up to one line of code for fully functional `CRUD`       |
+| :no_entry: Inconsistent error response                    | :white_check_mark: Unified error format out of the box                      |
+| :no_entry: Requires to rewrite controllers to add a new<br/> technology  | :white_check_mark:  Requires only a new Manager class          |
+| :no_entry: Not supporting bulk operation by default       | :white_check_mark: Up to one line of code for fully functional `BULK` `API` |
+| :no_entry: Controller logic can't be easily used for<br/>`gRPC` or `SignalR`    | :white_check_mark: You could have the same Manager to<br/> handle `REST`, `gRPC`,and a `SignalR` simultaneously                         |
+| :no_entry: Paging and Sorting should be written for<br/>every controller separately       | :white_check_mark: Paging and sorting are implemented<br/> out of the box in the uniform manner     |
+
+## Minimal example
+
+For the full doc see the [ :books: project wiki](https://github.com/Wissance/WebApiToolkit/wiki), to add in one line, for example i break it to `Assembly` get and add `Controller`, i.e.:
+1. Generate assembly:
+```csharp
+Assembly stationControllerAssembly = services.AddSimplifiedAutoController<StationEntity, Guid, EmptyAdditionalFilters>(
+                provider.GetRequiredService<ModelContext>(), "Station",
+                ControllerType.FullCrud, null, provider.GetRequiredService<ILoggerFactory>());
+```
+2. Add Controller from assembly:
+```csharp
+services.AddControllers().AddApplicationPart(stationControllerAssembly).AddControllersAsServices();
+```
+
+### Key Features
+
+* :fire: `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
   - `GET` methods have ***built-in paging*** support;
   - `GET` methods have ***built-in sorting and filter*** by query parameters;
-* support ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
-* support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 2 WEB API projects: 
-  - `Wissance.WeatherControl.WebApi` uses `EntityFramework`;
-  - `Wissance.WeatherControl.WebApi.V2` uses `EdgeDb`
-* support writing `GRPC` services with examples (see `Wissance.WebApiToolkit.TestApp` and `Wissance.WebApiToolkit.Tests`)
-* Manager classes that support file operation over:
+* :rocket: ***BULK operations*** with objects (Bulk `Create`, `Update` and `Delete`) on a Controller && interface level
+* :brain: support to work with ***any persistent storage*** (`IModelManager` interface); Good built-in EntityFramework support (see `EfModelManager` class). See [WeatherControl App](https://github.com/Wissance/WeatherControl) which has 
+* :art: Manager classes that support file operation over:
   - web folders (folders from mounted devices or just local folders)
-  - `S3 AWS-compatible` (tested with `Yandex Object Storage` and previously with `Cloudflare R2` and `Amazon S3`)
-  
-Key concepts:
-1. `Controller` is a class that handles `HTTP-requests` to `REST Resource`.
-2. `REST Resource` is equal to `Entity class / Database Table`
-3. Every operation on `REST Resource` produce `JSON` with `DTO` as output. We ASSUME to use only one `DTO` class with all `REST` methods.  
-
-### 2. API Contract
-* `DTO` classes:
-    - `OperationResultDto` represents result of operation that changes Data in db;
-    - `PagedDataDto` represents portion (page) of same objects (any type);
-* `Controllers` classes - abstract classes
-    - basic read controller (`BasicReadController`) contains 2 methods:
-        - `GET /api/[controller]/?[page={page}&size={size}&sort={sort}&order={order}]` to get `PagedDataDto<T>`
-          now we also have possibility to send **ANY number of query params**, you just have to pass filter func to `EfModelManager` or do it in your own way like in [WeatherControl example with edgedb](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl.WebApi.V2/Helpers/EqlResolver.cs). We also pass sort (column name) && order (`asc` or `desc`) to manager classes,
-          `EfModelManager` allows to sort **by any column**. 
-          <strike> Unfortunately here we have a ***ONE disadvantage*** - **we should override `Swagger` info to show query parameters usage!!!** </strike> Starting from `1.6.0` it is possible to see all parameters in `Swagger` and use them.
-        - `GET /api/[controller]/{id}` to get one object by `id`
-    - full `CRUD` controller (`BasicCrudController`) = basic read controller (`BasicReadController`) + `Create`, `Update` and `Delete` operations :
-        - `POST   /api/[controller]` - for new object creation
-        - `PUT    /api/[controller]/{id}` - for edit object by id
-        - `DELETE /api/[controller]/{id}` - for delete object by id
-    - full `CRUD` with **Bulk** operations (operations over multiple objects at once), Base class - `BasicBulkCrudController` = basic read controller (`BasicReadController`) + `BulkCreate`, `BulkUpdate` and `BulkDelete` operations:
-        - `POST   /api/bulk/[controller]` - for new objects creation
-        - `PUT    /api/bulk/[controller]` - for edit objects passing in a request body
-        - `DELETE /api/bulk/[controller]/{idList}` - for delete multiple objects by id.
-        
-  Controllers classes expects that all operation will be performed using Manager classes (each controller must have it own manager)
-* Managers classes - classes that implements business logic of application
-    - `IModelManager` - interface that describes basic operations
-    - `EfModelManager`- is abstract class that contains implementation of `Get` and `Delete` operations
-    - `EfSoftRemovableModelManager` is abstract class that contains implementation of `Get` and `Delete` operations with soft removable models (`IsDeleted = true` means model was removed)
+  - S3 AWS-compatible (tested with `Yandex Object Storage` and previously with `Cloudflare R2` and `Amazon S3`)
     
-Example of how faster Bulk vs Non-Bulk:
-![Bulk vs Non Bulk](/img/bulk_performance.png)
-```
-Elapsed time in Non-Bulk REST API with EF is 0.9759984016418457 secs.
-Elapsed time in Bulk API with EF is 0.004002094268798828 secs.
-```
-as a result we got almost ~`250 x` faster `API`.
+:cool: `Bulk` vs :no_good_man: Non-Bulk, `Wissance.WebApiToolkit` has Bulk out of the box:
 
-### 3. Requirements
-There is **only ONE requirement**: all Entity classes for any Persistence storage that are using with controllers & managers MUST implements `IModelIdentifiable<T>` from `Wissance.WebApiToolkit.Data.Entity`.
-If this toolkit should be used with `EntityFramework` you should derive you resource manager from
-`EfModelManager` it have built-in methods for:
-* `get many` items
-* `get one` item `by id`
-* `delete` item `by id`
+![Bulk vs Non Bulk](./img/bulk_performance.png)
 
+* :scream: Elapsed time in Non-Bulk REST API with EF is <span style="color:red">~976 ms.</span>
+* :fire: Elapsed time in Bulk API with EF is <span style="color:green">**~4 ms**.</span>
 
-### 4. Toolkit usage algorithm with EntityFramework
+:sparkles: Result : Bulk `API` is almost <span style="color:green">**~250 x faster**</span>!
 
-#### 4.1.0 Minimal REST service
-
-What do we need Entity classes and `DbContext` and init am appropriate Manager class:
-```csharp
-services.AddScoped(sp =>
-{
-     return SimplifiedEfBasedManagerFactory.Create<RoleEntity, int>(sp.GetRequiredService<ModelContext>(),
-          null, sp.GetRequiredService<ILoggerFactory>());
-   
-});
-```
-
-and controller class:
-```csharp
-public class RoleController : BasicBulkCrudController<RoleEntity, RoleEntity, int, EmptyAdditionalFilters>
-    {
-        public RoleController(IModelManager<RoleEntity, RoleEntity, int> manager)
-        {
-            Manager = manager;
-        }
-    }
-```
-
-#### 4.1.1 REST Services with full Declaration
-
-Full example is mentioned in section 6 (see below). But if you are starting to build new `REST Resource`
-`API` you should do following:
-1. Create a `model` (`entity`) class implementing `IModelIdentifiable<T>` and `DTO` class for it representation (**for soft remove** also **add** `IModelSoftRemovable` implementation), i.e.:
-```csharp
-public class BookEntity : IModelIdentifiable<int>
-{
-    public int Id {get; set;}
-    public string Title {get; set;}
-    public string Authors {get; set;} // for simplicity
-    public DateTimeOffset Created {get; set;}
-    public DateTimeOffset Updated {get; set;}
-}
-
-public class BookDto
-{
-    public int Id {get; set;}
-    public string Title {get; set;}
-    public string Authors {get; set;} 
-}
-```
-2. Create a factory function (i.e. static function of a static class) that converts `Model` to `DTO` i.e.:
-```csharp
-public static class BookFactory
-{
-    public static BookDto Create(BookEntity entity)
-    {
-        return new BookDto
-        {
-            Id = entity.Id,
-            Title = entity.Title,
-            Authors = entity.Authors;
-        };
-    }
-}
-```
-3. Create `IModelContext` interface that has you `BookEntity` as a `DbSet` and it's implementation class that also derives from `DbContext` (**Ef abstract class**):
-```csharp
-public interface IModelContext
-{
-    DbSet<BookEntity> Books {get;set;}
-}
-
-public MoidelContext: DbContext<ModelContext>, IModelContext
-{
-    // todo: not mrntioned here constructor, entity mapping and so on
-    public DbSet<BookEntity> Books {get; set;}
-}
-```
-4. Configure to inject `ModelContext` as a `DbContext` via `DI` see [Startup](https://github.com/Wissance/WeatherControl/blob/master/WeatherControl/Wissance.WeatherControl/Startup.cs) class
-5. Create `Controller` class and a manager class pair, i.e. consider here full `CRUD`
-```csharp
-[ApiController]
-public class BookController : BasicCrudController<BookDto, BookEntity, int, EmptyAdditionalFilters>
-{
-    public BookController(BookManager manager)
-    {
-        Manager = manager;  // this is for basic operations
-        _manager = manager; // this for extended operations
-    }
-    
-    private BookManager _manager;
-}
-
-public class BookManager : EfModelManager<BookDto, BookEntity, int, EmptyAdditionalFilters>
-{
-    public BookManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, BookFactory.Create, loggerFactory)
-    {
-        _modelContext = modelContext;
-    }
-    
-    public override async Task<OperationResultDto<StationDto>> CreateAsync(StationDto data)
-    {
-        // todo: implement
-    }
-    
-    public override async Task<OperationResultDto<StationDto>> UpdateAsync(int id, StationDto data)
-    {
-        // todo: implement
-    }
-    
-    private readonly ModelContext _modelContext;
-}
-```
-
-Last generic parameter in above example - `EmptyAdditionalFilters` is a class that holds
-additional parameters for search to see in Swagger, just specify a new class implementing
-`IReadFilterable` i.e.:
-
-```csharp
-public class BooksFilterable : IReadFilterable
-{
-    public IDictionary<string, string> SelectFilters()
-    {
-            IDictionary<string, string> additionalFilters = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(Title))
-            {
-                additionalFilters.Add(FilterParamsNames.TitleParameter, Title);
-            }
-
-            if (Authors != null && Authors.Length > 0)
-            {
-                additionalFilters.Add(FilterParamsNames.AuthorsParameter, string.Join(",", Authors));
-            }
-
-            return additionalFilters;
-    }
-        
-    [FromQuery(Name = "title")] public string Title { get; set; }
-    [FromQuery(Name = "author")] public string[] Authors { get; set; }
-}
-```
-
-#### 4.2 GRPC Services
-
-Starting from `v3.0.0` it possible to create GRPC Services and we have algorithm for this with example based on same Manager classes with service classes that works as a proxy for generating GRPC-services, here we have 2 type of services:
-1. `RO` service with methods for Read data - `ResourceBasedDataManageableReadOnlyService` (GRPC equivalent to `BasicReadController`)
-2. `CRUD` service with methods Read + Create + Update and Delete - `ResourceBasedDataManageableCrudService`
-
-For building GRPC services based on these service implementation we just need to pass instance of this class to constructor, consider that we are having `CodeService` 
-
-```csharp
-public class CodeGrpcService : CodeService.CodeServiceBase
-{
-    public CodeGrpcService(ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> serviceImpl)
-    {
-        _serviceImpl = serviceImpl;
-    }
-    
-    // GRPC methods impl
-    
-    private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
-}
-```
-
-Unfortunately GRPC generates all types Request and therefore we should implement additional mapping to convert `DTO` to Response, see full example in this solution in the `Wissance.WebApiToolkit.TestApp` project 
-    
-### 5. Nuget package
-* [Obsolete version (no bug fixes, no support) <= `3.x.y`, obsolete since `4.0.0`](https://www.nuget.org/packages/Wissance.WebApiToolkit)
-* [Core interfaces package](https://www.nuget.org/packages/Wissance.WebApiToolkit.Core)
-* [Ef-related implementation of Core](https://www.nuget.org/packages/Wissance.WebApiToolkit.Ef)
-* [Cloud AWS S3 Compatible](https://www.nuget.org/packages/Wissance.WebApiToolkit.AWS.S3)
-
-    
-### 6. Examples
-Here we consider only Full CRUD controllers because **Full CRUD = Read Only + Additional Operations (CREATE, UPDATE, DELETE)**, a **full example = full application** created with **Wissance.WebApiToolkit** could be found [here]( https://github.com/Wissance/WeatherControl)
-
-#### 6.1 REST Service example
-
-```csharp
-[ApiController]
-public class StationController : BasicCrudController<StationDto, StationEntity, int, EmptyAdditionalFilters>
-{
-    public StationController(StationManager manager)
-    {
-        Manager = manager;  // this is for basic operations
-        _manager = manager; // this for extended operations
-    }
-    
-    private StationManager _manager;
-}
-```
-    
-```csharp
-public class StationManager : EfModelManager<StationDto, StationEntity, int>
-{
-    public StationManager(ModelContext modelContext, ILoggerFactory loggerFactory) : base(modelContext, StationFactory.Create, loggerFactory)
-    {
-        _modelContext = modelContext;
-    }
-
-    public override async Task<OperationResultDto<StationDto>> CreateAsync(StationDto data)
-    {
-        try
-        {
-            StationEntity entity = StationFactory.Create(data);
-            await _modelContext.Stations.AddAsync(entity);
-            int result = await _modelContext.SaveChangesAsync();
-            if (result >= 0)
-            {
-                return new OperationResultDto<StationDto>(true, (int)HttpStatusCode.Created, null, StationFactory.Create(entity));
-            }
-            return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, "An unknown error occurred during station creation", null);
-
-            }
-        catch (Exception e)
-        {
-            return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, $"An error occurred during station creation: {e.Message}", null);
-        }
-    }
-
-    public override async Task<OperationResultDto<StationDto>> UpdateAsync(int id, StationDto data)
-    {
-        try
-        {
-            StationEntity entity = StationFactory.Create(data);
-            StationEntity existingEntity = await _modelContext.Stations.FirstOrDefaultAsync(s => s.Id == id);
-            if (existingEntity == null)
-            {
-                return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.NotFound, $"Station with id: {id} does not exists", null);
-            }
-
-            // Copy only name, description and positions, create measurements if necessary from MeasurementsManager
-            existingEntity.Name = entity.Name;
-            existingEntity.Description = existingEntity.Description;
-            existingEntity.Latitude = existingEntity.Latitude;
-            existingEntity.Longitude = existingEntity.Longitude;
-            int result = await _modelContext.SaveChangesAsync();
-            if (result >= 0)
-            {
-                return new OperationResultDto<StationDto>(true, (int)HttpStatusCode.OK, null, StationFactory.Create(entity));
-            }
-            return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, "An unknown error occurred during station update", null);
-
-        }
-        catch (Exception e)
-        {
-             return new OperationResultDto<StationDto>(false, (int)HttpStatusCode.InternalServerError, $"An error occurred during station update: {e.Message}", null);
-        }
-            
-    }
-
-    private readonly ModelContext _modelContext;
-}
-```
-
-*JUST 2 VERY SIMPLE CLASSES ^^ USING WebApiToolkit*
-
-#### 6.2 GRPC Service example
-
-For building GRPC service all what we need:
-1. `.proto` file, consider our CodeService example, we have the following GRPC methods:
-```proto
-service CodeService {
-    rpc ReadOne(OneItemRequest) returns (CodeOperationResult);
-    rpc ReadMany(PageDataRequest) returns (CodePagedDataOperationResult);
-}
-```
-2. `DI` for making service implementation:
-```csharp
-private void ConfigureWebServices(IServiceCollection services)
-{
-    services.AddScoped<ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>>(
-        sp =>
-        {
-            return new ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>(sp.GetRequiredService<CodeManager>());
-        });
-}
-```
-3. GRPC Service that derives from generated service and use as a proxy to `ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters>`:
-```csharp
-public class CodeGrpcService : CodeService.CodeServiceBase
-    {
-        public CodeGrpcService(ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> serviceImpl)
-        {
-            _serviceImpl = serviceImpl;
-        }
-
-        public override async Task<CodePagedDataOperationResult> ReadMany(PageDataRequest request, ServerCallContext context)
-        {
-            OperationResultDto<PagedDataDto<CodeDto>> result = await _serviceImpl.ReadAsync(request.Page, request.Size, request.Sort, request.Order,
-                new EmptyAdditionalFilters());
-            context.Status = GrpcErrorCodeHelper.GetGrpcStatus(result.Status, result.Message);
-            CodePagedDataOperationResult response = new CodePagedDataOperationResult()
-            {
-                Success = result.Success,
-                Message = result.Message ?? String.Empty,
-                Status = result.Status,
-            };
-
-            if (result.Data != null)
-            {
-                response.Data = new CodePagedDataResult()
-                {
-                    Page = result.Data.Page,
-                    Pages = result.Data.Pages,
-                    Total = result.Data.Total,
-                    Data = {result.Data.Data.Select(c => Convert(c))}
-                };
-            }
-
-            return response;
-        }
-
-        public override async Task<CodeOperationResult> ReadOne(OneItemRequest request, ServerCallContext context)
-        {
-            OperationResultDto<CodeDto> result = await _serviceImpl.ReadByIdAsync(request.Id);
-            context.Status = GrpcErrorCodeHelper.GetGrpcStatus(result.Status, result.Message);
-            CodeOperationResult response = new CodeOperationResult()
-            {
-                Success = result.Success,
-                Message = result.Message ?? String.Empty,
-                Status = result.Status,
-                Data = Convert(result.Data)
-            };
-            return response;
-        }
-
-        private Code Convert(CodeDto dto)
-        {
-            if (dto == null)
-                return null;
-            return new Code()
-            {
-                Id = dto.Id,
-                Code_ = dto.Code,
-                Name = dto.Name
-            };
-        }
-
-        private readonly ResourceBasedDataManageableReadOnlyService<CodeDto, CodeEntity, int, EmptyAdditionalFilters> _serviceImpl;
-    }
-```
-
-**Full example how it all works see in `Wissance.WebApiToolkit.TestApp` project**.
-
-### 7. Extending API
-
-#### 7.1 Add new methods to existing controller
-Consider we would like to add method search to our controller:
-```csharp
-[HttpGet]
-[Route("api/[controller]/search")]
-public async Task<PagedDataDto<BookDto>>> SearchAsync([FromQuery]string query, [FromQuery]int page, [FromQuery]int size)
-{ 
-    OperationResultDto<Tuple<IList<BookDto>, long>> result = await Manager.GetAsync(page, size, query);
-    if (result == null)
-    {
-        HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-    }
-
-    HttpContext.Response.StatusCode = result.Status;
-    return new PagedDataDto<TRes>(pageNumber, result.Data.Item2, GetTotalPages(result.Data.Item2, pageSize), result.Data.Item1);
-}
-```
-
-#### 7.2 Add security to protect you API
-
-We have [additional project](https://github.com/Wissance/Authorization) to protect `API` with `Keycloak` `OpenId-Connect`.
-pass `IHttpContextAccessor` to `Manager` class and check something like this: `ClaimsPrincipal principal = _httpContext.HttpContext.User;`
-
-### 8. Additional materials
+### Additional materials (Post, articles, video)
 
 You could see our articles about Toolkit usage:
-* [Medium article about v1.0.x usage]( https://medium.com/@m-ushakov/how-to-reduce-amount-of-code-when-writing-netcore-rest-api-services-28352edcfca6)
-* [Dev.to article about v1.0.x usage]( https://dev.to/wissance/dry-your-web-api-net-core-with-our-toolkit-cbb)
+* :writing_hand: [Medium article about v1.0.x usage]( https://medium.com/@m-ushakov/how-to-reduce-amount-of-code-when-writing-netcore-rest-api-services-28352edcfca6)
+* :writing_hand: [Dev.to article about v1.0.x usage]( https://dev.to/wissance/dry-your-web-api-net-core-with-our-toolkit-cbb)
+* :writing_hand: [One line for full CRUD Medium article](https://m-ushakov.medium.com/rest-controller-in-one-line-in-net-171f46737905)
 
-### 9. Contributors
+### Contributors
 
 <a href="https://github.com/Wissance/WebApiToolkit/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Wissance/WebApiToolkit" />

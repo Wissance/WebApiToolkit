@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Data.Entity;
+using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
 using Wissance.WebApiToolkit.Tests.Utils.Checkers;
 
@@ -24,10 +25,17 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
-                // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
+                // TODO(UMV): These test works with SQLite in memory db therefore Navigation property (virtual) does not contains related Users, but actually all Users have roles
+                IList<RoleDto> expected = new List<RoleDto>()
+                {
+                    new RoleDto() {Id = 1, Name = "Administrator", Users = new List<int>()},
+                    new RoleDto() {Id = 2, Name = "Office manager", Users = new List<int>()},
+                    new RoleDto() {Id = 3, Name = "Corporation slave", Users = new List<int>()}
+                };
+                RoleChecker.Check(expected, result.Data.Data);
             }
         }
         
@@ -41,39 +49,44 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 int beforeBulkCreate = result.Data.Data.Count;
 
                 // 2. Call bulk create method
-                RoleEntity[] roles = new RoleEntity[]
+                RoleDto[] roles = new RoleDto[]
                 {
-                    new RoleEntity()
+                    new RoleDto()
                     {
-                        Name = "admin",
-                        UserId = 3,
+                        Id = 10,
+                        Name = "pm",
+                        Users = new List<int>(){1, 2}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
+                        Id = 11,
                         Name = "tech",
-                        UserId = 3,
+                        Users = new List<int>(){1, 2, 3, 4}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
+                        Id = 12,
                         Name = "devops",
-                        UserId = 3,
+                        Users = new List<int>(){3}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
-                        Name = "admin",
-                        UserId = 5,
+                        Id = 13,
+                        Name = "backend",
+                        Users = new List<int>(){4, 5}
                     },
-                    new RoleEntity()
+                    new RoleDto()
                     {
+                        Id = 14,
                         Name = "sys",
-                        UserId = 5,
+                        Users = new List<int>()
                     }
                 };
                 
@@ -82,17 +95,17 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.Created, createRoleResponse.StatusCode);
                 string RoleCreateDataStr = await createRoleResponse.Content.ReadAsStringAsync();
                 Assert.True(RoleCreateDataStr.Length > 0);
-                OperationResultDto<RoleEntity[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(RoleCreateDataStr);
+                OperationResultDto<RoleDto[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(RoleCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
-                Assert.Equal(roles.Length, bulkCreateResult.Data.Length);
+                RoleChecker.Check(roles, bulkCreateResult.Data);
                 
                 // 3. Getting roles again and check quantity
                 resp = await client.GetAsync("api/bulk/Role");
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -111,15 +124,15 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
 
-                RoleEntity[] updatingRoles = new RoleEntity[result.Data.Data.Count];
+                RoleDto[] updatingRoles = new RoleDto[result.Data.Data.Count];
                 result.Data.Data.CopyTo(updatingRoles, 0);
                 string newRoleName = "advanced manager";
-                foreach (RoleEntity role in updatingRoles)
+                foreach (RoleDto role in updatingRoles)
                 {
                     role.Name = newRoleName;
                 }
@@ -129,11 +142,11 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, updateRoleResponse.StatusCode);
                 string roleUpdateDataStr = await updateRoleResponse.Content.ReadAsStringAsync();
                 Assert.True(roleUpdateDataStr.Length > 0);
-                OperationResultDto<RoleEntity[]> bulkUpdateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleEntity[]>>(roleUpdateDataStr);
+                OperationResultDto<RoleDto[]> bulkUpdateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(roleUpdateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 Assert.Equal(updatingRoles.Length, bulkUpdateResult.Data.Length);
-                foreach (RoleEntity role in bulkUpdateResult.Data)
+                foreach (RoleDto role in bulkUpdateResult.Data)
                 {
                     Assert.Equal(newRoleName, role.Name);
                 }
@@ -149,7 +162,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 string pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<RoleEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<RoleDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -174,7 +187,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
                 pagedDataStr = await resp.Content.ReadAsStringAsync();
                 Assert.True(pagedDataStr.Length > 0);
-                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleEntity>>>(pagedDataStr);
+                result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<RoleDto>>>(pagedDataStr);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
