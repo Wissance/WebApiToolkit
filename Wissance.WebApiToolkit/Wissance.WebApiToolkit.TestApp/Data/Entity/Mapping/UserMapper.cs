@@ -10,6 +10,7 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity.Mapping
             builder.HasKey(p => p.Id);
             builder.HasMany(p => p.Roles)
                    .WithMany(p => p.Users);
+            //builder.HasOne(p => p.Profile).WithOne(p => p.User);
         }
     }
 }

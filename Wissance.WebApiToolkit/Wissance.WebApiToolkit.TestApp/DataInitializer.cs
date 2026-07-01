@@ -93,7 +93,13 @@ namespace Wissance.WebApiToolkit.TestApp
                     Login = $"user_{organization.Id}",
                     OrganizationId = organization.Id,
                     FullName = $"Demo Demo {organization.Id}",
-                    Roles = context.Roles.Where(r => roles.Contains(r.Id)).ToList()
+                    Roles = context.Roles.Where(r => roles.Contains(r.Id)).ToList(), 
+                    Profile = new ProfileEntity()
+                    {
+                        Address = $"somewhere i belong {count}",
+                        Bio = $"this a sample of BIO information {count}",
+                        Photo = $"here we should have a base-64 encoded img {count}"
+                    }
                 };
                 context.Users.Add(user);
                 count++;

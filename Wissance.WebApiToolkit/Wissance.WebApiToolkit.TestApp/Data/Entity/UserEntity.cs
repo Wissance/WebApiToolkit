@@ -15,5 +15,8 @@ namespace Wissance.WebApiToolkit.TestApp.Data.Entity
         public int OrganizationId { get; set; }
         public virtual OrganizationEntity Organization { get; set; }
         public virtual IList<RoleEntity> Roles { get; set; }
+        
+        public int? ProfileId { get; set; }
+        public virtual ProfileEntity Profile { get; set; }
     }
 }

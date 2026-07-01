@@ -3,11 +3,13 @@ using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wissance.WebApiToolkit.Core.Data;
 using Wissance.WebApiToolkit.Core.Managers;
+using Wissance.WebApiToolkit.Core.Operations;
 using Wissance.WebApiToolkit.Core.Services;
 using Wissance.WebApiToolkit.Ef.Configuration;
 using Wissance.WebApiToolkit.Ef.Extensions;
@@ -56,6 +58,7 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureWebApi(IServiceCollection services)
         {
+            services.AddSwaggerGen();
             ConfigureManagers(services);
             ConfigureControllers(services);
             services.AddGrpc();
@@ -78,6 +81,13 @@ namespace Wissance.WebApiToolkit.TestApp
                     null, OrganizationFactory.Create, sp.GetRequiredService<ILoggerFactory>());
             });
             // 2. User and Role were created dynamically simultaneously with Controllers, see ConfigureControllers
+            // 3. ProfileManager for partial CRUD controller
+            services.AddScoped<ProfileManager>(sp =>
+            {
+                return new ProfileManager(sp.GetRequiredService<ModelContext>(),
+                    null, ProfileFactory.Create, ProfileFactory.Create, ProfileFactory.Update, 
+                    sp.GetRequiredService<ILoggerFactory>());
+            });
         }
 
         private void ConfigureWebServices(IServiceCollection services)
@@ -91,7 +101,10 @@ namespace Wissance.WebApiToolkit.TestApp
 
         private void ConfigureControllers(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Conventions.Add(new AllowedOperationsConvention());
+            });
             ServiceProvider provider = services.BuildServiceProvider();
             ManagerConfiguration<ModelContext, UserDto, UserEntity, int> userManagerConfig = new ManagerConfiguration<ModelContext, UserDto, UserEntity, int>()
             {
@@ -122,6 +135,13 @@ namespace Wissance.WebApiToolkit.TestApp
         {
             app.UseRouting();
             app.UseCors();
+            
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiToolkit_TestApp");
+            });
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
