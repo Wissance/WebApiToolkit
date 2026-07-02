@@ -93,9 +93,9 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                 JsonContent content = JsonContent.Create(roles);
                 HttpResponseMessage createRoleResponse = await client.PostAsync("api/bulk/Role", content);
                 Assert.Equal(HttpStatusCode.Created, createRoleResponse.StatusCode);
-                string RoleCreateDataStr = await createRoleResponse.Content.ReadAsStringAsync();
-                Assert.True(RoleCreateDataStr.Length > 0);
-                OperationResultDto<RoleDto[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(RoleCreateDataStr);
+                string roleCreateDataStr = await createRoleResponse.Content.ReadAsStringAsync();
+                Assert.True(roleCreateDataStr.Length > 0);
+                OperationResultDto<RoleDto[]> bulkCreateResult = JsonConvert.DeserializeObject<OperationResultDto<RoleDto[]>>(roleCreateDataStr);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 RoleChecker.Check(roles, bulkCreateResult.Data);

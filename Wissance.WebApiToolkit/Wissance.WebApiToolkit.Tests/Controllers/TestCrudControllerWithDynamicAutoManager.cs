@@ -10,6 +10,7 @@ using Wissance.WebApiToolkit.TestApp.Data.Entity;
 using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
 using Wissance.WebApiToolkit.Tests.Utils.Checkers;
+using Wissance.WebApiToolkit.Tests.Utils.Operations;
 
 namespace Wissance.WebApiToolkit.Tests.Controllers
 {
@@ -20,11 +21,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         {
             using (HttpClient client = Application.CreateClient())
             {
-                HttpResponseMessage resp = await client.GetAsync("api/User");
-                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
-                string pagedDataStr = await resp.Content.ReadAsStringAsync();
-                Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<UserEntity>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<UserEntity>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<UserEntity>> result = await TestBasicHttpInteraction.ExecReadManyAndCheckAsync<UserEntity>(client, "api/User", HttpStatusCode.OK);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
