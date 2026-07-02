@@ -38,12 +38,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     TaxNumber = "999091234",
                     Codes = new List<int>(){1, 3}
                 };
-                JsonContent content = JsonContent.Create(organization);
-                HttpResponseMessage resp = await client.PostAsync("api/Organization", content);
-                Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
-                string orgCreateDataStr = await resp.Content.ReadAsStringAsync();
-                Assert.True(orgCreateDataStr.Length > 0);
-                OperationResultDto<OrganizationDto> result = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(orgCreateDataStr);
+                OperationResultDto<OrganizationDto> result = await TestBasicHttpInteraction.ExecCreateAndCheckAsync(client, "api/Organization", organization, HttpStatusCode.Created);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 // todo(UMV): perform body check

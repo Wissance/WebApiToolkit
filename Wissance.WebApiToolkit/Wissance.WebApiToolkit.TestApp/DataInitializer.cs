@@ -96,6 +96,7 @@ namespace Wissance.WebApiToolkit.TestApp
                     Roles = context.Roles.Where(r => roles.Contains(r.Id)).ToList(), 
                     Profile = new ProfileEntity()
                     {
+                        Id = count,
                         Address = $"somewhere i belong {count}",
                         Bio = $"this a sample of BIO information {count}",
                         Photo = $"here we should have a base-64 encoded img {count}"

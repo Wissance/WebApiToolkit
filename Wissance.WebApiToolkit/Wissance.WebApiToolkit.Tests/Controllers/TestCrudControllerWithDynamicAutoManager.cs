@@ -41,12 +41,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     OrganizationId = 4,
                     Roles = new []{2, 3}
                 };
-                JsonContent content = JsonContent.Create(newUser);
-                HttpResponseMessage createUserResponse = await client.PostAsync("api/User", content);
-                Assert.Equal(HttpStatusCode.Created, createUserResponse.StatusCode);
-                string userCreateDataStr = await createUserResponse.Content.ReadAsStringAsync();
-                Assert.True(userCreateDataStr.Length > 0);
-                OperationResultDto<UserDto> result = JsonConvert.DeserializeObject<OperationResultDto<UserDto>>(userCreateDataStr);
+                OperationResultDto<UserDto> result = await TestBasicHttpInteraction.ExecCreateAndCheckAsync(client, "api/User", newUser, HttpStatusCode.Created);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 UserChecker.Check(newUser, result.Data);

@@ -25,19 +25,35 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestCreateSuccessfullyAsync()
         {
-            
+            using (HttpClient client = Application.CreateClient())
+            {
+                ProfileDto creatingProfile = new ProfileDto()
+                {
+                    Address = "asylum on Syberian trakt 7 km",
+                    Bio = "Psycho",
+                    Name = "wtf",
+                    Photo = "axaxaxaxaxaxaxaxaxaxaxa"
+                };
+                OperationResultDto<ProfileDto> result = await TestBasicHttpInteraction.ExecCreateAndCheckAsync(client, "api/Profile", creatingProfile, HttpStatusCode.Created);
+                Assert.NotNull(result);
+            }
         }
         
         [Fact]
-        public async Task TestUpdateSuccessfulyAsync()
+        public async Task TestUpdateSuccessfullyAsync()
         {
             
         }
         
-        [Fact]
-        public async Task TestDeleteFailsAsync()
+        [Theory]
+        [InlineData(1)]
+        public async Task TestDeleteFailsAsync(int profileId)
         {
-            
+            using (HttpClient client = Application.CreateClient())
+            {
+                HttpResponseMessage resp = await client.DeleteAsync($"api/Profile/{profileId}");
+                Assert.Equal(HttpStatusCode.MethodNotAllowed, resp.StatusCode);
+            }
         }
     }
 }
