@@ -28,6 +28,8 @@
 | :no_entry: Not supporting bulk operation by default       | :white_check_mark: Up to one line of code for fully functional `BULK` `API` |
 | :no_entry: Controller logic can't be easily used for<br/>`gRPC` or `SignalR`    | :white_check_mark: You could have the same Manager to<br/> handle `REST`, `gRPC`,and a `SignalR` simultaneously                         |
 | :no_entry: Paging and Sorting should be written for<br/>every controller separately       | :white_check_mark: Paging and sorting are implemented<br/> out of the box in the uniform manner     |
+| :no_entry: Controller method can't be easily switched on/off       | :white_check_mark: It is possible to use some of `CRUD` or `BULK CRUD` methods easily (switch them off and back on from routing and `API Explorer`)     |
+
 
 ## Minimal example
 
@@ -43,7 +45,7 @@ Assembly stationControllerAssembly = services.AddSimplifiedAutoController<Statio
 services.AddControllers().AddApplicationPart(stationControllerAssembly).AddControllersAsServices();
 ```
 
-### Key Features
+## Key Features
 
 * :fire: `REST API Controller` with **full `CRUD`** contains ***only 20 lines*** of code (~ 10 are imports)
   - `GET` methods have ***built-in paging*** support;
@@ -54,7 +56,9 @@ services.AddControllers().AddApplicationPart(stationControllerAssembly).AddContr
   - web folders (folders from mounted devices or just local folders)
   - S3 AWS-compatible (tested with `Yandex Object Storage` and previously with `Cloudflare R2` and `Amazon S3`)
     
-:cool: `Bulk` vs :no_good_man: Non-Bulk, `Wissance.WebApiToolkit` has Bulk out of the box:
+* :cool: `Bulk` vs :no_good_man: Non-Bulk, `Wissance.WebApiToolkit` has Bulk out of the box:
+* :hammer_and_wrench: it is possibly to switch some or even all default `CRUD` or `BULK` methods from controller by setting `AllowedOperation` attribute see [the docs](https://github.com/Wissance/WebApiToolkit/wiki/REST-Controller-method-configuration)
+
 
 ![Bulk vs Non Bulk](./img/bulk_performance.png)
 
@@ -63,14 +67,16 @@ services.AddControllers().AddApplicationPart(stationControllerAssembly).AddContr
 
 :sparkles: Result : Bulk `API` is almost <span style="color:green">**~250 x faster**</span>!
 
-### Additional materials (Post, articles, video)
+## Additional materials (Post, articles, video)
 
 You could see our articles about Toolkit usage:
 * :writing_hand: [Medium article about v1.0.x usage]( https://medium.com/@m-ushakov/how-to-reduce-amount-of-code-when-writing-netcore-rest-api-services-28352edcfca6)
 * :writing_hand: [Dev.to article about v1.0.x usage]( https://dev.to/wissance/dry-your-web-api-net-core-with-our-toolkit-cbb)
 * :writing_hand: [One line for full CRUD Medium article](https://m-ushakov.medium.com/rest-controller-in-one-line-in-net-171f46737905)
 
-### Contributors
+## Versions History (Releases)
+
+## Contributors
 
 <a href="https://github.com/Wissance/WebApiToolkit/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Wissance/WebApiToolkit" />
