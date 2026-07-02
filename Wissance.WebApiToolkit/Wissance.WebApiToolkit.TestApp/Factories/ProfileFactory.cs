@@ -35,9 +35,9 @@ namespace Wissance.WebApiToolkit.TestApp.Factories
         public static void Update(ProfileDto dto, int id, ModelContext dbContext, ProfileEntity entity)
         {
             entity.Name = dto.Name;
-            entity.Address = entity.Address;
-            entity.Bio = entity.Bio;
-            entity.Photo = entity.Photo;
+            entity.Address = dto.Address;
+            entity.Bio = dto.Bio;
+            entity.Photo = dto.Photo;
         }
     }
 }

@@ -42,7 +42,23 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         [Fact]
         public async Task TestUpdateSuccessfullyAsync()
         {
-            
+            using (HttpClient client = Application.CreateClient())
+            {
+                ProfileDto creatingProfile = new ProfileDto()
+                {
+                    Address = "asylum on Syberian trakt 7 km",
+                    Bio = "Psycho",
+                    Name = "wtf",
+                    Photo = "axaxaxaxaxaxaxaxaxaxaxa"
+                };
+                OperationResultDto<ProfileDto> result = await TestBasicHttpInteraction.ExecCreateAndCheckAsync(client, "api/Profile", creatingProfile, HttpStatusCode.Created);
+                Assert.NotNull(result);
+                
+                ProfileDto createdProfile = result.Data;
+                createdProfile.Photo = "look at me i am so handsome";
+                result = await TestBasicHttpInteraction.ExecUpdateAndCheckAsync(client, $"api/Profile/{createdProfile.Id}", createdProfile, HttpStatusCode.OK);
+                Assert.NotNull(result);
+            }
         }
         
         [Theory]
