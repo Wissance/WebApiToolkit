@@ -41,6 +41,7 @@ namespace Wissance.WebApiToolkit.TestApp.Data
             modelBuilder.Entity<OrganizationEntity>().Map();
             modelBuilder.Entity<UserEntity>().Map();
             modelBuilder.Entity<RoleEntity>().Map();
+            modelBuilder.Entity<ProfileEntity>().Map();
         }
 
         public DbSet<CodeEntity> Codes { get; set; }

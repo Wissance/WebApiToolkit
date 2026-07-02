@@ -19,7 +19,7 @@ namespace Wissance.WebApiToolkit.Core.Controllers
         }
 
         [HttpPut]
-        public virtual async Task<OperationResultDto<TRes[]>> UpdateAsync([FromBody] TRes[] data)
+        public virtual async Task<OperationResultDto<TRes[]>> BulkUpdateAsync([FromBody] TRes[] data)
         {
             OperationResultDto<TRes[]> result = await Manager.BulkUpdateAsync(data);
             HttpContext.Response.StatusCode = result.Status;
@@ -27,7 +27,7 @@ namespace Wissance.WebApiToolkit.Core.Controllers
         }
 
         [HttpDelete]
-        public virtual async Task DeleteAsync([FromQuery] TId[] id)
+        public virtual async Task BulkDeleteAsync([FromQuery] TId[] id)
         {
             OperationResultDto<bool> result = await Manager.BulkDeleteAsync(id);
             HttpContext.Response.StatusCode = result.Status;

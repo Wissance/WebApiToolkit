@@ -11,7 +11,7 @@ namespace Wissance.WebApiToolkit.TestApp
         public static IHostBuilder CreateWebHostBuilder(string[] args)
         {
             //todo: umv: temporarily stub
-            _environment = "Development";
+            _environment = "IntegrationTest";
             //webHostBuilder.GetSetting("environment");
 
             IConfiguration configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())

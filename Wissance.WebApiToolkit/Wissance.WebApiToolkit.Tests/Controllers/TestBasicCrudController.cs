@@ -8,6 +8,7 @@ using Wissance.WebApiToolkit.Dto;
 using Wissance.WebApiToolkit.TestApp.Dto;
 using Wissance.WebApiToolkit.Tests.Utils;
 using Wissance.WebApiToolkit.Tests.Utils.Checkers;
+using Wissance.WebApiToolkit.Tests.Utils.Operations;
 
 namespace Wissance.WebApiToolkit.Tests.Controllers
 {
@@ -18,11 +19,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
         {
             using (HttpClient client = Application.CreateClient())
             {
-                HttpResponseMessage resp = await client.GetAsync("api/Organization");
-                Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
-                string pagedDataStr = await resp.Content.ReadAsStringAsync();
-                Assert.True(pagedDataStr.Length > 0);
-                OperationResultDto<PagedDataDto<OrganizationDto>> result = JsonConvert.DeserializeObject<OperationResultDto<PagedDataDto<OrganizationDto>>>(pagedDataStr);
+                OperationResultDto<PagedDataDto<OrganizationDto>> result = await TestBasicHttpInteraction.ExecReadManyAndCheckAsync<OrganizationDto>(client, "api/Organization", HttpStatusCode.OK);
                 // TODO(UMV): check very formally only that ReadAsync returns PagedData wrapped in OperationResult
                 Assert.NotNull(result);
                 Assert.True(result.Success);
@@ -41,12 +38,7 @@ namespace Wissance.WebApiToolkit.Tests.Controllers
                     TaxNumber = "999091234",
                     Codes = new List<int>(){1, 3}
                 };
-                JsonContent content = JsonContent.Create(organization);
-                HttpResponseMessage resp = await client.PostAsync("api/Organization", content);
-                Assert.Equal(HttpStatusCode.Created, resp.StatusCode);
-                string orgCreateDataStr = await resp.Content.ReadAsStringAsync();
-                Assert.True(orgCreateDataStr.Length > 0);
-                OperationResultDto<OrganizationDto> result = JsonConvert.DeserializeObject<OperationResultDto<OrganizationDto>>(orgCreateDataStr);
+                OperationResultDto<OrganizationDto> result = await TestBasicHttpInteraction.ExecCreateAndCheckAsync(client, "api/Organization", organization, HttpStatusCode.Created);
                 Assert.NotNull(result);
                 Assert.True(result.Success);
                 // todo(UMV): perform body check

@@ -6,7 +6,7 @@ using Wissance.WebApiToolkit.TestApp.Managers;
 
 namespace Wissance.WebApiToolkit.TestApp.Controllers
 {
-    public class OrganizationController : BasicCrudController<OrganizationDto, OrganizationEntity, int, EmptyAdditionalFilters>
+    public sealed class OrganizationController : BasicCrudController<OrganizationDto, OrganizationEntity, int, EmptyAdditionalFilters>
     {
         public OrganizationController(OrganizationManager manager)
         {
