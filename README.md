@@ -76,6 +76,43 @@ You could see our articles about Toolkit usage:
 
 ## Versions History (Releases)
 
+### Versions 1.0.0 - 3.0.0
+
+* Created base controllers for ReadOnly (get many, get one) and FullCRUD (`ReadOnly` + `Create` + `Update` + `Delete`) operations.
+* Created base controllers for CRUD BULK operation (`~/api/bulk`) .
+* Created a common interface for passing paging and sorting.
+* Added support for controllers creation with `EntityFramework` as a DB technology.
+* Supported `API Explorations` with show all query parameters in `swagger`.
+* Supported the creation of `gRPC` services based on `IModelManager`.
+
+### Version 4.0.0 - 4.x.x
+
+* `WebAPIToolkit` project was separated on `WebAPIToolkit.Core` with interface parts only, and this part
+is independent from database techology.
+* Added support for operation with files, either a local or network holder or `S3 AWS Compatible Cloud Storage`.
+
+Version `4.x.x` is active to support important features for outdated `.Net` plafrorms (`.netcoreapp3.1` and `.net5.0`)
+
+### Version 5.0.0
+
+* Removed support of `.netcoreapp3.1` and `.net5.0`
+* Added support for the `net9.0`
+* Updated package version to keep `net6.0`
+
+### Version 5.1.0
+
+* Generation tools development and it is possible to create Controllers dynamically with up to 1 line of code
+
+### Version 5.2.0
+
+* GitHub actions for CI (`Build +test run`)
+* Added an additional method for `1-line` controller add that has a factory func, to return a different result from methods
+* `Create` && `Update` factory methods are having now `DbContext` for proper working with `many-2-many` by default
+
+### Version 5.3.0
+
+* Added ability to easily switch off by attribute from routing any methods of base controllers
+
 ## Contributors
 
 <a href="https://github.com/Wissance/WebApiToolkit/graphs/contributors">
